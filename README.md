@@ -6,7 +6,7 @@ Make your own in-memory database in client or server easily.
 
 
 ## In This Demo
-In this demo you will some cases of how to use the TanaDB from a URL.
+In this demo you will see some cases of how to use the TanaDB from a URL.
 For this Demo we created a single Table called users with 1500000 records
 
 ## Usage
