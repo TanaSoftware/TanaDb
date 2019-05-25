@@ -1,0 +1,1342 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="css/cal.css" rel="stylesheet" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/general.css" rel="stylesheet" />
+    <link href='https://use.fontawesome.com/releases/v5.0.6/css/all.css' rel='stylesheet'>
+
+    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' rel='stylesheet' />
+    <link href="css/selectize.css" rel="stylesheet" />
+    <link href="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/build/css/bootstrap-datetimepicker.css" rel="stylesheet">
+    <link href="css/selectize.css" rel="stylesheet" />
+    <link href="css/bootstrap-datepicker.min.css" rel="stylesheet" />
+    <script src="js/cal.js"></script>
+    <script src="js/moment.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="js/selectize.js"></script>
+    <script src="js/bootstrap-datepicker.min.js"></script>
+    <script src="js/global.js"></script>
+    <script src="js/bootstrap-datepicker.he.min.js"></script>
+    <style>
+
+        .selectize-input {
+            direction: rtl !important;
+            text-align: right !important;
+        }
+
+        .selectize-dropdown {
+            direction: rtl !important;
+            text-align: right !important;
+        }
+
+        .tooltip-inner {
+            background-color: #f00 !important;
+        }
+
+
+
+        @media only screen and (max-width: 760px) {
+
+            .fc-content {
+                padding: 5px;
+            }
+
+
+
+            .fc-time-grid .fc-slats td {
+                height: 3.5em;
+            }
+        }
+
+
+
+        .prevNext {
+            max-width: 40px;
+        }
+    </style>
+
+</head>
+
+<body dir="rtl">
+
+
+
+    <div class="d-flex justify-content-center">
+
+        <div>
+
+            <button type="button" style="float:right;margin-top:8px;" class="btn btn-primary btn-sm prevNext" id="prev">&lt;</button>
+
+            <!--<button type="button" class="btn btn-primary btn-block" style="max-width:50px;float:right" id="today">היום</button>-->
+
+            <div style="float:right" class="p-2">
+
+                <div class="input-group date">
+
+                    <input type="text" id="datetimepicker1" class="form-control" placeholder="תאריך" style="max-width:140px;"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+
+                </div>
+
+            </div>
+
+            <button type="button" id="next" class="btn btn-primary btn-sm prevNext" style="float:right;margin-top:8px;">&gt;</button>
+
+        </div>
+
+
+
+    </div>
+
+    <div class="d-flex justify-content-center">
+
+        <div class="btn-group-sm btn-group-primary" role="group" aria-label="...">
+
+            <button type="button" onclick="SetCal('timeGrid')" autofocus="autofocus" class="btn btn-primary">יומי</button>
+
+            <button type="button" onclick="SetCal('timeGridWeek')" class="btn btn-primary">שבועי</button>
+
+            <button type="button" onclick="SetCal('dayGridMonth')" class="btn btn-primary">חודשי</button>
+
+        </div>
+
+    </div>
+
+    <div id="dvCustomers">
+        <div class="d-flex justify-content-center">
+
+            <div class="flex-row">
+
+                <div id="dvddlCustomers" style="float:right" class="p-2">
+
+                    <select style="width:170px;" id="ddlCustomers"></select>
+
+                </div>
+
+                <div style="float:right" class="p-2">
+
+                    <button type="button" onclick="AddModalCustomer()" class="btn btn-primary btn-sm" style="margin-right:3px;">הוסף לקוח </button>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <div id="dvUsers">
+        <div class="d-flex justify-content-center">
+
+            <div class="flex-row">
+
+                <div id="dvddlCity" style="float:right" class="p-2">
+
+                    <select style="width:100px;" id="ddlCity" placeholder="בחר עיר"></select>
+
+                </div>
+
+                <div id="dvddlUserers" style="float:right" class="p-2">
+
+                    <select style="width:150px;" id="ddlUsers" placeholder="בחר בעל עסק"></select>
+
+                </div>
+
+                <div style="float:right" class="p-2">
+
+                    <button type="button" onclick="CheckAvailability()" class="btn btn-primary btn-sm" style="margin-right:3px;">בדוק </button>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <div id="calendar"></div>
+
+
+
+    <!--Add event modal-->
+
+    <div id="createEventModal" class="modal fade">
+
+        <div class="modal-dialog vertical-align-center">
+
+            <div class="modal-content" style="width:320px;">
+
+                <div class="modal-header">
+
+                    <div style="float:right;color:#007bff;"><h4>זמן תור</h4></div>
+
+                    <div style="float:left">
+
+                        <button type="button" class="close" data-dismiss="modal">
+
+                            <span aria-hidden="true">&times;</span> <span class="sr-only">close</span>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div id="modalBody" class="modal-body">
+
+                    <table style="border-collapse: separate;border-spacing: 10px;">
+
+                        <tr>
+
+                            <td style="float:right;">תור ל :</td>
+
+                            <td colspan="3">
+
+                                <select style="width:190px;" id="ddlEvent" class="form-control" type="text">
+
+                                    <option value="0">בחר</option>
+
+                                </select>
+                                <select style="width:190px;" id="ddlActivity" class="form-control" type="text">
+
+                                    <option value="0">בחר</option>
+
+                                </select>
+                                <div id="ddlEventErr"></div>
+
+                            </td>
+
+                        </tr>
+
+
+
+                        <tr>
+
+                            <td>מ :</td>
+
+                            <td><input style="width:70px;" type="text" id="txtTimeFrom" class="form-control"></td>
+
+                            <td>עד :</td>
+
+                            <td><input style="width:70px;" type="text" id="txtTimeTo" class="form-control"></td>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">ביטול</button>
+
+                    <button type="submit" style="margin-right:5px;" class="btn btn-primary" onclick="DeleteQue()" id="btnDeleteQue">מחק</button>
+
+                    <button type="submit" style="margin-right:5px;" class="btn btn-primary" onclick="AddQue()" id="submitButton">שמור</button>
+
+                </div>
+
+            </div>
+
+
+
+        </div>
+
+    </div>
+
+    <div id="AddCustomerModal" class="modal fade">
+
+        <div class="modal-dialog vertical-align-center">
+
+            <div class="modal-content" style="width:320px;">
+
+                <div class="modal-header">
+
+                    <div style="float:right;color:#007bff;"><h4>הוסף לקוח</h4></div>
+
+                    <div style="float:left">
+
+                        <button type="button" class="close" data-dismiss="modal">
+
+                            <span aria-hidden="true">&times;</span> <span class="sr-only">close</span>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div id="modalBody" class="modal-body">
+
+                    <div class="form-group">
+
+                        <div class="form-group floating-label-form-group controls">
+
+                            <input id="userCust" type="text" placeholder="שם משתמש" class="form-control input-lg" />
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <div class=& quot;form-group floating-label-form-group controls">
+
+                            <input id="txtTelCust" type="text" placeholder="טלפון נייד" class="form-control input-lg" />
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">ביטול</button>
+
+                    <button type="submit" style="margin-right:5px;" class="btn btn-primary" onclick="AddCustomer()" id="btnAddCustomer">הוספה</button>
+
+                </div>
+
+            </div>
+
+
+
+        </div>
+
+    </div>
+
+
+
+</body>
+
+</html>
+
+
+
+<script type="text/javascript">
+
+    var momentHourFormat = "HH:mm:ss";
+    var todayX;
+    var UserData = JSON.parse(sessionStorage.getItem("UserData"));
+
+    var currentUserDetails;
+
+    var customersList;
+
+    //step 1
+
+    if (UserData.isUser) {
+
+        $('#dvUsers').addClass('forceDispNone');
+
+        getMyCustomers();
+
+        setUser();
+
+    }
+
+    else {
+
+        SetCustomer();
+
+        $('#dvCustomers').addClass('forceDispNone');
+
+    }
+        
+    function AddModalCustomer() {
+
+        $('#AddCustomerModal').modal('show');
+
+    }
+
+
+
+    function AddCustomer() {
+
+        var Tel = $("#txtTelCust").val();
+
+        var name = $("#userCust").val();
+
+
+
+        if (name.length <= 0) {
+
+            showTooltip("userCust", "נא להזין שם");
+
+            return;
+
+        }
+
+        if (Tel.length <= 0) {
+
+            showTooltip("txtTelCust", "נא להזין מספר טלפון נייד");
+
+            return;
+
+        }
+
+        var CustomerObj = { Id: UserData.UserId, Name: name, tel: Tel, guid: UserData.guid };
+
+
+
+        $.ajax({
+
+            url: "User/UserAddCustmer",
+
+            type: 'POST',
+
+            data: JSON.stringify(CustomerObj),
+
+            contentType: "application/json;charset=utf-8",
+
+            success: function (data) {
+
+                if (data == "") {
+
+                    $('#AddCustomerModal').modal('hide');
+
+                    getMyCustomers();
+
+                }
+
+                else {
+
+                    showTooltip("btnAddCustomer", data);
+
+                }
+
+            },
+
+            error: function (request, status, error) {
+
+
+
+            }
+
+        });
+
+    }
+
+
+
+    function getMyCustomers() {
+
+        var CustomerObj = { UserId: UserData.UserId, guid: UserData.guid };
+
+        $.ajax({
+
+            url: "User/GetCustomers",
+
+            type: 'POST',
+
+            data: JSON.stringify(CustomerObj),
+
+            contentType: "application/json;charset=utf-8",
+
+            success: function (data) {
+
+                if (data.message != "")
+
+                    messageHandler.Show(data.message);
+
+                else {
+
+
+
+                    if (data.customersList != null && data.customersList.length > 0) {
+
+                        customersList = data.customersList;
+
+                        $('#ddlCustomers').selectize()[0].selectize.destroy();
+
+                        selectizeService.InitSelectize("ddlCustomers", 'Id', 'Name', 30, data.customersList, null);
+
+                    }
+
+                    else
+
+                        $('#AddCustomerModal').modal('show');
+
+                }
+
+            },
+
+            error: function (request, status, error) {
+
+
+
+            }
+
+        });
+
+    }
+
+
+    function getNoActiveDays(BizTypeList) {
+        //set unavailable days
+        var notActiveDays = "";
+        for (var i = 0; i < 7; i++) {
+
+            var isDayFound = false;
+
+            for (var j = 0; j < BizTypeList.length; j++) {
+
+                if (BizTypeList[j].ActiveDay == (i + 1)) {
+                    isDayFound = true;
+                }
+            }
+
+            if (!isDayFound) {
+
+                notActiveDays += i.toString() + ",";
+
+            }
+        }
+
+        if (notActiveDays.length > 0)
+
+            notActiveDays = notActiveDays.substr(0, notActiveDays.length - 1);
+
+        return notActiveDays;  
+    }
+    function setUser() {       
+        var activeDays = [], notActiveDays = "";
+
+        var index = 0;
+
+        for (obj in UserData.dicBizType) {
+            $('#ddlEvent').append($("<option></option>").text(obj));
+        }
+        for (obj in UserData.Activities) {
+            $('#ddlActivity').append($("<option></option>").attr("value", obj.Id).text(obj.Name));
+        }
+        
+        var BizTypeList = UserData.dicBizType[obj];
+
+        CheckTodayAvailable(BizTypeList, UserData.day);
+
+        notActiveDays = getNoActiveDays(BizTypeList);
+
+        setDatePicker(notActiveDays);
+
+        GetQue(UserData, currentUserDetails);
+
+    }
+
+
+
+    function CheckTodayAvailable(BizTypeList, day) {
+
+        //check is Today Available
+
+        var isTodayAvailable = false;
+
+        for (var i = 0; i < BizTypeList.length; i++) {
+
+            if (day == BizTypeList[i].ActiveDay) {
+
+                isTodayAvailable = true;
+
+                currentUserDetails = BizTypeList[i];
+
+                break;
+
+            }
+
+        }
+
+        return isTodayAvailable;
+
+    }
+
+    function setDatePicker(DaysOfWeekDisabled) {
+
+        $('#datetimepicker1').datepicker({
+
+            format: "dd/mm/yyyy",
+
+            language: "he",
+
+            daysOfWeekDisabled: DaysOfWeekDisabled,
+
+            orientation: "auto",
+
+            todayHighlight: true
+
+        });
+        
+        
+        $('#datetimepicker1').val(moment(new Date()).format('DD/MM/YYYY'));
+        todayX = moment(new Date()).format('YYYY-MM-DD');
+    }
+
+
+
+    function SetCal(view) {
+
+        GetQue(UserData, currentUserDetails, view);
+
+    }
+
+
+
+    function GetQue(UserData, currentUserDetails, view) {
+
+        var fromDate, toDate;
+
+        //var today = moment().format('YYYY-MM-DD');
+
+        fromDate = todayX + "T00:00:00";
+
+        toDate = todayX + "T23:59:59";
+
+        var duration = 10;
+
+        //if (currentUserDetails != null)
+
+          //  duration = currentUserDetails.ActiveDuration;
+        
+        if (view == null)
+
+            view = 'timeGrid';
+
+        else if (view == 'timeGridWeek') {
+
+            var today = moment();
+
+            fromDate = today.startOf('week').format('YYYY-MM-DD') + "T00:00:00";
+
+            toDate = today.endOf('week').format('YYYY-MM-DD') + "T23:59:59";
+
+        }
+
+        var QueObj = { UserId: UserData.UserId, guid: UserData.guid, FromDate: fromDate, ToDate: toDate, isUser: UserData.isUser, CustomerId: UserData.CustomerId };
+
+
+        $.ajax({
+
+            url: "Que/GetQue",
+
+            type: 'POST',
+
+            data: JSON.stringify(QueObj),
+
+            contentType: "application/json;charset=utf-8",
+
+            success: function (data) {
+
+                if (data.Message != null && data.Message != "") {
+
+                    messageHandler.Show(data.Message);
+
+                }
+
+                else {
+
+                    $("#calendar").html("");
+
+                    //CreateCal(data.queData, '09:00:00', '18:00:00', duration, view);
+
+                    var ActiveHourFrom = currentUserDetails != null && currentUserDetails.ActiveHourFrom != null ? currentUserDetails.ActiveHourFrom : '09:00:00';
+
+                    var ActiveHourTo = currentUserDetails != null && currentUserDetails.ActiveHourTo != null ? currentUserDetails.ActiveHourTo : '19:00:00';
+
+                    CreateCal(data.queData, ActiveHourFrom, ActiveHourTo, duration, view);//timeGrid dayGridMonth,timeGridWeek'
+
+                }
+
+            },
+
+            error: function (request, status, error) {
+
+
+
+            }
+
+        });
+
+    }
+
+
+
+
+
+    function calcHourLength(minimumTime, maximumTime, duration) {
+
+
+
+        var startTime = moment(minimumTime, momentHourFormat);
+
+        var endTime = moment(maximumTime, momentHourFormat);
+
+        var durationX = moment.duration(endTime.diff(startTime));
+
+        var hours = parseInt(durationX.asHours());
+
+        var minutes = parseInt(durationX.asMinutes()) % 60;
+
+        var total = ((hours * 60) + minutes) / duration;
+
+        return total
+
+    }
+
+
+
+    function getEmptyEvent(index, start, end) {
+
+        return { id: index, title: "פנוי", start: todayX + "T" + start, end: todayX + "T" + end, editable: true, color: '#fff' };
+
+    }
+
+
+
+    function createEmptyDaySchedule(data, minimumTime, maximumTime, duration) {
+
+        var dataNew = [];
+
+        var len = calcHourLength(minimumTime, maximumTime, duration);
+
+        var startTime = moment(minimumTime, momentHourFormat);
+
+        var endTime = moment(minimumTime, momentHourFormat).add(duration, "minutes");
+
+        var j = 0;
+
+        for (var i = 0; i < len; i++) {
+
+
+
+            var t1 = data != null && data[j] != null ? moment(data[j].start).format(momentHourFormat) : 0;
+
+            if (t1 == startTime.format(momentHourFormat)) {
+
+                var d = getEmptyEvent(i, data[j].start, data[j].end);
+
+                d.id = data[j].Id;
+
+                d.title = data[j].title;
+
+                d.start = data[j].start;
+
+                d.end = data[j].end;
+
+                d.color = "#007bff";
+
+                d.textColor = "#fff";
+
+                dataNew.push(d);
+
+                j++;
+
+            }
+
+            else
+
+                dataNew.push(getEmptyEvent(i, startTime.format(momentHourFormat), endTime.format(momentHourFormat)));
+
+
+
+            startTime = endTime;
+
+            endTime = moment(endTime, momentHourFormat).add(duration, "minutes");
+
+        }
+
+
+
+        return dataNew;
+
+    }
+
+    var currentId = -1;
+
+    var currentCustomerName = "";
+
+    var calendar;
+
+
+
+    function CreateCal(data, minimumTime, maximumTime, duration, view) {
+
+        var len = calcHourLength(minimumTime, maximumTime, duration);
+
+        var dataEvents;
+
+
+
+        dataEvents = createEmptyDaySchedule(data, minimumTime, maximumTime, duration);
+
+
+
+        var calendarEl = document.getElementById('calendar');
+
+        calendar = new FullCalendar.Calendar(calendarEl, {
+
+            plugins: ['bootstrap', 'dayGrid', 'timeGrid'],
+
+            //eventColor: '#378006',
+
+            header: { // layout header
+
+                left: '',
+
+                center: '',
+
+                right: 'month,agendaWeek,listWeek'
+
+            },
+
+            buttonText: {
+
+                today: 'היום',
+
+                left: 'הבא'
+
+            },
+
+
+
+            displayEventTime: false,
+
+            timeZone: 'UTC',
+
+            defaultView: view,//'timeGrid',
+
+            minTime: minimumTime,
+
+            maxTime: maximumTime,
+
+            slotDuration: '00:' + duration + ':00',
+
+            slotLabelFormat: {
+
+                hour: 'numeric',
+
+                minute: '2-digit',
+
+                omitZeroMinute: false,
+
+                meridiem: 'short'
+
+            },
+
+            slotLabelInterval: parseInt(duration),
+
+            editable: true,
+
+            eventLimit: true,
+
+            eventClick: function (info) {
+
+
+
+                var SelectedCustomer = $('#ddlCustomers').val();
+
+                if (info.event.title == "פנוי" && UserData.isUser && SelectedCustomer == "") {
+
+                    showTooltip("dvddlCustomers", "נא לבחור לקוח")
+
+                    return;
+
+                }
+
+                if (info.event.title != 'תפוס') {
+
+                    currentId = info.event.id;
+
+                    var s = moment(info.event.start).add(-3, 'hours');
+
+                    var e = moment(info.event.end).add(-3, 'hours');
+
+                    $('#txtTimeFrom').val(s.format("HH:mm"));
+
+                    $('#txtTimeTo').val(e.format("HH:mm"));
+
+                    $('#ddlEvent').val("0");
+
+                    
+                    if (info.event.title == "פנוי")
+
+                        btnDeleteQue.style.display = "none";
+
+                    else {
+
+                        var titleArr = info.event.title.split(' ');
+
+                        if (titleArr.length > 1) {
+
+                            var qType = titleArr[0];
+
+                            var qCustomer = "";
+
+                            for (var j = 1; j < titleArr.length; j++)
+
+                                qCustomer += titleArr[j] + ' ';
+
+                            qCustomer = qCustomer.trim();
+
+                            $('#ddlEvent').val(qType);
+
+                            currentCustomerName = qCustomer;
+
+                        }
+
+                        btnDeleteQue.style.display = "";
+
+                    }
+
+                    $('#createEventModal').modal('show');
+
+                }
+
+            },
+
+            locale: 'he',
+
+            dir: 'rtl',
+
+
+
+            titleFormat: { year: 'numeric', month: 'numeric', day: 'numeric' },
+
+            themeSystem: 'bootstrap',
+
+            allDaySlot: false,
+
+            events: dataEvents
+
+        });
+
+        calendar.render();
+
+        return calendar;
+
+    }
+
+
+
+    $("#next").click(function () {
+
+        calendar.next();
+
+    });
+
+
+
+    $("#prev").click(function () {
+
+        calendar.prev();
+
+    });
+
+
+
+    $("#today").click(function () {
+
+        calendar.today();
+
+    });
+
+
+
+    function AddQue() {
+
+        var eventName = $('#ddlEvent :selected').text();
+
+        var txtFrom = $("#txtTimeFrom").val();
+
+        var txtTo = $("#txtTimeTo").val();
+
+        if (eventName == null || eventName == "" || eventName == "בחר") {
+
+            showTooltip('ddlEventErr', "נא לבחור תור");
+
+            return;
+
+        }
+
+
+
+        if (txtFrom.length <= 0) {
+
+            showTooltip('txtTimeFrom', "נא להזין שעה");
+
+            return;
+
+        }
+
+        if (!isHour(txtFrom)) {
+
+            showTooltip('txtTimeFrom', "נא להזין שעה תקינה");
+
+            return;
+
+        }
+
+        if (txtTo.length <= 0) {
+
+            showTooltip('txtTimeTo', "נא להזין שעה");
+
+            return;
+
+        }
+
+        if (!isHour(txtTo)) {
+
+            showTooltip('txtTimeTo', "נא להזין שעה תקינה");
+
+            return;
+
+        }
+
+        var QueObj = {
+
+            UserId: UserData.UserId,
+
+            guid: UserData.guid,
+
+            FromDate: txtFrom,
+
+            ToDate: txtTo,
+
+            isUser: UserData.isUser,
+
+            CustomerId: $('#ddlCustomers').val(),
+
+            QueTime: 10,
+
+            QueType: eventName
+
+        };
+
+
+
+        $.ajax({
+
+            url: "Que/AddCustomerQue",
+
+            type: 'POST',
+
+            data: JSON.stringify(QueObj),
+
+            contentType: "application/json;charset=utf-8",
+
+            success: function (data) {
+
+                if (data == "") {
+
+                    GetQue(UserData, currentUserDetails);
+
+                    $('#createEventModal').modal('hide');
+
+                }
+
+                else
+
+                    showTooltip('ddlEventErr', data);
+
+            },
+
+            error: function (request, status, error) {
+
+
+
+            }
+
+        });
+
+
+
+    }
+
+
+
+    function findCustomerId() {
+
+
+
+        for (var i = 0; i < customersList.length; i++) {
+
+
+
+            if (customersList[i].Name === currentCustomerName) {
+
+                return customersList[i].Id;
+
+            }
+
+        }
+
+        return -1;
+
+    }
+
+    function DeleteQue() {
+
+        var obj = calendar.getEventById(currentId);
+
+
+
+        var eventName = UserData.isUser ? $('#ddlEvent :selected').text() : obj.title;
+
+        var txtFrom = $("#txtTimeFrom").val();
+
+        var txtTo = $("#txtTimeTo").val();
+
+        var custId = UserData.isUser ? findCustomerId() : UserData.CustomerId;
+
+        if (custId < 0) {
+
+            return;
+
+        }
+
+        var QueObj = {
+
+            UserId: UserData.UserId,
+
+            guid: UserData.guid,
+
+            FromDate: todayX + "T" + txtFrom,
+
+            ToDate: todayX + "T" + txtTo,
+
+            isUser: UserData.isUser,
+
+            CustomerId: custId,
+
+            QueTime: 10,
+
+            QueType: eventName
+
+        };
+
+
+
+        $.ajax({
+
+            url: "Que/DeleteCustomerQue",
+
+            type: 'POST',
+
+            data: JSON.stringify(QueObj),
+
+            contentType: "application/json;charset=utf-8",
+
+            success: function (data) {
+
+                if (data == "") {
+
+                    GetQue(UserData, currentUserDetails);
+
+                    $('#createEventModal').modal('hide');
+
+                }
+
+                else
+
+                    showTooltip('ddlEventErr', data);
+
+            },
+
+            error: function (request, status, error) {
+
+
+
+            }
+
+        });
+
+    }
+
+    function addEventToCal(eventName, txtFrom, txtTo) {
+
+        var item = { title: eventName, start: todayX + "T" + txtFrom.value + "", end: todayX + "T" + txtTo.value + "" };
+
+        //data.push(item);
+
+        var ev = calendar.getEventById(currentId);
+
+        ev.remove(currentId);
+
+
+
+        calendar.addEvent({
+
+            id: currentId,
+
+            title: eventName,
+
+            start: todayX + "T" + txtFrom.value + "",
+
+            end: todayX + "T" + txtTo.value + "",
+
+            editable: true,
+
+            color: '#fff'
+
+        });
+
+        //calendar.fullCalendar('refetchEvents')
+
+        $('#createEventModal').modal('hide');
+
+    }
+
+    function SetCustomer() {        
+
+        getCities(function (data) {
+            selectizeService.InitSelectize("ddlCity", 'Id', 'Name', null, data, null);
+        });
+
+
+        $('#ddlUsers').selectize({
+
+            valueField: 'Id',
+
+            labelField: 'User',
+
+            searchField: 'User',
+
+            options: [],
+
+            create: false,
+
+            render: {
+
+                option: function (item, escape) {
+
+                    return '<div>' + escape(item.User) + '</div>';
+                }
+            },
+            onChange: function (value) {
+                // get user default activities
+                var UserSearch = { Id: value, guid: UserData.guid }
+
+                $.ajax({
+
+                    url: "User/GetUserById",
+
+                    type: 'POST',
+
+                    data: JSON.stringify(UserSearch),
+
+                    contentType: "application/json;charset=utf-8",
+
+                    success: function (data) {
+
+                        if (data != null && data.dicBizType != null) {
+
+                            CheckTodayAvailable(data.dicBizType, data.day);
+
+                        }
+
+                        else {
+
+                            if (data.ErrorMsg != "")
+
+                                showTooltip('ddlUsers', data.ErrorMsg);
+
+                            else
+
+                                showTooltip('ddlUsers', "ארעה שגיאה");
+
+                        }
+
+                    },
+
+                    error: function (request, status, error) {
+
+
+
+                    }
+
+                });
+
+            },
+
+            load: function (query, callback) {
+
+                var city = $('#ddlCity').val();
+
+                if (city == "") {
+
+                    showTooltip("dvddlCity", "נא להזין עיר")
+
+                    return;
+
+                }
+
+                if (query.length < 3) return;
+
+                var data = {
+
+                    User: query,
+
+                    tel: "",
+
+                    Adrress: "",
+
+                    City: city,
+
+                    guid: UserData.guid
+                }
+
+
+
+                $.ajax({
+
+                    url: 'User/GetUsers',
+
+                    type: 'POST',
+
+                    contentType: "application/json;charset=utf-8",
+
+                    data: JSON.stringify(data),
+
+
+
+                    error: function () {
+
+                        callback();
+
+                    },
+
+                    success: function (result) {
+
+                        callback(result.usersList);
+
+                    }
+
+                });
+
+            }
+
+        });
+
+    }
+
+
+
+    function CheckAvailability() {
+
+        var user = $('#ddlUsers').val();
+
+        if (user == "") {
+
+            showTooltip('dvddlUserers', 'נא להזין שם עסק')
+
+            return;
+
+        }
+
+        UserData.UserId = user;
+
+        GetQue(UserData, null);
+
+    }
+
+</script>
