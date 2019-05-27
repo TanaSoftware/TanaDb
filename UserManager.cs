@@ -76,13 +76,13 @@ namespace Tor
 
     public class CustomerObj : CustomerObjBase
 
-    {        
+    {
 
 
         [Required]
 
         public string Password { get; set; }
-        
+
         [Required]
 
         public string Email { get; set; }
@@ -214,11 +214,11 @@ namespace Tor
         [Required]
 
         public string CreditCard { get; set; }
-                
+
         public string guid { get; set; }
 
         [Required]
-        public Dictionary<string,string> UserActivities { get; set; }
+        public Dictionary<string, string> UserActivities { get; set; }
 
         [Required]
         public Dictionary<string, List<BizTypeObj>> dicBizType { get; set; }
@@ -259,13 +259,14 @@ namespace Tor
 
     public class BizTypeObj
     {
+        [Required]
+        public int EmployeeId { get; set; }
 
         [Required]
-
         public string EmployeeName { get; set; }
 
         public int ActiveDay { get; set; }
-        
+
         [Required]
 
         public string ActiveHourFrom { get; set; }
@@ -275,7 +276,7 @@ namespace Tor
 
         public string ActiveHourFromNone { get; set; }
 
-        public string ActiveHourToNone { get; set; }             
+        public string ActiveHourToNone { get; set; }
 
         public int UserId { get; set; }
 
@@ -366,7 +367,7 @@ namespace Tor
 
                 userDetails.guid = user.guid;
 
-                userDetails.UserName = user.User;               
+                userDetails.UserName = user.User;
 
                 userDetails.isUser = true;
 
@@ -401,13 +402,13 @@ namespace Tor
 
         }
         private IEnumerable<UserActivities> getUserActivities(int userId)
-        {           
+        {
             string sqlCust = "SELECT [Id],[Name],[ActiveDuration] FROM UsersActivitiesTypes WHERE [UserId] = @UserId;";
 
             DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
-            
+
             IEnumerable<UserActivities> userAct = db.QueryData<UserActivities>(sqlCust, 1, new { UserId = userId });
-            
+
             return userAct;
         }
         private Dictionary<string, List<BizTypeObj>> getBizTypeDictionary(int userId)
@@ -998,14 +999,14 @@ namespace Tor
                 {
 
                     string sqlAct = "INSERT INTO UsersActivitiesTypes ([UserId],[Name],[ActiveDuration]) Values(@UserId,@Name,@ActiveDuration)";
-                    foreach (var item in user.UserActivities) {
-                        
-                        var affectedA = db.Execute(sqlAct, 1,new { UserId = userId, Name=item.Key, ActiveDuration=item.Value } );
+                    foreach (var item in user.UserActivities)
+                    {
+
+                        var affectedA = db.Execute(sqlAct, 1, new { UserId = userId, Name = item.Key, ActiveDuration = item.Value });
                     }
 
-                    string sqlUserActivity = @"INSERT INTO UsersActivity ([UserId],[ActiveDay],[EmployeeName],[ActiveHourFrom],[ActiveHourTo],[ActiveHourFromNone],[ActiveHourToNone]) Values
-                        (@UserId,@ActiveDay,@EmployeeName,@ActiveHourFrom,@ActiveHourTo,@ActiveHourFromNone,@ActiveHourToNone);";
-
+                    string sqlUserActivity = @"INSERT INTO UsersActivity ([EmployeeId],[UserId],[ActiveDay],[EmployeeName],[ActiveHourFrom],[ActiveHourTo],[ActiveHourFromNone],[ActiveHourToNone]) Values
+                        (@EmployeeId,@UserId,@ActiveDay,@EmployeeName,@ActiveHourFrom,@ActiveHourTo,@ActiveHourFromNone,@ActiveHourToNone);";
 
 
                     foreach (var item in user.dicBizType)
@@ -1389,7 +1390,7 @@ namespace Tor
 
                         [User] LIKE @user And City = @City; ";
 
-                 DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+                DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
                 IEnumerable<UserSearch> userSearch = db.QueryData<UserSearch>(sql, 1, new { City = user.City, user = "%" + user.User + "%" });
 
@@ -1419,7 +1420,6 @@ namespace Tor
 
 }
 
- 
 
- 
- 
+
+

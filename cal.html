@@ -3,28 +3,25 @@
 <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta charset="utf-8" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <title></title>
     <link href="css/cal.css" rel="stylesheet" />
-    <link href="css/bootstrap.min.css" rel="stylesheet" />
-    <link href="css/general.css" rel="stylesheet" />
+    <link href="css/selectize.css" rel="stylesheet" />
     <link href='https://use.fontawesome.com/releases/v5.0.6/css/all.css' rel='stylesheet'>
-
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' rel='stylesheet' />
-    <link href="css/selectize.css" rel="stylesheet" />
-    <link href="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/build/css/bootstrap-datetimepicker.css" rel="stylesheet">
-    <link href="css/selectize.css" rel="stylesheet" />
-    <link href="css/bootstrap-datepicker.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css" rel='stylesheet' />
+    <link href="css/genaral.css" rel="stylesheet" />
     <script src="js/cal.js"></script>
     <script src="js/moment.js"></script>
-    <script src="js/jquery.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <script src="js/selectize.js"></script>
-    <script src="js/bootstrap-datepicker.min.js"></script>
-    <script src="js/global.js"></script>
-    <script src="js/bootstrap-datepicker.he.min.js"></script>
-    <style>
 
+    <script src="js/jquery-1.9.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.he.min.js"></script>
+    <script src="js/selectize.js"></script>
+    <script src="js/global.js"></script>
+    <style>
         .selectize-input {
             direction: rtl !important;
             text-align: right !important;
@@ -96,36 +93,34 @@
     <div class="d-flex justify-content-center">
 
         <div class="btn-group-sm btn-group-primary" role="group" aria-label="...">
+            <div class="floatR" onclick="SetCal('timeGrid')" style="width:40px;"><input class="rdb" id="btnDaily" type="radio" name="rdbX"><div class="check"></div><span class="floatR">יומי</span></div>
+            <div class="floatR" onclick="SetCal('timeGridWeek')" style="width:50px;"><input class="rdb" id="btnWeekly" type="radio" name="rdbX"><div class="check"></div><span class="floatR">שבועי</span></div>
+            <div class="floatR" onclick="SetCal('timeGrid')" style="width:50px;"><input class="rdb" id="btnMonthly" type="radio" name="rdbX"><div class="check"></div><span class="floatR">חודשי</span></div>
+            <!--<button id="btnDaily" type="button" onclick="SetCal('timeGrid')"  class="btn btn-primary">יומי</button>
 
-            <button type="button" onclick="SetCal('timeGrid')" autofocus="autofocus" class="btn btn-primary">יומי</button>
+            <button id="btnWeekly" type="button" onclick="SetCal('timeGridWeek')" class="btn btn-primary">שבועי</button>
 
-            <button type="button" onclick="SetCal('timeGridWeek')" class="btn btn-primary">שבועי</button>
-
-            <button type="button" onclick="SetCal('dayGridMonth')" class="btn btn-primary">חודשי</button>
+            <button id="btnMonthly" type="button" onclick="SetCal('dayGridMonth')" class="btn btn-primary">חודשי</button>-->
 
         </div>
 
     </div>
-
+    
     <div id="dvCustomers">
         <div class="d-flex justify-content-center">
 
             <div class="flex-row">
-
+                <div id="dvddlActivity" style="float:right" class="p-2">
+                    <select style="width:130px;" id="ddlActivity"></select>
+                </div>
                 <div id="dvddlCustomers" style="float:right" class="p-2">
-
                     <select style="width:170px;" id="ddlCustomers"></select>
-
                 </div>
 
                 <div style="float:right" class="p-2">
-
                     <button type="button" onclick="AddModalCustomer()" class="btn btn-primary btn-sm" style="margin-right:3px;">הוסף לקוח </button>
-
                 </div>
-
             </div>
-
         </div>
     </div>
     <div id="dvUsers">
@@ -198,11 +193,7 @@
                                     <option value="0">בחר</option>
 
                                 </select>
-                                <select style="width:190px;" id="ddlActivity" class="form-control" type="text">
-
-                                    <option value="0">בחר</option>
-
-                                </select>
+                                
                                 <div id="ddlEventErr"></div>
 
                             </td>
@@ -327,6 +318,8 @@
 
     //step 1
 
+    
+
     if (UserData.isUser) {
 
         $('#dvUsers').addClass('forceDispNone');
@@ -344,13 +337,12 @@
         $('#dvCustomers').addClass('forceDispNone');
 
     }
-        
+
     function AddModalCustomer() {
 
         $('#AddCustomerModal').modal('show');
 
     }
-
 
 
     function AddCustomer() {
@@ -378,8 +370,6 @@
         }
 
         var CustomerObj = { Id: UserData.UserId, Name: name, tel: Tel, guid: UserData.guid };
-
-
 
         $.ajax({
 
@@ -473,7 +463,6 @@
 
     }
 
-
     function getNoActiveDays(BizTypeList) {
         //set unavailable days
         var notActiveDays = "";
@@ -499,22 +488,35 @@
 
             notActiveDays = notActiveDays.substr(0, notActiveDays.length - 1);
 
-        return notActiveDays;  
+        return notActiveDays;
     }
-    function setUser() {       
+
+    function setUser() {
         var activeDays = [], notActiveDays = "";
 
         var index = 0;
-
         for (obj in UserData.dicBizType) {
-            $('#ddlEvent').append($("<option></option>").text(obj));
+            $('#ddlActivity').append($("<option></option>").attr("value", UserData.dicBizType[obj][0].EmployeeId).text(obj));
         }
-        for (obj in UserData.Activities) {
-            $('#ddlActivity').append($("<option></option>").attr("value", obj.Id).text(obj.Name));
-        }
-        
-        var BizTypeList = UserData.dicBizType[obj];
 
+        $('#ddlActivity').on('change', function () {            
+            var empId = $('#ddlActivity :selected').text();
+            var BizTypeList = UserData.dicBizType[empId];
+            setUserActivities(BizTypeList);
+        });
+
+        for (var i = 0; i < UserData.Activities.length; i++) {
+            $('#ddlEvent').append($("<option></option>").attr("value", UserData.Activities[i].Id).text(UserData.Activities[i].Name));
+        }
+
+        var currentEmployee = $('#ddlActivity :selected').text();
+        var BizTypeList = UserData.dicBizType[currentEmployee];
+
+        setUserActivities(BizTypeList);
+
+    }
+
+    function setUserActivities(BizTypeList) {
         CheckTodayAvailable(BizTypeList, UserData.day);
 
         notActiveDays = getNoActiveDays(BizTypeList);
@@ -522,13 +524,9 @@
         setDatePicker(notActiveDays);
 
         GetQue(UserData, currentUserDetails);
-
     }
 
-
-
     function CheckTodayAvailable(BizTypeList, day) {
-
         //check is Today Available
 
         var isTodayAvailable = false;
@@ -548,7 +546,6 @@
         }
 
         return isTodayAvailable;
-
     }
 
     function setDatePicker(DaysOfWeekDisabled) {
@@ -566,24 +563,32 @@
             todayHighlight: true
 
         });
-        
-        
+
         $('#datetimepicker1').val(moment(new Date()).format('DD/MM/YYYY'));
         todayX = moment(new Date()).format('YYYY-MM-DD');
     }
 
-
-
     function SetCal(view) {
-
+        SetCalRadioButton(view);
         GetQue(UserData, currentUserDetails, view);
-
     }
-
-
-
+    function SetCalRadioButton(view) {
+        switch (view) {
+            case 'timeGrid': {
+                $("#btnDaily").prop('checked', true);
+                break;
+            }
+            case 'timeGridWeek': {
+                $("#btnWeekly").prop('checked', true);
+                break;
+            }
+            case 'timeGrid': {
+                $("#btnMonthly").prop('checked', true);
+                break;
+            }
+        }
+    }
     function GetQue(UserData, currentUserDetails, view) {
-
         var fromDate, toDate;
 
         //var today = moment().format('YYYY-MM-DD');
@@ -593,26 +598,48 @@
         toDate = todayX + "T23:59:59";
 
         var duration = 10;
-
-        //if (currentUserDetails != null)
-
-          //  duration = currentUserDetails.ActiveDuration;
+        //if (UserData.isUser) {
+        //    var evName = $('#ddlEvent :selected').text();
+        //    var ev = findEventByName(evName);
+        //    if (ev != null)
+        //        duration = ev.ActiveDuration;
+        //}
+       
         
-        if (view == null)
-
-            view = 'timeGrid';
-
+        if (view == null) {
+            if (sessionStorage.getItem("LastView") != null) {
+                view = sessionStorage.getItem("LastView");
+            }
+            else {
+                view = 'timeGrid';                
+            }            
+        }
         else if (view == 'timeGridWeek') {
 
             var today = moment();
 
             fromDate = today.startOf('week').format('YYYY-MM-DD') + "T00:00:00";
 
-            toDate = today.endOf('week').format('YYYY-MM-DD') + "T23:59:59";
-
+            toDate = today.endOf('week').format('YYYY-MM-DD') + "T23:59:59";            
         }
+        else {
+            var today = moment();
 
-        var QueObj = { UserId: UserData.UserId, guid: UserData.guid, FromDate: fromDate, ToDate: toDate, isUser: UserData.isUser, CustomerId: UserData.CustomerId };
+            fromDate = today.startOf('month').format('YYYY-MM-DD') + "T00:00:00";
+
+            toDate = today.endOf('month').format('YYYY-MM-DD') + "T23:59:59";
+        }
+        SetCalRadioButton(view);
+
+        var QueObj = {
+            UserId: UserData.UserId,
+            guid: UserData.guid,
+            FromDate: fromDate,
+            ToDate: toDate,
+            isUser: UserData.isUser,
+            CustomerId: UserData.CustomerId,
+            EmployeeId: currentUserDetails.EmployeeId
+        };
 
 
         $.ajax({
@@ -643,7 +670,8 @@
 
                     var ActiveHourTo = currentUserDetails != null && currentUserDetails.ActiveHourTo != null ? currentUserDetails.ActiveHourTo : '19:00:00';
 
-                    CreateCal(data.queData, ActiveHourFrom, ActiveHourTo, duration, view);//timeGrid dayGridMonth,timeGridWeek'
+                    var d = todayX + "T";
+                    CreateCal(data.queData,  ActiveHourFrom, ActiveHourTo, duration, view);//timeGrid dayGridMonth,timeGridWeek'
 
                 }
 
@@ -658,10 +686,6 @@
         });
 
     }
-
-
-
-
 
     function calcHourLength(minimumTime, maximumTime, duration) {
 
@@ -683,15 +707,9 @@
 
     }
 
-
-
     function getEmptyEvent(index, start, end) {
-
-        return { id: index, title: "פנוי", start: todayX + "T" + start, end: todayX + "T" + end, editable: true, color: '#fff' };
-
+        return { id: index, title: "פנוי", start:  start, end:  end, editable: true, color: '#fff' };
     }
-
-
 
     function createEmptyDaySchedule(data, minimumTime, maximumTime, duration) {
 
@@ -735,7 +753,7 @@
 
             else
 
-                dataNew.push(getEmptyEvent(i, startTime.format(momentHourFormat), endTime.format(momentHourFormat)));
+                dataNew.push(getEmptyEvent(i, todayX + "T" + startTime.format(momentHourFormat), todayX + "T" + endTime.format(momentHourFormat)));
 
 
 
@@ -745,160 +763,76 @@
 
         }
 
-
-
         return dataNew;
 
     }
 
     var currentId = -1;
-
+    var currentDate = "";
     var currentCustomerName = "";
-
+    var LastView = "";
     var calendar;
-
 
 
     function CreateCal(data, minimumTime, maximumTime, duration, view) {
 
         var len = calcHourLength(minimumTime, maximumTime, duration);
-
+        LastView = view;
+        
         var dataEvents;
 
-
-
-        dataEvents = createEmptyDaySchedule(data, minimumTime, maximumTime, duration);
-
-
+        dataEvents = data;//createEmptyDaySchedule(data, minimumTime, maximumTime, duration);
 
         var calendarEl = document.getElementById('calendar');
 
         calendar = new FullCalendar.Calendar(calendarEl, {
 
-            plugins: ['bootstrap', 'dayGrid', 'timeGrid'],
+            //plugins: ['bootstrap', 'dayGrid', 'timeGrid'],
+            plugins: ['interaction', 'dayGrid', 'timeGrid'],
 
             //eventColor: '#378006',
 
             header: { // layout header
-
                 left: '',
-
                 center: '',
-
                 right: 'month,agendaWeek,listWeek'
-
             },
-
             buttonText: {
-
                 today: 'היום',
-
                 left: 'הבא'
-
-            },
-
-
-
+            },            
             displayEventTime: false,
-
             timeZone: 'UTC',
-
             defaultView: view,//'timeGrid',
-
             minTime: minimumTime,
-
             maxTime: maximumTime,
-
             slotDuration: '00:' + duration + ':00',
-
             slotLabelFormat: {
-
                 hour: 'numeric',
-
                 minute: '2-digit',
-
                 omitZeroMinute: false,
-
                 meridiem: 'short'
-
             },
-
+            textColor: '#FFF',
             slotLabelInterval: parseInt(duration),
-
             editable: true,
-
             eventLimit: true,
-
+            selectable: true,
+            //dateClick: function(info) {
+            //    alert('clicked ' + info.dateStr);
+            //},
+            select: function(info) {
+                SetCalData(info);
+            },
             eventClick: function (info) {
 
-
-
-                var SelectedCustomer = $('#ddlCustomers').val();
-
-                if (info.event.title == "פנוי" && UserData.isUser && SelectedCustomer == "") {
-
-                    showTooltip("dvddlCustomers", "נא לבחור לקוח")
-
-                    return;
-
-                }
-
-                if (info.event.title != 'תפוס') {
-
-                    currentId = info.event.id;
-
-                    var s = moment(info.event.start).add(-3, 'hours');
-
-                    var e = moment(info.event.end).add(-3, 'hours');
-
-                    $('#txtTimeFrom').val(s.format("HH:mm"));
-
-                    $('#txtTimeTo').val(e.format("HH:mm"));
-
-                    $('#ddlEvent').val("0");
-
-                    
-                    if (info.event.title == "פנוי")
-
-                        btnDeleteQue.style.display = "none";
-
-                    else {
-
-                        var titleArr = info.event.title.split(' ');
-
-                        if (titleArr.length > 1) {
-
-                            var qType = titleArr[0];
-
-                            var qCustomer = "";
-
-                            for (var j = 1; j < titleArr.length; j++)
-
-                                qCustomer += titleArr[j] + ' ';
-
-                            qCustomer = qCustomer.trim();
-
-                            $('#ddlEvent').val(qType);
-
-                            currentCustomerName = qCustomer;
-
-                        }
-
-                        btnDeleteQue.style.display = "";
-
-                    }
-
-                    $('#createEventModal').modal('show');
-
-                }
+                SetCalData(info);
 
             },
 
             locale: 'he',
 
-            dir: 'rtl',
-
-
+            dir: 'rtl',            
 
             titleFormat: { year: 'numeric', month: 'numeric', day: 'numeric' },
 
@@ -916,7 +850,71 @@
 
     }
 
+    function SetCalData(info) {
+        var SelectedCustomer = $('#ddlCustomers').val();
 
+        if (info.event == null && UserData.isUser && SelectedCustomer == "") {
+
+            showTooltip("dvddlCustomers", "נא לבחור לקוח")
+
+            return;
+
+        }
+
+        if (info.event != null && info.event.title == 'תפוס')
+            return;
+
+        currentId = info.event? info.event.id : 0;
+        var InfoObj = info.event ? info.event : info;
+        currentDate = moment(InfoObj.start).format('YYYY-MM-DD') + "T";
+        
+        var s = moment(InfoObj.start).add(-3, 'hours');
+
+        var e = moment(InfoObj.end).add(-3, 'hours');
+
+        $('#txtTimeFrom').val(s.format("HH:mm"));
+
+        $('#txtTimeTo').val(e.format("HH:mm"));
+
+        $('#ddlEvent').val("0");
+
+
+        if (info.event==null)
+
+            btnDeleteQue.style.display = "none";
+
+        else {
+
+            var titleArr = InfoObj.title.split(' ');
+
+            if (titleArr.length > 1) {
+
+                var qType = titleArr[0];
+
+                var qCustomer = "";
+
+                for (var j = 1; j < titleArr.length; j++)
+
+                    qCustomer += titleArr[j] + ' ';
+
+                qCustomer = qCustomer.trim();
+
+                var qTypeId = findEventByName(qType);
+                if(qTypeId!=null)
+                    $('#ddlEvent').val(qTypeId.Id);
+
+                currentCustomerName = qCustomer;
+
+            }
+
+            btnDeleteQue.style.display = "";
+
+        }
+
+        $('#createEventModal').modal('show');
+
+        //}
+    }
 
     $("#next").click(function () {
 
@@ -944,21 +942,20 @@
 
     function AddQue() {
 
-        var eventName = $('#ddlEvent :selected').text();
+        var eventId = $('#ddlEvent').val();
+
+        var employeeId = $('#ddlActivity').val();
 
         var txtFrom = $("#txtTimeFrom").val();
 
         var txtTo = $("#txtTimeTo").val();
 
-        if (eventName == null || eventName == "" || eventName == "בחר") {
+        if (eventId == null || eventId == 0) {
 
             showTooltip('ddlEventErr', "נא לבחור תור");
 
             return;
-
         }
-
-
 
         if (txtFrom.length <= 0) {
 
@@ -998,17 +995,16 @@
 
             guid: UserData.guid,
 
-            FromDate: txtFrom,
+            FromDate: currentDate+txtFrom,
 
-            ToDate: txtTo,
+            ToDate: currentDate+txtTo,
 
             isUser: UserData.isUser,
 
-            CustomerId: $('#ddlCustomers').val(),
+            CustomerId: $('#ddlCustomers').val(),            
 
-            QueTime: 10,
-
-            QueType: eventName
+            QueType: eventId,
+            EmployeeId: employeeId
 
         };
 
@@ -1027,7 +1023,7 @@
             success: function (data) {
 
                 if (data == "") {
-
+                    sessionStorage.setItem("LastView", LastView);
                     GetQue(UserData, currentUserDetails);
 
                     $('#createEventModal').modal('hide');
@@ -1042,26 +1038,15 @@
 
             error: function (request, status, error) {
 
-
-
             }
 
         });
-
-
-
     }
-
-
 
     function findCustomerId() {
 
-
-
         for (var i = 0; i < customersList.length; i++) {
-
-
-
+            
             if (customersList[i].Name === currentCustomerName) {
 
                 return customersList[i].Id;
@@ -1074,19 +1059,28 @@
 
     }
 
+    function findEventByName(name) {
+        for (var i = 0; i < UserData.Activities.length; i++) {
+            if (UserData.Activities[i].Name == name)
+                return UserData.Activities[i];            
+        }
+        return null;
+    }
+ 
+
     function DeleteQue() {
 
         var obj = calendar.getEventById(currentId);
 
-
-
-        var eventName = UserData.isUser ? $('#ddlEvent :selected').text() : obj.title;
+        var eventName = UserData.isUser ? $('#ddlEvent').val() : obj.title;
 
         var txtFrom = $("#txtTimeFrom").val();
 
         var txtTo = $("#txtTimeTo").val();
 
         var custId = UserData.isUser ? findCustomerId() : UserData.CustomerId;
+
+        var empId = UserData.isUser ? $('#ddlActivity').val() : 0;
 
         if (custId < 0) {
 
@@ -1110,7 +1104,9 @@
 
             QueTime: 10,
 
-            QueType: eventName
+            QueType: eventName,
+
+            EmployeeId:empId
 
         };
 
@@ -1180,13 +1176,11 @@
 
         });
 
-        //calendar.fullCalendar('refetchEvents')
-
         $('#createEventModal').modal('hide');
 
     }
 
-    function SetCustomer() {        
+    function SetCustomer() {
 
         getCities(function (data) {
             selectizeService.InitSelectize("ddlCity", 'Id', 'Name', null, data, null);

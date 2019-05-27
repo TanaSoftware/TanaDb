@@ -1,30 +1,27 @@
 ﻿<!DOCTYPE html>
-<html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title></title>
-    <link href="css/cal.css" rel="stylesheet" />
-    <link href="css/bootstrap.min.css" rel="stylesheet" />
-
     <link href='https://use.fontawesome.com/releases/v5.0.6/css/all.css' rel='stylesheet'>
-
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' rel='stylesheet' />
-    <link href="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/build/css/bootstrap-datetimepicker.css" rel="stylesheet">
-
-    <link href="css/bootstrap-datepicker.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css" rel='stylesheet' />
+    <link href="css/selectize.css" rel="stylesheet" />
     <script src="js/cal.js"></script>
     <script src="js/moment.js"></script>
-    <script src="js/jquery.js"></script>
 
+    <script src="js/jquery-1.9.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.he.min.js"></script>
+    <script src="js/jquery.parallax.min.js"></script>
+    <script src="js/smoothscroll.min.js"></script>
     <script src="js/selectize.js"></script>
     <script src="js/global.js"></script>
     <style>
-
         .tooltip-inner {
             background-color: #f00 !important;
         }
@@ -339,7 +336,7 @@
 
                         <div style="width:100%;padding-bottom:10px;padding-top:10px;">
 
-                            <input style="float:right;width:220px;margin-bottom:10px;" maxlength="50" id="EmployeeId" type="text" placeholder="הזן שם עובד" class="form-control input-lg" />
+                            <input style="float:right;width:220px;margin-bottom:10px;" maxlength="50" id="EmployeeName" type="text" placeholder="הזן שם עובד" class="form-control input-lg" />
 
                             <button onclick="AddActivity();" class="form-control" style="float:right;width:80px;margin-right:5px;">הוסף</button>
 
@@ -361,7 +358,7 @@
 
                                     </label>
 
-                                </td>                                
+                                </td>
 
                             </tr>
 
@@ -406,7 +403,7 @@
                                     </div>
 
                                 </td>
-                               
+
 
                             </tr>
 
@@ -450,7 +447,7 @@
 
                                 </td>
 
-                                
+
 
                             </tr>
 
@@ -639,18 +636,18 @@
         }
         var UserActivitiesDiv = $("#UserActivities").html();
         if (UserActivitiesDiv.length == 0) {
-            showTooltip("BizType", "נא להזין שם עובד");
+            showTooltip("BizType", "נא להזין סוג פעילות");
         }
 
         if (isEmptyObject(ActivitiesData)) {
 
-            showTooltip("EmployeeId", "נא להזין סוג פעילות")
+            showTooltip("EmployeeName", "נא להזין שם עובד")
 
             return;
 
         }
 
-        
+
         var userObj = {
 
             User: user,
@@ -757,7 +754,7 @@
 
     function GetBizTypeItem() {
 
-        return { ActiveDay: 0, EmployeeName: "", ActiveHourFrom: "", ActiveHourTo: "", ActiveHourFromNone: "", ActiveHourToNone: "" };
+        return { EmployeeId:0,ActiveDay: 0, EmployeeName: "", ActiveHourFrom: "", ActiveHourTo: "", ActiveHourFromNone: "", ActiveHourToNone: "" };
 
     }
 
@@ -846,14 +843,14 @@
         return true;
 
     }
-
+    var ActivityCounter = 1;
     function AddActivity() {
 
         var data = "";
 
         var ActivitiesTempData = new Array();
 
-        if (!checkValid("EmployeeId", "נא להזין שם עובד")) {
+        if (!checkValid("EmployeeName", "נא להזין שם עובד")) {
 
             return;
 
@@ -864,7 +861,6 @@
             var id = i.toString();
 
             var Day = document.getElementById('Day' + id).checked;
-
 
 
             if (Day) {
@@ -895,31 +891,25 @@
 
                 }
 
-                
+                var item = GetBizTypeItem();                
 
+                item.EmployeeId = ActivityCounter;
+                item.EmployeeName = $('#EmployeeName').val();
 
+                item.ActiveDay = id;
 
+                //item.ActiveDuration = $('#ddlDuration' + id).val();
+
+                item.ActiveHourFrom = $('#txtfromHour' + id).val();
+
+                item.ActiveHourTo = $('#txttoHour' + id).val();
+
+                item.ActiveHourFromNone = $('#txtfromHourNone' + id).val();
+
+                item.ActiveHourToNone = $('#txttoHourNone' + id).val();
+
+                ActivitiesTempData.push(item);
             }
-
-            var item = GetBizTypeItem();
-
-            item.EmployeeName = $('#EmployeeId').val();
-
-            item.ActiveDay = id;
-
-            //item.ActiveDuration = $('#ddlDuration' + id).val();
-
-            item.ActiveHourFrom = $('#txtfromHour' + id).val();
-
-            item.ActiveHourTo = $('#txttoHour' + id).val();
-
-            item.ActiveHourFromNone = $('#txtfromHourNone' + id).val();
-
-            item.ActiveHourToNone = $('#txttoHourNone' + id).val();
-
-
-
-            ActivitiesTempData.push(item);
 
         }
 
@@ -933,11 +923,11 @@
 
             var newDiv = $("#Activities").html();
 
-
+            ActivityCounter++;
 
             $("#Activities").html(newDiv + data);
 
-            $('#EmployeeId').val("");
+            $('#EmployeeName').val("");
 
         }
 
@@ -1135,7 +1125,7 @@
 
 
     function AddUserActivity() {
-        
+
         var data = "";
 
         var ActivitiesTempData = new Array();
@@ -1149,7 +1139,7 @@
             return;
         }
         if (ActivitiesUserData[bizType] == null) {
-          
+
             ActivitiesUserData[bizType] = $('#ddlDuration').val();
 
             data = "<div style='width:100%;' id='dvBizTypeAct" + bizType + "'><div style='float:right;width:260px;padding-right:20px;'>" + bizType + " למשך  " + ActivitiesUserData[bizType] + " דקות</div><button style='float:right;marging-right:4px;' onclick=deleteBizTypeActivity('" + bizType + "')>מחק</button></div>";
@@ -1168,4 +1158,3 @@
 
     }
 </script>
-

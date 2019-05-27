@@ -39,15 +39,16 @@ namespace Tor
         public bool isUser { get; set; }
 
         public int CustomerId { get; set; }
+
+        public int EmployeeId { get; set; }
     }
 
     public class Que : QueObj
-    {       
+    {
         [Required]
         public string QueType { get; set; }
 
-        [Required]
-        public int EmployeeId { get; set; }        
+        
     }
 
     public class QueData
@@ -136,19 +137,19 @@ namespace Tor
 
                 DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
-                string select = que.isUser ? "A.QueType + ' ' + B.Name" : "CASE When B.Id=@CustomerId THEN A.QueType ELSE 'תפוס' END";
+                string select = que.isUser ? "U.Name + ' ' + B.Name" : "CASE When B.Id=@CustomerId THEN U.Name ELSE 'תפוס' END";
                 //string select = que.isUser ? "": "";
                 var sql = @"SELECT A.id," + select + @" As [title],A.FromDate As [start],A.ToDate As [end]
 
                         FROM Que A INNER JOIN Customer B on A.CustomerId = B.Id
-
-                        WHERE UserId = @UserId And FromDate>=@FromDate And ToDate<=@ToDate
+                        JOIN UsersActivitiesTypes U ON U.Id = A.QueType
+                        WHERE A.UserId = @UserId And EmployeeId = @EmployeeId And FromDate>=@FromDate And ToDate<=@ToDate
 
                         ORDER BY start asc";
 
 
 
-                IEnumerable<QueData> QueDataRows = db.QueryData<QueData>(sql, 1, new { UserId = que.UserId, FromDate = que.FromDate, ToDate = que.ToDate, CustomerId = que.CustomerId });
+                IEnumerable<QueData> QueDataRows = db.QueryData<QueData>(sql, 1, new { UserId = que.UserId, FromDate = que.FromDate, ToDate = que.ToDate, CustomerId = que.CustomerId, EmployeeId=que.EmployeeId });
 
 
 
@@ -243,11 +244,11 @@ namespace Tor
         private bool IsCustomerQueExist(Que que)
         {
 
-            string sql = "SELECT count(1) FROM Que WHERE [UserId] = @UserId And [FromDate]=@FromDate And [ToDate]=@ToDate;";
+            string sql = "SELECT count(1) FROM Que WHERE [UserId] = @UserId And EmployeeId = @EmployeeId And [FromDate]=@FromDate And [ToDate]=@ToDate;";
 
             DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
-            return db.IsExist(sql, new { UserId = que.UserId, FromDate = que.FromDate, ToDate = que.ToDate }, 1);
+            return db.IsExist(sql, new { UserId = que.UserId, FromDate = que.FromDate, ToDate = que.ToDate, EmployeeId=que.EmployeeId }, 1);
 
         }
 
@@ -399,7 +400,7 @@ namespace Tor
 
             {
 
-                string sqlQueDelter = @"DELETE From Que Where [UserId]=@UserId And [CustomerId] = @CustomerId And [FromDate]=@FromDate And [ToDate]=@ToDate And [QueType]=@QueType";
+                string sqlQueDelter = @"DELETE From Que Where [UserId]=@UserId And [CustomerId] = @CustomerId And [EmployeeId] = @EmployeeId And [FromDate]=@FromDate And [ToDate]=@ToDate And [QueType]=@QueType";
 
                 DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
@@ -428,7 +429,6 @@ namespace Tor
     }
 
 }
-
 
 
 

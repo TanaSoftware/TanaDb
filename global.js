@@ -100,8 +100,6 @@ var selectizeService = {
 
 function showTooltip(txtId, text) {
 
-
-
     var obj = $('#' + txtId);
 
     obj.tooltip('hide');
@@ -113,7 +111,7 @@ function showTooltip(txtId, text) {
     });
 
     obj.tooltip('show');
-
+    
     obj.focus();
 
 
