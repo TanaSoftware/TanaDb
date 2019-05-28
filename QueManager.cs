@@ -258,7 +258,7 @@ namespace Tor
 
         {
 
-            string sql = "SELECT count(1) FROM Users WHERE [guid] = @guid;";
+            string sql = "SELECT count(1) FROM Users WHERE [Active] = @guid;";
 
             DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
@@ -270,7 +270,7 @@ namespace Tor
 
         {
 
-            string sql = "SELECT count(1) FROM Customer WHERE [guid] = @guid;";
+            string sql = "SELECT count(1) FROM Customer WHERE [Active] = @guid;";
 
             DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
@@ -380,7 +380,7 @@ namespace Tor
 
                         WHERE A.UserId = @UserId And A.FromDate=@FromDate And A.ToDate=@ToDate And
 
-                        A.CustomerId = @CustomerId And And B.guid=@guid";
+                        A.CustomerId = @CustomerId And And B.Active=@guid";
 
             //string sql = "SELECT count(1) FROM Customer WHERE [guid] = @guid;";
 

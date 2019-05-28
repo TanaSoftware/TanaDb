@@ -27,7 +27,7 @@
 }
 
 .rdb:checked ~ .check {
-    border: 5px solid #bed630;
+    border: 5px solid #007bff;
     opacity:1;
 }
 

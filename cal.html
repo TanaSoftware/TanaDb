@@ -69,9 +69,7 @@
         <div>
 
             <button type="button" style="float:right;margin-top:8px;" class="btn btn-primary btn-sm prevNext" id="prev">&lt;</button>
-
-            <!--<button type="button" class="btn btn-primary btn-block" style="max-width:50px;float:right" id="today">היום</button>-->
-
+           
             <div style="float:right" class="p-2">
 
                 <div class="input-group date">
@@ -86,8 +84,6 @@
 
         </div>
 
-
-
     </div>
 
     <div class="d-flex justify-content-center">
@@ -95,26 +91,19 @@
         <div class="btn-group-sm btn-group-primary" role="group" aria-label="...">
             <div class="floatR" onclick="SetCal('timeGrid')" style="width:40px;"><input class="rdb" id="btnDaily" type="radio" name="rdbX"><div class="check"></div><span class="floatR">יומי</span></div>
             <div class="floatR" onclick="SetCal('timeGridWeek')" style="width:50px;"><input class="rdb" id="btnWeekly" type="radio" name="rdbX"><div class="check"></div><span class="floatR">שבועי</span></div>
-            <div class="floatR" onclick="SetCal('timeGrid')" style="width:50px;"><input class="rdb" id="btnMonthly" type="radio" name="rdbX"><div class="check"></div><span class="floatR">חודשי</span></div>
-            <!--<button id="btnDaily" type="button" onclick="SetCal('timeGrid')"  class="btn btn-primary">יומי</button>
-
-            <button id="btnWeekly" type="button" onclick="SetCal('timeGridWeek')" class="btn btn-primary">שבועי</button>
-
-            <button id="btnMonthly" type="button" onclick="SetCal('dayGridMonth')" class="btn btn-primary">חודשי</button>-->
-
+            <div class="floatR" onclick="SetCal('dayGridMonth')" style="width:50px;"><input class="rdb" id="btnMonthly" type="radio" name="rdbX"><div class="check"></div><span class="floatR">חודשי</span></div>            
         </div>
-
     </div>
-    
+    <div id="dvddlActivity" style="float:right" class="p-2">
+        <select class="form-control" style="width:130px;" id="ddlActivity"></select>
+    </div>
     <div id="dvCustomers">
         <div class="d-flex justify-content-center">
 
             <div class="flex-row">
-                <div id="dvddlActivity" style="float:right" class="p-2">
-                    <select style="width:130px;" id="ddlActivity"></select>
-                </div>
+                
                 <div id="dvddlCustomers" style="float:right" class="p-2">
-                    <select style="width:170px;" id="ddlCustomers"></select>
+                    <select class="form-control" style="width:170px;" id="ddlCustomers"></select>
                 </div>
 
                 <div style="float:right" class="p-2">
@@ -140,11 +129,11 @@
 
                 </div>
 
-                <div style="float:right" class="p-2">
+                <!--<div style="float:right" class="p-2">
 
                     <button type="button" onclick="CheckAvailability()" class="btn btn-primary btn-sm" style="margin-right:3px;">בדוק </button>
 
-                </div>
+                </div>-->
 
             </div>
 
@@ -311,7 +300,7 @@
     var momentHourFormat = "HH:mm:ss";
     var todayX;
     var UserData = JSON.parse(sessionStorage.getItem("UserData"));
-
+    var currentUserForCustomer;
     var currentUserDetails;
 
     var customersList;
@@ -326,7 +315,7 @@
 
         getMyCustomers();
 
-        setUser();
+        setUser(UserData);
 
     }
 
@@ -409,8 +398,6 @@
 
     }
 
-
-
     function getMyCustomers() {
 
         var CustomerObj = { UserId: UserData.UserId, guid: UserData.guid };
@@ -491,26 +478,26 @@
         return notActiveDays;
     }
 
-    function setUser() {
+    function setUser(userData) {
         var activeDays = [], notActiveDays = "";
 
         var index = 0;
-        for (obj in UserData.dicBizType) {
-            $('#ddlActivity').append($("<option></option>").attr("value", UserData.dicBizType[obj][0].EmployeeId).text(obj));
+        for (obj in userData.dicBizType) {
+            $('#ddlActivity').append($("<option></option>").attr("value", userData.dicBizType[obj][0].EmployeeId).text(obj));
         }
 
         $('#ddlActivity').on('change', function () {            
             var empId = $('#ddlActivity :selected').text();
-            var BizTypeList = UserData.dicBizType[empId];
+            var BizTypeList = userData.dicBizType[empId];
             setUserActivities(BizTypeList);
         });
 
-        for (var i = 0; i < UserData.Activities.length; i++) {
-            $('#ddlEvent').append($("<option></option>").attr("value", UserData.Activities[i].Id).text(UserData.Activities[i].Name));
+        for (var i = 0; i < userData.Activities.length; i++) {
+            $('#ddlEvent').append($("<option></option>").attr("value", userData.Activities[i].Id).text(userData.Activities[i].Name));
         }
 
         var currentEmployee = $('#ddlActivity :selected').text();
-        var BizTypeList = UserData.dicBizType[currentEmployee];
+        var BizTypeList = userData.dicBizType[currentEmployee];
 
         setUserActivities(BizTypeList);
 
@@ -582,7 +569,7 @@
                 $("#btnWeekly").prop('checked', true);
                 break;
             }
-            case 'timeGrid': {
+            case 'dayGridMonth': {
                 $("#btnMonthly").prop('checked', true);
                 break;
             }
@@ -598,14 +585,7 @@
         toDate = todayX + "T23:59:59";
 
         var duration = 10;
-        //if (UserData.isUser) {
-        //    var evName = $('#ddlEvent :selected').text();
-        //    var ev = findEventByName(evName);
-        //    if (ev != null)
-        //        duration = ev.ActiveDuration;
-        //}
-       
-        
+               
         if (view == null) {
             if (sessionStorage.getItem("LastView") != null) {
                 view = sessionStorage.getItem("LastView");
@@ -629,10 +609,11 @@
 
             toDate = today.endOf('month').format('YYYY-MM-DD') + "T23:59:59";
         }
+
         SetCalRadioButton(view);
 
         var QueObj = {
-            UserId: UserData.UserId,
+            UserId: UserData.isUser ? UserData.UserId : $('#ddlUsers').val(),
             guid: UserData.guid,
             FromDate: fromDate,
             ToDate: toDate,
@@ -852,15 +833,13 @@
 
     function SetCalData(info) {
         var SelectedCustomer = $('#ddlCustomers').val();
-
+        
         if (info.event == null && UserData.isUser && SelectedCustomer == "") {
-
             showTooltip("dvddlCustomers", "נא לבחור לקוח")
-
             return;
 
         }
-
+        
         if (info.event != null && info.event.title == 'תפוס')
             return;
 
@@ -868,8 +847,26 @@
         var InfoObj = info.event ? info.event : info;
         currentDate = moment(InfoObj.start).format('YYYY-MM-DD') + "T";
         
-        var s = moment(InfoObj.start).add(-3, 'hours');
+        //if (currentUserForCustomer != null && currentUserForCustomer.dicBizType != null) {
+        //    var BizTypeList = currentUserForCustomer.dicBizType[$('#ddlActivity :selected').text()];
+        //    var check = moment(InfoObj.start, 'YYYY/MM/DD');
+        //    var isInDay = false;
+        //    var day   = check.format('D');
+        //    for (var i = 0; i < BizTypeList.length; i++) {
+        //        if (BizTypeList[i].ActiveDay == day) {
+        //            isInDay = true;
+        //            break;
+        //        }
+        //    }
+        //    if (!isInDay)
+        //        return;
+        //}
 
+        var s = moment(InfoObj.start).add(-3, 'hours');
+        var timeDiff = moment().diff(s, 'second');
+        if (timeDiff > 200) {            
+            return;
+        }
         var e = moment(InfoObj.end).add(-3, 'hours');
 
         $('#txtTimeFrom').val(s.format("HH:mm"));
@@ -1223,8 +1220,9 @@
                     success: function (data) {
 
                         if (data != null && data.dicBizType != null) {
-
-                            CheckTodayAvailable(data.dicBizType, data.day);
+                            currentUserForCustomer = data;
+                            setUser(data);
+                            //CheckTodayAvailable(data.dicBizType, data.day);
 
                         }
 
