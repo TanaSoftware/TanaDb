@@ -1415,7 +1415,34 @@ namespace Tor
 
 
         }
+        public UserSearch GetUserByBizName(string bizName)
+        {
+            UserSearch userSearch = new UserSearch();
 
+            string sql = "select * From Users where [BizNameEng]=@bizName";
+            DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+            IEnumerable<UserObj> UserX = db.QueryData<UserObj>(sql, 1, new { bizName = bizName });
+            if (UserX == null)
+                return null;
+
+            string cityName = "";
+            foreach(UserObj u in UserX)
+            {
+                string sqlCity = "select name From City where [Id]=@Id";
+                IEnumerable<string> city = db.QueryData<string>(sqlCity, 1, new { Id = u.City });
+                foreach (string c in city)
+                {
+                    cityName = c;
+                }
+                userSearch.City = cityName;
+                userSearch.Adrress = u.Adrress;
+                userSearch.Id = u.Id;
+                userSearch.tel = u.tel;
+                userSearch.User = u.BizName;
+                return userSearch;
+            }
+            return null;
+        }
     }
 
 }

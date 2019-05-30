@@ -82,8 +82,8 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col-lg-10 col-lg-offset-1">
-                                    <h1>בעל עסק</h1>
-                                    <h1>הזמן שלך יקר</h1>
+                                    <h1>ברוכים הבאים למערכת ניהול תורים של</h1>
+                                    <h1><span id="spnBizName"></span></h1>
                                     <h1>הרשם עכשיו וחסוך לך זמן יקר</h1>
                                     <a class="btn btn-blue btn-lg page-scroll wow fadeInLeft" href="#Register">לחץ כאן להרשמה</a> 
                                 </div>
@@ -259,343 +259,8 @@
 
         </section>
 
-        <section id="Register" style="padding-top:100px;padding:10px;">
-
-            <div class="container">
-
-                <div class="row">
-
-                    <div class="">
-
-                        <div style="text-align:right;font-weight:bold;">הרשמה של בעל העסק: </div>
-
-                        <div class="form-group">
-
-                            <div class="form-group floating-label-form-group controls">
-
-                                <input id="name" type="text" placeholder="שם" class="form-control input-lg" />
-
-                            </div>
-
-                        </div>
-
-
-
-                        <div class="form-group">
-
-                            <div class="form-group floating-label-form-group controls">
-
-                                <input id="password" type="password" placeholder="סיסמה" class="form-control input-lg" />
-
-                            </div>
-
-                        </div>
-
-                        <div class="form-group">
-
-                            <div class="form-group floating-label-form-group controls">
-
-                                <input id="email" type="email" placeholder="מייל" class="form-control input-lg" />
-
-                            </div>
-
-                        </div>
-
-                        <div class="form-group">
-
-                            <div class="form-group floating-label-form-group controls">
-
-                                <input id="txtTel" type="text" placeholder="טלפון" class="form-control input-lg" />
-
-                            </div>
-
-                        </div>
-
-                        <div class="form-group">
-
-                            <div class="form-group floating-label-form-group controls">
-
-                                <input id="bizName" type="text" placeholder="שם עסק בעברית" class="form-control input-lg" />
-
-                            </div>
-
-                        </div>
-
-                        <div class="form-group">
-
-                            <div class="form-group floating-label-form-group controls">
-
-                                <input id="bizNameEng" type="text" placeholder="שם עסק באנגלית" class="form-control input-lg" />
-
-                            </div>
-
-                        </div>
-
-                        <div class="form-group">
-
-                            <div class="form-group floating-label-form-group controls">
-
-                                <input id="creditCard" type="text" placeholder="כרטיס אשראי" class="form-control input-lg" />
-
-                            </div>
-
-                        </div>
-
-                        <div class="form-group">
-
-                            <div class="form-group floating-label-form-group controls">
-
-                                <input id="address" type="text" placeholder="כתובת" class="form-control input-lg" />
-
-                            </div>
-
-                        </div>
-
-                        <div class="form-group">
-
-                            <div class="form-group floating-label-form-group controls">
-
-                                <select id="city" type="text" placeholder="כתובת" class="form-control  input-lg">
-
-                                    <option value="0">בחר עיר</option>
-
-                                    <option value="6600">חולון</option>
-
-                                    <option value="5000">תל אביב</option>
-
-                                </select>
-
-                            </div>
-
-                        </div>
-
-                        <div style="text-align:right">
-                            <label>סוגי פעילויות</label><span style="color:red" id="spnActiveDays"></span>
-
-                            <div class="row" style="width:100%" id="UserActivities"></div>
-
-                            <div class="form-group" style="width:100%;padding-bottom:10px;padding-top:10px;">
-
-                                <input style="float:right;width:180px;margin-bottom:10px;margin-right:3px;" maxlength="50" id="BizType" type="text" placeholder="הזן סוג פעילות" class="form-control input-lg" />
-                                <select id="ddlDuration" style="float:right;min-width:80px;max-width:160px; margin-right:3px;" placeholder="משך פעילות" class="form-control input-lg">
-
-                                    <option value="0">משך פעילות</option>
-
-                                    <option>10</option>
-
-                                    <option>20</option>
-
-                                    <option>30</option>
-
-                                    <option>40</option>
-
-                                    <option>50</option>
-
-                                    <option>60</option>
-
-                                </select>
-                                <button onclick="AddUserActivity();" class="btn btn-blue btn-lg" style="float:right;margin-right:5px;">הוסף</button>
-
-                            </div>
-                            <div style="width:100%;padding-top:5px;float:right">
-                                <label>ימי פעילות עובד</label><span style="color:red" id="spnActiveDays"></span>
-                            </div>
-
-                            <div class="row" style="width:100%" id="Activities"></div>
-
-                            <div style="width:100%;padding-bottom:10px;padding-top:10px;">
-
-                                <input style="float:right;width:180px;margin-bottom:10px;margin-right:3px;" maxlength="50" id="EmployeeName" type="text" placeholder="הזן שם עובד" class="form-control input-lg" />
-
-                                <button onclick="AddActivity();" class="btn btn-blue btn-lg" style="float:right;margin-right:5px;">הוסף</button>
-
-                            </div>
-
-                            <table class="table table-striped table-bordered">
-
-                                <tr>
-
-                                    <td>יום</td>
-
-                                    <td>שעות פעילות</td>
-
-                                    <td>
-
-                                        <label>
-
-                                            <input type="checkbox" onclick="EnableNoneActiveHours(this)" id="NoneHours"> שעות לא פעילות
-
-                                        </label>
-
-                                    </td>
-
-                                </tr>
-
-                                <tr>
-
-                                    <td style="width:100px;">
-
-                                        <input type="checkbox" checked="checked" id="Day1"> א
-
-                                    </td>
-
-
-
-                                    <td>
-
-                                        <div class="form-group floating-label-form-group controls">
-
-                                            <input id="txtfromHour1" data-toggle="tooltip" trigger="manual" data-placement="top" style="width:65px;" type="text" value="08:00" placeholder="משעה" class="form-control input-lg" />
-
-                                        </div>
-
-                                        <div class="form-group floating-label-form-group controls">
-
-                                            <input id="txttoHour1" style="width:65px;" type="text" value="17:00" class="form-control input-lg" />
-
-                                        </div>
-
-                                    </td>
-
-                                    <td>
-
-                                        <div class="form-group floating-label-form-group controls">
-
-                                            <input id="txtfromHourNone1" style="width:65px;" type="text" value="13:00" placeholder="משעה" class="form-control input-lg" />
-
-                                        </div>
-
-                                        <div class="form-group floating-label-form-group controls">
-
-                                            <input id="txttoHourNone1" style="width:65px;" type="text" value="14:00" placeholder="עד שעה" class="form-control input-lg" />
-
-                                        </div>
-
-                                    </td>
-
-
-                                </tr>
-
-                                <tr>
-
-                                    <td style="width:100px;">
-
-                                        <input type="checkbox" checked="checked" id="Day2"> ב
-
-                                    </td>
-
-                                    <td>
-
-                                        <div class="form-group floating-label-form-group controls">
-
-                                            <input id="txtfromHour2" style="width:65px;" type="text" value="08:00" placeholder="משעה" class="form-control input-lg" />
-
-                                        </div>
-
-                                        <div class="form-group floating-label-form-group controls">
-
-                                            <input id="txttoHour2" style="width:65px;" type="text" value="17:00" placeholder="עד שעה" class="form-control input-lg" />
-
-                                        </div>
-
-                                    </td>
-
-                                    <td>
-
-                                        <div class="form-group floating-label-form-group controls">
-
-                                            <input id="txtfromHourNone2" style="width:65px;" type="text" value="13:00" placeholder="משעה " class="form-control input-lg" />
-
-                                        </div>
-
-                                        <div class="form-group floating-label-form-group controls">
-
-                                            <input id="txttoHourNone2" style="width:65px;" type="text" value="14:00" placeholder="עד שעה" class="form-control input-lg" />
-
-                                        </div>
-
-                                    </td>
-
-
-
-                                </tr>
-
-
-
-
-
-                            </table>
-
-
-
-
-
-                            <div style="float:left;padding-left:20px;">
-
-                                <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
-
-                                <div id="dvErrRegister"></div>
-
-                                <button onClick="Register();" class="btn btn-blue btn-lg">הרשמה</button>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-        <!-- Contact-->
-        <section id="contact" style="padding:10px;">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-5">
-                        <h3>צור קשר</h3>
-
-                        <hr>
-
-                        <h5>Mail: Tana@TanaSoftware.com</h5>
-
-                    </div>
-                    <div class="">
-                        <div class="control-group">
-                            <div class="form-group floating-label-form-group controls">
-                                <label for="iname" class="sr-only control-label">שם</label>
-                                <input id="iname" type="text" placeholder="שם" required="" class="form-control input-lg"><span class="help-block text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <div class="form-group floating-label-form-group controls">
-                                <label for="iemail" class="sr-only control-label">מייל</label>
-                                <input id="iemail" type="email" placeholder="מייל" required="" class="form-control input-lg"><span class="help-block text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <div class="form-group floating-label-form-group controls">
-                                <label for="phone" class="sr-only control-label">טלפון</label>
-                                <input id="phone" type="tel" placeholder="טלפון" required="" class="form-control input-lg"><span class="help-block text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <div class="form-group floating-label-form-group controls">
-                                <label for="message" class="sr-only control-label">הודעה</label>
-                                <textarea id="message" rows="2" placeholder="הודעה" required="" aria-invalid="false" class="form-control input-lg"></textarea><span class="help-block text-danger"></span>
-                            </div>
-                        </div>
-                        <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
-                        <div id="dvErrMail"></div>
-                        <div style="float:left;padding-left:20px;">
-                            <button onClick="SendMail();" class="btn btn-blue btn-lg">שלח</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
+  
+   
         <!-- Footer Section-->
         <div class="container-fluid footer-small bg-gray text-center" style="padding:10px;">
             <div class="row">
@@ -632,6 +297,8 @@
     pixel_from_side = 10;
     pixel_from_start = 80;
     is_set_for_mobile = 1;
+
+
 
     function SendMail() {
         var sName = $("#iname").val();
@@ -933,10 +600,32 @@
 
     function init() {
 
-        $("#txtfromHourNone").attr("disabled", "disabled");
 
-        $("#txttoHourNone").attr("disabled", "disabled");
+        var city, BizName = "";
+        var id = location.search;
+        id = id.split('=')[1];
+        
+        $.ajax({
 
+            url: "User/GetUserBiz/" + id,
+
+            type: 'GET',         
+
+            contentType: "application/json;charset=utf-8",
+
+            success: function (data) {
+                
+                $('#spnBizName').text(data.User);
+
+            },
+
+            error: function (request, status, error) {
+                
+
+
+            }
+
+        });
     }
 
 

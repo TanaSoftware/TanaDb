@@ -129,8 +129,16 @@ namespace Tor.Controllers
 
         }
 
+        [HttpGet]
 
+        [ActionName("GetUserBiz")]
 
+        public UserSearch GetUserBiz(string id)
+
+        {
+            UserManager u = new UserManager();
+            return u.GetUserByBizName(id);
+        }
         [HttpPost]
 
         [ActionName("UserAddCustmer")]
@@ -164,4 +172,3 @@ namespace Tor.Controllers
     }
 
 }
-

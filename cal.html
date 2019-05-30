@@ -62,14 +62,93 @@
 
 <body dir="rtl">
 
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a  href="#" class="navbar-brand page-scroll">
+                    <img src="img/Tana1.png" alt="Logo" class="logo"><img src="img/Tana2.png" alt="Logo" class="logodark"></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="Index.html">דף הבית <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="Index.html#LoginSec">התחבר</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="Index.html#RegisterCustomer">הרשם</a>
+                </li>               
+                <li><a href="#Register" class="Index.html#page-scroll">הרשמה של בעל עסק</a></li> 
+            </ul>
+        </div>
+    </nav>
 
+    <header id="Carousel-intro" data-ride="carousel" class="intro carousel carousel-big slide carousel-fade">
+        <ol class="carousel-indicators">
+            <li data-target="#Carousel-intro" data-slide-to="0" class="active"></li>
+            <li data-target="#Carousel-intro" data-slide-to="1"></li>
+            <li data-target="#Carousel-intro" data-slide-to="2"></li>
+        </ol>
+        <div class="carousel-inner">
+            <div class="item active">
+                <div style="background-image:url(img/f.jpg)" class="fill">
+                    <div class="intro-body">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-10 col-lg-offset-1">
+                                    <h1>ברוכים הבאים למערכת ניהול תורים של</h1>
+                                    <h1><span id="spnBizName"></span></h1>                                    
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div style="background-image:url(img/f.jpg)" class="fill">
+                    <div class="intro-body">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-10 col-lg-offset-1">
+                                    <h1>זמן תור</h1>
+                                    <h1>מכל מקום</h1>
+                                    <a class="btn btn-blue btn-lg page-scroll wow fadeInLeft" href="#Register">לחץ כאן להרשמה</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div style="background-image:url(img/f.jpg)" class="fill">
+                    <div class="intro-body">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-10 col-lg-offset-1">
+                                    <h1>מערכת לזימון תורים</h1>
+                                    <h1>לכל עסק</h1>
+                                    <a class="btn btn-blue btn-lg page-scroll wow fadeInLeft" href="#Register">לחץ כאן להרשמה</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <a href="#Carousel-intro" data-slide="prev" class="left carousel-control"><span class="icon-prev"></span></a><a href="#Carousel-intro" data-slide="next" class="right carousel-control"><span class="icon-next"></span></a>
+    </header>
 
     <div class="d-flex justify-content-center">
 
         <div>
 
             <button type="button" style="float:right;margin-top:8px;" class="btn btn-primary btn-sm prevNext" id="prev">&lt;</button>
-           
+
             <div style="float:right" class="p-2">
 
                 <div class="input-group date">
@@ -91,7 +170,7 @@
         <div class="btn-group-sm btn-group-primary" role="group" aria-label="...">
             <div class="floatR" onclick="SetCal('timeGrid')" style="width:40px;"><input class="rdb" id="btnDaily" type="radio" name="rdbX"><div class="check"></div><span class="floatR">יומי</span></div>
             <div class="floatR" onclick="SetCal('timeGridWeek')" style="width:50px;"><input class="rdb" id="btnWeekly" type="radio" name="rdbX"><div class="check"></div><span class="floatR">שבועי</span></div>
-            <div class="floatR" onclick="SetCal('dayGridMonth')" style="width:50px;"><input class="rdb" id="btnMonthly" type="radio" name="rdbX"><div class="check"></div><span class="floatR">חודשי</span></div>            
+            <div class="floatR" onclick="SetCal('dayGridMonth')" style="width:50px;"><input class="rdb" id="btnMonthly" type="radio" name="rdbX"><div class="check"></div><span class="floatR">חודשי</span></div>
         </div>
     </div>
     <div id="dvddlActivity" style="float:right" class="p-2">
@@ -101,7 +180,7 @@
         <div class="d-flex justify-content-center">
 
             <div class="flex-row">
-                
+
                 <div id="dvddlCustomers" style="float:right" class="p-2">
                     <select class="form-control" style="width:170px;" id="ddlCustomers"></select>
                 </div>
@@ -182,7 +261,7 @@
                                     <option value="0">בחר</option>
 
                                 </select>
-                                
+
                                 <div id="ddlEventErr"></div>
 
                             </td>
@@ -287,7 +366,90 @@
 
     </div>
 
+    <div id="SysLoginModal" class="modal fade">
 
+        <div class="modal-dialog vertical-align-center">
+
+            <div class="modal-content" style="width:320px;">
+
+                <div class="modal-header">
+
+                    <div style="float:right;color:#007bff;"><h4>כניסה למערכת</h4></div>
+
+                    <div style="float:left">
+
+                        <button type="button" class="close" data-dismiss="modal">
+
+                            <span aria-hidden="true">&times;</span> <span class="sr-only">close</span>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div id="modalBody" class="modal-body">
+                    <div class="container">
+
+                        <div class="row">
+
+                            <div class="">
+
+                                <div style="text-align:right;font-weight:bold;">כניסה: </div>
+
+                                <div class="form-group">
+
+                                    <div class="form-group floating-label-form-group controls">
+
+                                        <input id="emailLogin" type="email" placeholder="מייל" class="form-control input-lg" />
+
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+
+                                    <div class="form-group floating-label-form-group controls">
+
+                                        <input id="passwordLogin" type="password" placeholder="סיסמה" class="form-control input-lg" />
+
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group" style="text-align:right">
+
+                                    <label>זכור אותי</label>
+
+                                    <label>
+
+                                        <input type="checkbox">
+
+                                    </label>
+
+                                </div>                                
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">ביטול</button>
+
+                    <button type="submit" style="margin-right:5px;" class="btn btn-primary" onclick="Login()" id="btnAddCustomer">כניסה</button>
+
+                </div>
+
+            </div>
+
+
+
+        </div>
+
+    </div>
 
 </body>
 
@@ -300,33 +462,36 @@
     var momentHourFormat = "HH:mm:ss";
     var todayX;
     var UserData = JSON.parse(sessionStorage.getItem("UserData"));
+    
     var currentUserForCustomer;
     var currentUserDetails;
 
     var customersList;
 
-    //step 1
+    init();
 
-    
+    function init() {
+      
+       
+            if (UserData.isUser) {
 
-    if (UserData.isUser) {
+                $('#dvUsers').addClass('forceDispNone');
 
-        $('#dvUsers').addClass('forceDispNone');
+                getMyCustomers();
 
-        getMyCustomers();
+                setUser(UserData);
 
-        setUser(UserData);
+            }
 
+            else {
+
+                SetCustomer();
+
+                $('#dvCustomers').addClass('forceDispNone');
+
+            }
+        
     }
-
-    else {
-
-        SetCustomer();
-
-        $('#dvCustomers').addClass('forceDispNone');
-
-    }
-
     function AddModalCustomer() {
 
         $('#AddCustomerModal').modal('show');

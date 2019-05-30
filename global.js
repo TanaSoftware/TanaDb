@@ -114,8 +114,14 @@ function showTooltip(txtId, text) {
     
     obj.focus();
 
+}
 
+function hideTooltip(txtId) {
 
+    var obj = $('#' + txtId);
+
+    obj.tooltip('hide');
+    
 }
 
 
@@ -261,6 +267,93 @@ function getCities(handleData) {
         error: function (request, status, error) {
 
 
+
+        }
+
+    });
+
+}
+
+
+var CookieManager = {
+    //Create Cookie
+    days: 1,
+    CreateCookie: function (name, value, day) {
+        //Create New Cookie
+        //var expires = "";
+        if (day != null)
+            this.days = day;
+        var date = new Date();
+        date.setTime(date.getTime() + (this.days * 24 * 60 * 60 * 1000));
+        var expires = "; expires=" + date.toGMTString();
+        document.cookie = name + "=" + value + expires + "; path=/";
+    },
+    //Read Cookie
+    ReadCookie: function (name) {
+        //Get Cookie value
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    },
+    DeleteCookie: function (name, value) {
+        this.CreateCookie(name, "", -1);
+    }
+}
+
+function goToCal(data) {
+
+    if (data != null) {
+
+        sessionStorage.setItem("UserData", JSON.stringify(data));
+
+        location.href = "cal.html";
+
+    }
+
+}
+
+function Login() {
+
+    var userObj = { Mail: "", Password: "" };
+
+    userObj.Mail = $('#emailLogin').val();
+
+    userObj.Password = $('#passwordLogin').val();
+
+
+
+    $.ajax({
+
+        url: "User/Login",
+
+        type: 'POST',
+
+        data: JSON.stringify(userObj),
+
+        contentType: "application/json;charset=utf-8",
+
+        success: function (data) {
+
+            if (data != null) {
+
+                goToCal(data);
+
+            }
+
+            else {
+
+                messageHandler.Show("משתמש לא קיים");
+
+            }
+
+        },
+
+        error: function (request, status, error) {
 
         }
 
