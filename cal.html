@@ -10,11 +10,11 @@
     <link href='https://use.fontawesome.com/releases/v5.0.6/css/all.css' rel='stylesheet'>
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' rel='stylesheet' />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css" rel='stylesheet' />
-    <link href="css/genaral.css" rel="stylesheet" />
+    <link href="css/general.css" rel="stylesheet" />
     <script src="js/cal.js"></script>
     <script src="js/moment.js"></script>
 
-    <script src="js/jquery-1.9.1.min.js"></script>
+    <script src="js/jquery.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
@@ -63,8 +63,9 @@
 <body dir="rtl">
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a  href="#" class="navbar-brand page-scroll">
-                    <img src="img/Tana1.png" alt="Logo" class="logo"><img src="img/Tana2.png" alt="Logo" class="logodark"></a>
+        <a href="#" class="navbar-brand page-scroll">
+            
+        </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -78,13 +79,13 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="Index.html#RegisterCustomer">הרשם</a>
-                </li>               
-                <li><a href="#Register" class="Index.html#page-scroll">הרשמה של בעל עסק</a></li> 
+                </li>
+                <li><a href="Index.html#Register" class="nav-link">הרשמה של בעל עסק</a></li>
             </ul>
         </div>
     </nav>
 
- 
+
     <div class="d-flex justify-content-center">
 
         <div>
@@ -95,7 +96,7 @@
 
                 <div class="input-group date">
 
-                    <input type="text" id="datetimepicker1" class="form-control" placeholder="תאריך" style="max-width:140px;"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                    <input type="text" id="datetimepicker1" onchange="CheckDatePicker(this)" class="form-control" placeholder="תאריך" style="max-width:140px;"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 
                 </div>
 
@@ -369,7 +370,7 @@
 
                                     </label>
 
-                                </div>                                
+                                </div>
 
                             </div>
 
@@ -404,7 +405,7 @@
     var momentHourFormat = "HH:mm:ss";
     var todayX;
     var UserData = JSON.parse(sessionStorage.getItem("UserData"));
-    
+
     var currentUserForCustomer;
     var currentUserDetails;
 
@@ -413,26 +414,26 @@
     init();
 
     function init() {
-      
-       
-            if (UserData.isUser) {
 
-                $('#dvUsers').addClass('forceDispNone');
 
-                getMyCustomers();
+        if (UserData.isUser) {
 
-                setUser(UserData);
+            $('#dvUsers').addClass('forceDispNone');
 
-            }
+            getMyCustomers();
 
-            else {
+            setUser(UserData);
 
-                SetCustomer();
+        }
 
-                $('#dvCustomers').addClass('forceDispNone');
+        else {
 
-            }
-        
+            SetCustomer();
+
+            $('#dvCustomers').addClass('forceDispNone');
+
+        }
+
     }
     function AddModalCustomer() {
 
@@ -593,7 +594,7 @@
             $('#ddlActivity').append($("<option></option>").attr("value", userData.dicBizType[obj][0].EmployeeId).text(obj));
         }
 
-        $('#ddlActivity').on('change', function () {            
+        $('#ddlActivity').on('change', function () {
             var empId = $('#ddlActivity :selected').text();
             var BizTypeList = userData.dicBizType[empId];
             setUserActivities(BizTypeList);
@@ -641,7 +642,10 @@
 
         return isTodayAvailable;
     }
-
+    function CheckDatePicker(obj) {
+        todayX = moment(obj.value,'DD/MM/YYYY').format('YYYY-MM-DD');
+        GetQue(UserData, currentUserDetails, "timeGrid")        
+    }
     function setDatePicker(DaysOfWeekDisabled) {
 
         $('#datetimepicker1').datepicker({
@@ -665,6 +669,7 @@
     function SetCal(view) {
         SetCalRadioButton(view);
         GetQue(UserData, currentUserDetails, view);
+        
     }
     function SetCalRadioButton(view) {
         switch (view) {
@@ -692,14 +697,14 @@
         toDate = todayX + "T23:59:59";
 
         var duration = 10;
-               
-        if (view == null) {
+
+        if (view == null || view =='timeGrid') {
             if (sessionStorage.getItem("LastView") != null) {
                 view = sessionStorage.getItem("LastView");
             }
             else {
-                view = 'timeGrid';                
-            }            
+                view = 'timeGrid';
+            }
         }
         else if (view == 'timeGridWeek') {
 
@@ -707,7 +712,7 @@
 
             fromDate = today.startOf('week').format('YYYY-MM-DD') + "T00:00:00";
 
-            toDate = today.endOf('week').format('YYYY-MM-DD') + "T23:59:59";            
+            toDate = today.endOf('week').format('YYYY-MM-DD') + "T23:59:59";
         }
         else {
             var today = moment();
@@ -759,7 +764,7 @@
                     var ActiveHourTo = currentUserDetails != null && currentUserDetails.ActiveHourTo != null ? currentUserDetails.ActiveHourTo : '19:00:00';
 
                     var d = todayX + "T";
-                    CreateCal(data.queData,  ActiveHourFrom, ActiveHourTo, duration, view);//timeGrid dayGridMonth,timeGridWeek'
+                    CreateCal(data.queData, ActiveHourFrom, ActiveHourTo, duration, view);//timeGrid dayGridMonth,timeGridWeek'
 
                 }
 
@@ -796,7 +801,7 @@
     }
 
     function getEmptyEvent(index, start, end) {
-        return { id: index, title: "פנוי", start:  start, end:  end, editable: true, color: '#fff' };
+        return { id: index, title: "פנוי", start: start, end: end, editable: true, color: '#fff' };
     }
 
     function createEmptyDaySchedule(data, minimumTime, maximumTime, duration) {
@@ -866,7 +871,7 @@
 
         var len = calcHourLength(minimumTime, maximumTime, duration);
         LastView = view;
-        
+
         var dataEvents;
 
         dataEvents = data;//createEmptyDaySchedule(data, minimumTime, maximumTime, duration);
@@ -888,7 +893,7 @@
             buttonText: {
                 today: 'היום',
                 left: 'הבא'
-            },            
+            },
             displayEventTime: false,
             timeZone: 'UTC',
             defaultView: view,//'timeGrid',
@@ -909,7 +914,7 @@
             //dateClick: function(info) {
             //    alert('clicked ' + info.dateStr);
             //},
-            select: function(info) {
+            select: function (info) {
                 SetCalData(info);
             },
             eventClick: function (info) {
@@ -920,7 +925,7 @@
 
             locale: 'he',
 
-            dir: 'rtl',            
+            dir: 'rtl',
 
             titleFormat: { year: 'numeric', month: 'numeric', day: 'numeric' },
 
@@ -940,20 +945,20 @@
 
     function SetCalData(info) {
         var SelectedCustomer = $('#ddlCustomers').val();
-        
+
         if (info.event == null && UserData.isUser && SelectedCustomer == "") {
             showTooltip("dvddlCustomers", "נא לבחור לקוח")
             return;
 
         }
-        
+
         if (info.event != null && info.event.title == 'תפוס')
             return;
 
-        currentId = info.event? info.event.id : 0;
+        currentId = info.event ? info.event.id : 0;
         var InfoObj = info.event ? info.event : info;
         currentDate = moment(InfoObj.start).format('YYYY-MM-DD') + "T";
-        
+
         //if (currentUserForCustomer != null && currentUserForCustomer.dicBizType != null) {
         //    var BizTypeList = currentUserForCustomer.dicBizType[$('#ddlActivity :selected').text()];
         //    var check = moment(InfoObj.start, 'YYYY/MM/DD');
@@ -971,7 +976,8 @@
 
         var s = moment(InfoObj.start).add(-3, 'hours');
         var timeDiff = moment().diff(s, 'second');
-        if (timeDiff > 200) {            
+        if (timeDiff > 200) {
+            messageHandler.Show("לא ניתן להזמין תור");
             return;
         }
         var e = moment(InfoObj.end).add(-3, 'hours');
@@ -983,7 +989,7 @@
         $('#ddlEvent').val("0");
 
 
-        if (info.event==null)
+        if (info.event == null)
 
             btnDeleteQue.style.display = "none";
 
@@ -1004,7 +1010,7 @@
                 qCustomer = qCustomer.trim();
 
                 var qTypeId = findEventByName(qType);
-                if(qTypeId!=null)
+                if (qTypeId != null)
                     $('#ddlEvent').val(qTypeId.Id);
 
                 currentCustomerName = qCustomer;
@@ -1099,13 +1105,13 @@
 
             guid: UserData.guid,
 
-            FromDate: currentDate+txtFrom,
+            FromDate: currentDate + txtFrom,
 
-            ToDate: currentDate+txtTo,
+            ToDate: currentDate + txtTo,
 
             isUser: UserData.isUser,
 
-            CustomerId: $('#ddlCustomers').val(),            
+            CustomerId: $('#ddlCustomers').val(),
 
             QueType: eventId,
             EmployeeId: employeeId
@@ -1150,7 +1156,7 @@
     function findCustomerId() {
 
         for (var i = 0; i < customersList.length; i++) {
-            
+
             if (customersList[i].Name === currentCustomerName) {
 
                 return customersList[i].Id;
@@ -1166,11 +1172,11 @@
     function findEventByName(name) {
         for (var i = 0; i < UserData.Activities.length; i++) {
             if (UserData.Activities[i].Name == name)
-                return UserData.Activities[i];            
+                return UserData.Activities[i];
         }
         return null;
     }
- 
+
 
     function DeleteQue() {
 
@@ -1210,7 +1216,7 @@
 
             QueType: eventName,
 
-            EmployeeId:empId
+            EmployeeId: empId
 
         };
 

@@ -922,7 +922,7 @@ namespace Tor
 
         {
 
-            if (IsUserGuidExists(guid))
+            if (IsUserGuidExists(guid,true))
 
             {
 
@@ -1116,15 +1116,15 @@ namespace Tor
 
         }
 
-        private bool IsUserGuidExists(string guid)
+        private bool IsUserGuidExists(string guid,bool isUseGuid=false)
 
         {
 
             try
 
             {
-
-                string sql = "SELECT count(1) FROM Users WHERE [Active] = @guid;";
+                string w = isUseGuid ? "guid" : "Active";
+                string sql = "SELECT count(1) FROM Users WHERE ["+w+"] = @guid;";
 
                 DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
@@ -1426,7 +1426,7 @@ namespace Tor
                 return null;
 
             string cityName = "";
-            foreach(UserObj u in UserX)
+            foreach (UserObj u in UserX)
             {
                 string sqlCity = "select name From City where [Id]=@Id";
                 IEnumerable<string> city = db.QueryData<string>(sqlCity, 1, new { Id = u.City });
@@ -1446,7 +1446,6 @@ namespace Tor
     }
 
 }
-
 
 
 

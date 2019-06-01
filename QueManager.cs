@@ -48,7 +48,7 @@ namespace Tor
         [Required]
         public string QueType { get; set; }
 
-        
+
     }
 
     public class QueData
@@ -149,7 +149,7 @@ namespace Tor
 
 
 
-                IEnumerable<QueData> QueDataRows = db.QueryData<QueData>(sql, 1, new { UserId = que.UserId, FromDate = que.FromDate, ToDate = que.ToDate, CustomerId = que.CustomerId, EmployeeId=que.EmployeeId });
+                IEnumerable<QueData> QueDataRows = db.QueryData<QueData>(sql, 1, new { UserId = que.UserId, FromDate = que.FromDate, ToDate = que.ToDate, CustomerId = que.CustomerId, EmployeeId = que.EmployeeId });
 
 
 
@@ -248,7 +248,7 @@ namespace Tor
 
             DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
-            return db.IsExist(sql, new { UserId = que.UserId, FromDate = que.FromDate, ToDate = que.ToDate, EmployeeId=que.EmployeeId }, 1);
+            return db.IsExist(sql, new { UserId = que.UserId, FromDate = que.FromDate, ToDate = que.ToDate, EmployeeId = que.EmployeeId }, 1);
 
         }
 
@@ -429,7 +429,6 @@ namespace Tor
     }
 
 }
-
 
 
 
