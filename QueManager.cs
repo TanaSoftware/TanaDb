@@ -48,7 +48,7 @@ namespace Tor
         [Required]
         public string QueType { get; set; }
 
-
+        
     }
 
     public class QueData
@@ -87,11 +87,11 @@ namespace Tor
 
     {
 
-        public QueDataWrapper GetQue(QueObj que)
+        public List<QueData> GetQue(QueObj que)
 
         {
-
-            QueDataWrapper queWrapper = new QueDataWrapper();
+            List<QueData> lst = new List<QueData>();
+            //QueDataWrapper queWrapper = new QueDataWrapper();
 
 
 
@@ -105,9 +105,9 @@ namespace Tor
 
                     //Logger.Write("Error user doesnt exists");
 
-                    queWrapper.Message = "ארעה שגיאה";
+                    //queWrapper.Message = "ארעה שגיאה";
 
-                    return queWrapper;
+                    return lst;
 
                 }
 
@@ -123,9 +123,9 @@ namespace Tor
 
                     //Logger.Write("Error customer doesnt exists");
 
-                    queWrapper.Message = "ארעה שגיאה";
+                    //queWrapper.Message = "ארעה שגיאה";
 
-                    return queWrapper;
+                    return lst;
 
                 }
 
@@ -149,11 +149,12 @@ namespace Tor
 
 
 
-                IEnumerable<QueData> QueDataRows = db.QueryData<QueData>(sql, 1, new { UserId = que.UserId, FromDate = que.FromDate, ToDate = que.ToDate, CustomerId = que.CustomerId, EmployeeId = que.EmployeeId });
+                IEnumerable<QueData> QueDataRows = db.QueryData<QueData>(sql, 1, new { UserId = que.UserId, FromDate = que.FromDate, ToDate = que.ToDate, CustomerId = que.CustomerId, EmployeeId=que.EmployeeId });
 
 
 
-                queWrapper.queData = QueDataRows.Count() > 0 ? QueDataRows : null;
+                 if(QueDataRows.Count() > 0)
+                    lst = QueDataRows.ToList();
 
             }
 
@@ -163,13 +164,13 @@ namespace Tor
 
                 Logger.Write("QueManager:GetQue:" + ex);
 
-                queWrapper.Message = "ארעה שגיאה";
+                //queWrapper.Message = "ארעה שגיאה";
 
             }
 
 
 
-            return queWrapper;
+            return lst;
 
         }
 
@@ -248,7 +249,7 @@ namespace Tor
 
             DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
-            return db.IsExist(sql, new { UserId = que.UserId, FromDate = que.FromDate, ToDate = que.ToDate, EmployeeId = que.EmployeeId }, 1);
+            return db.IsExist(sql, new { UserId = que.UserId, FromDate = que.FromDate, ToDate = que.ToDate, EmployeeId=que.EmployeeId }, 1);
 
         }
 
@@ -429,6 +430,7 @@ namespace Tor
     }
 
 }
+
 
 
 

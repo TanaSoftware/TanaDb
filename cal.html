@@ -10,11 +10,11 @@
     <link href='https://use.fontawesome.com/releases/v5.0.6/css/all.css' rel='stylesheet'>
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' rel='stylesheet' />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css" rel='stylesheet' />
-    <link href="css/general.css" rel="stylesheet" />
+    <link href="css/genaral.css" rel="stylesheet" />
     <script src="js/cal.js"></script>
     <script src="js/moment.js"></script>
 
-    <script src="js/jquery.js"></script>
+    <script src="js/jquery-1.9.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
@@ -64,7 +64,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a href="#" class="navbar-brand page-scroll">
-            
+
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -405,7 +405,7 @@
     var momentHourFormat = "HH:mm:ss";
     var todayX;
     var UserData = JSON.parse(sessionStorage.getItem("UserData"));
-
+    var notActiveDays = "";
     var currentUserForCustomer;
     var currentUserDetails;
 
@@ -560,7 +560,7 @@
 
     function getNoActiveDays(BizTypeList) {
         //set unavailable days
-        var notActiveDays = "";
+        
         for (var i = 0; i < 7; i++) {
 
             var isDayFound = false;
@@ -643,8 +643,13 @@
         return isTodayAvailable;
     }
     function CheckDatePicker(obj) {
-        todayX = moment(obj.value,'DD/MM/YYYY').format('YYYY-MM-DD');
-        GetQue(UserData, currentUserDetails, "timeGrid")        
+        
+        todayX = moment(obj.value, 'DD/MM/YYYY').format('YYYY-MM-DD');
+        GetQue(UserData, currentUserDetails, GetCalRadioButton());
+        calendar.gotoDate(todayX);
+        
+        $('#datetimepicker1').datepicker('hide');
+        
     }
     function setDatePicker(DaysOfWeekDisabled) {
 
@@ -669,7 +674,7 @@
     function SetCal(view) {
         SetCalRadioButton(view);
         GetQue(UserData, currentUserDetails, view);
-        
+
     }
     function SetCalRadioButton(view) {
         switch (view) {
@@ -687,35 +692,38 @@
             }
         }
     }
+
+    function GetCalRadioButton() {
+        if ($("#btnDaily").is(":checked"))
+            return 'timeGrid';
+        else if ($("#btnWeekly").is(":checked"))
+            return 'timeGridWeek';
+        else if ($("#btnMonthly").is(":checked"))
+            return 'dayGridMonth';
+        else
+            return 'timeGrid';
+    }
     function GetQue(UserData, currentUserDetails, view) {
         var fromDate, toDate;
-
-        //var today = moment().format('YYYY-MM-DD');
-
-        fromDate = todayX + "T00:00:00";
-
-        toDate = todayX + "T23:59:59";
-
+              
         var duration = 10;
 
-        if (view == null || view =='timeGrid') {
-            if (sessionStorage.getItem("LastView") != null) {
-                view = sessionStorage.getItem("LastView");
-            }
-            else {
-                view = 'timeGrid';
-            }
+        if (view == null || view == 'timeGrid') {
+            view = 'timeGrid';
+            fromDate = todayX + "T00:00:00";
+
+            toDate = todayX + "T23:59:59";
         }
         else if (view == 'timeGridWeek') {
 
-            var today = moment();
+            var today = moment(todayX);
 
             fromDate = today.startOf('week').format('YYYY-MM-DD') + "T00:00:00";
 
             toDate = today.endOf('week').format('YYYY-MM-DD') + "T23:59:59";
         }
         else {
-            var today = moment();
+            var today = moment(todayX);
 
             fromDate = today.startOf('month').format('YYYY-MM-DD') + "T00:00:00";
 
@@ -733,51 +741,12 @@
             CustomerId: UserData.CustomerId,
             EmployeeId: currentUserDetails.EmployeeId
         };
+        var ActiveHourFrom = currentUserDetails != null && currentUserDetails.ActiveHourFrom != null ? currentUserDetails.ActiveHourFrom : '09:00:00';
 
-
-        $.ajax({
-
-            url: "Que/GetQue",
-
-            type: 'POST',
-
-            data: JSON.stringify(QueObj),
-
-            contentType: "application/json;charset=utf-8",
-
-            success: function (data) {
-
-                if (data.Message != null && data.Message != "") {
-
-                    messageHandler.Show(data.Message);
-
-                }
-
-                else {
-
-                    $("#calendar").html("");
-
-                    //CreateCal(data.queData, '09:00:00', '18:00:00', duration, view);
-
-                    var ActiveHourFrom = currentUserDetails != null && currentUserDetails.ActiveHourFrom != null ? currentUserDetails.ActiveHourFrom : '09:00:00';
-
-                    var ActiveHourTo = currentUserDetails != null && currentUserDetails.ActiveHourTo != null ? currentUserDetails.ActiveHourTo : '19:00:00';
-
-                    var d = todayX + "T";
-                    CreateCal(data.queData, ActiveHourFrom, ActiveHourTo, duration, view);//timeGrid dayGridMonth,timeGridWeek'
-
-                }
-
-            },
-
-            error: function (request, status, error) {
-
-
-
-            }
-
-        });
-
+        var ActiveHourTo = currentUserDetails != null && currentUserDetails.ActiveHourTo != null ? currentUserDetails.ActiveHourTo : '19:00:00';
+        $("#calendar").html("");
+        CreateCal(QueObj, ActiveHourFrom, ActiveHourTo, duration, view);
+       
     }
 
     function calcHourLength(minimumTime, maximumTime, duration) {
@@ -801,7 +770,7 @@
     }
 
     function getEmptyEvent(index, start, end) {
-        return { id: index, title: "פנוי", start: start, end: end, editable: true, color: '#fff' };
+        return { id: index, title: "פנוי", start: start, end: end, editable: true };
     }
 
     function createEmptyDaySchedule(data, minimumTime, maximumTime, duration) {
@@ -869,9 +838,12 @@
 
     function CreateCal(data, minimumTime, maximumTime, duration, view) {
 
-        var len = calcHourLength(minimumTime, maximumTime, duration);
+        //var len = calcHourLength(minimumTime, maximumTime, duration);
         LastView = view;
-
+        //var hiddenDaysArr = notActiveDays.length>0 ? notActiveDays.split(','):[];
+        //for (var i = 0; i < hiddenDaysArr.length; i++) {
+        //    hiddenDaysArr[i] = parseInt(hiddenDaysArr[i]);
+        //}
         var dataEvents;
 
         dataEvents = data;//createEmptyDaySchedule(data, minimumTime, maximumTime, duration);
@@ -918,28 +890,31 @@
                 SetCalData(info);
             },
             eventClick: function (info) {
-
                 SetCalData(info);
-
             },
-
             locale: 'he',
-
             dir: 'rtl',
-
             titleFormat: { year: 'numeric', month: 'numeric', day: 'numeric' },
-
+            //hiddenDays: hiddenDaysArr,
             themeSystem: 'bootstrap',
 
-            allDaySlot: false,
-
-            events: dataEvents
+            allDaySlot: false,            
+            events: {
+                url: 'Que/GetQue',
+                method: 'POST',
+                extraParams: data,
+                failure: function() {
+                   
+                }
+            }
 
         });
 
+       
+
         calendar.render();
 
-        return calendar;
+        //return calendar;
 
     }
 
@@ -1027,16 +1002,20 @@
     }
 
     $("#next").click(function () {
-
-        calendar.next();
+        todayX = moment(todayX).add(1, 'days').format('YYYY-MM-DD');
+        $('#datetimepicker1').val(moment(todayX).format('DD/MM/YYYY'));
+        CheckDatePicker(document.getElementById("datetimepicker1"));       
 
     });
 
 
 
     $("#prev").click(function () {
+        
+        todayX = moment(todayX).add(-1, 'days').format('YYYY-MM-DD');
+        $('#datetimepicker1').val(moment(todayX).format('DD/MM/YYYY'));
+        CheckDatePicker(document.getElementById("datetimepicker1"));
 
-        calendar.prev();
 
     });
 

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
-
+    
     <title>TanaSoftware</title>
     <style>
         .tooltip-inner {
@@ -39,7 +39,7 @@
     </style>
 </head>
 <body dir="rtl" id="page-top" data-spy="scroll" data-target=".navbar-fixed-top" class="top">
-
+    
     <nav class="navbar navbar-unibody navbar-custom navbar-fixed-top navbar-onepage">
         <div class="container">
             <div class="navbar-header">
@@ -56,14 +56,14 @@
             <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
                 <ul class="nav navbar-nav">
                     <li class="hidden"><a href="#page-top"></a></li>
-
+                    
                     <li><a href="#contact" class="page-scroll">צור קשר</a></li>
-
+                    
                     <li><a href="#LoginSec" class="page-scroll">התחבר</a></li>
                     <li><a href="#RegisterCustomer" class="page-scroll">הרשמה</a></li>
                     <li><a href="#Register" class="page-scroll">הרשמה של בעל עסק</a></li>
                     <li><a href="#page-top" class="page-scroll">דף הבית</a></li>
-
+                    
                 </ul>
             </div>
         </div>
@@ -85,7 +85,7 @@
                                     <h1>ברוכים הבאים למערכת ניהול תורים של</h1>
                                     <h1><span id="spnBizName"></span></h1>
                                     <h1>הרשם עכשיו וחסוך לך זמן יקר</h1>
-                                    <a class="btn btn-blue btn-lg page-scroll wow fadeInLeft" href="#Register">לחץ כאן להרשמה</a>
+                                    <a class="btn btn-blue btn-lg page-scroll wow fadeInLeft" href="#Register">לחץ כאן להרשמה</a> 
                                 </div>
                             </div>
                         </div>
@@ -102,7 +102,7 @@
                                 <div class="col-lg-10 col-lg-offset-1">
                                     <h1>זמן תור</h1>
                                     <h1>מכל מקום</h1>
-                                    <a class="btn btn-blue btn-lg page-scroll wow fadeInLeft" href="#Register">לחץ כאן להרשמה</a>
+                                    <a class="btn btn-blue btn-lg page-scroll wow fadeInLeft" href="#Register">לחץ כאן להרשמה</a> 
                                 </div>
                             </div>
                         </div>
@@ -118,7 +118,7 @@
                                 <div class="col-lg-10 col-lg-offset-1">
                                     <h1>מערכת לזימון תורים</h1>
                                     <h1>לכל עסק</h1>
-                                    <a class="btn btn-blue btn-lg page-scroll wow fadeInLeft" href="#Register">לחץ כאן להרשמה</a>
+                                    <a class="btn btn-blue btn-lg page-scroll wow fadeInLeft" href="#Register">לחץ כאן להרשמה</a> 
                                 </div>
                             </div>
                         </div>
@@ -130,54 +130,56 @@
         <a href="#Carousel-intro" data-slide="prev" class="left carousel-control"><span class="icon-prev"></span></a><a href="#Carousel-intro" data-slide="next" class="right carousel-control"><span class="icon-next"></span></a>
     </header>
 
+    
+        <section id="LoginSec" style="padding-top:130px;padding:10px;">
 
-    <section id="LoginSec" style="padding-top:130px;padding:10px;">
+            <div class="container">
 
-        <div class="container">
+                <div class="row">
 
-            <div class="row">
+                    <div class="">
 
-                <div class="">
+                        <div style="text-align:right;font-weight:bold;">כניסה: </div>
 
-                    <div style="text-align:right;font-weight:bold;">כניסה: </div>
+                        <div class="form-group">
 
-                    <div class="form-group">
+                            <div class="form-group floating-label-form-group controls">
 
-                        <div class="form-group floating-label-form-group controls">
+                                <input id="emailLogin" type="email" placeholder="מייל" class="form-control input-lg" />
 
-                            <input id="emailLogin" type="email" placeholder="מייל" class="form-control input-lg" />
-
-                        </div>
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <div class="form-group floating-label-form-group controls">
-
-                            <input id="passwordLogin" type="password" placeholder="סיסמה" class="form-control input-lg" />
+                            </div>
 
                         </div>
 
-                    </div>
+                        <div class="form-group">
 
-                    <div class="form-group" style="text-align:right">
+                            <div class="form-group floating-label-form-group controls">
 
-                        <label>זכור אותי</label>
+                                <input id="passwordLogin" type="password" placeholder="סיסמה" class="form-control input-lg" />
 
-                        <label>
+                            </div>
 
-                            <input type="checkbox">
+                        </div>
 
-                        </label>
+                        <div class="form-group" style="text-align:right">
 
-                    </div>
+                            <label>זכור אותי</label>
 
-                    <div style="float:left;padding-left:20px;">
+                            <label>
 
-                        <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
+                                <input type="checkbox">
 
-                        <button onClick="Login();" class="btn btn-blue btn-lg">כניסה</button>
+                            </label>
+
+                        </div>
+
+                        <div style="float:left;padding-left:20px;">
+
+                            <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
+
+                            <button onClick="Login();" class="btn btn-blue btn-lg">כניסה</button>
+
+                        </div>
 
                     </div>
 
@@ -185,69 +187,69 @@
 
             </div>
 
-        </div>
+        </section>
 
-    </section>
+        <section id="RegisterCustomer" style="padding-top:100px;padding:10px;">
 
-    <section id="RegisterCustomer" style="padding-top:100px;padding:10px;">
+            <div class="container">
 
-        <div class="container">
+                <div class="row">
 
-            <div class="row">
+                    <div class="">
 
-                <div class="">
+                        <div style="text-align:right;font-weight:bold;">רישום משתמש: </div>
 
-                    <div style="text-align:right;font-weight:bold;">רישום משתמש: </div>
+                        <div class="form-group">
 
-                    <div class="form-group">
+                            <div class="form-group floating-label-form-group controls">
 
-                        <div class="form-group floating-label-form-group controls">
+                                <input id="userCust" type="text" placeholder="שם משתמש" class="form-control input-lg" />
 
-                            <input id="userCust" type="text" placeholder="שם משתמש" class="form-control input-lg" />
-
-                        </div>
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <div class=& quot;form-group floating-label-form-group controls">
-
-                            <input id="txtTelCust" type="text" placeholder="טלפון נייד" class="form-control input-lg" />
+                            </div>
 
                         </div>
 
-                    </div>
+                        <div class="form-group">
 
-                    <div class="form-group">
+                            <div class=& quot;form-group floating-label-form-group controls">
 
-                        <div class="form-group floating-label-form-group controls">
+                                <input id="txtTelCust" type="text" placeholder="טלפון נייד" class="form-control input-lg" />
 
-                            <input id="emailCustomer" type="email" placeholder="מייל" class="form-control input-lg" />
-
-                        </div>
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <div class="form-group floating-label-form-group controls">
-
-                            <input id="passwordCustomer" type="password" placeholder="סיסמה" class="form-control input-lg" />
+                            </div>
 
                         </div>
 
-                    </div>
+                        <div class="form-group">
+
+                            <div class="form-group floating-label-form-group controls">
+
+                                <input id="emailCustomer" type="email" placeholder="מייל" class="form-control input-lg" />
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <div class="form-group floating-label-form-group controls">
+
+                                <input id="passwordCustomer" type="password" placeholder="סיסמה" class="form-control input-lg" />
+
+                            </div>
+
+                        </div>
 
 
 
-                    <div style="float:left;padding-left:20px;">
+                        <div style="float:left;padding-left:20px;">
 
-                        <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
+                            <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
 
-                        <div id="dvErrRegister"></div>
+                            <div id="dvErrRegister"></div>
 
-                        <button onClick="RegisterCustmer();" class="btn btn-blue btn-lg">הרשמה</button>
+                            <button onClick="RegisterCustmer();" class="btn btn-blue btn-lg">הרשמה</button>
+
+                        </div>
 
                     </div>
 
@@ -255,24 +257,22 @@
 
             </div>
 
-        </div>
+        </section>
 
-    </section>
+  
+   
+        <!-- Footer Section-->
+        <div class="container-fluid footer-small bg-gray text-center" style="padding:10px;">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    <p data-wow-iteration="999" data-wow-duration="5s" class="wow flash"><a href="#page-top" class="page-scroll"><i class="icon ion-ios-arrow-up fa-2x"></i></a></p>
 
-
-
-    <!-- Footer Section-->
-    <div class="container-fluid footer-small bg-gray text-center" style="padding:10px;">
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2">
-                <p data-wow-iteration="999" data-wow-duration="5s" class="wow flash"><a href="#page-top" class="page-scroll"><i class="icon ion-ios-arrow-up fa-2x"></i></a></p>
-
-                <p class="small"><a href="http://TanaSoftware.COM">©2017 TanaSoftware</a> </p>
+                    <p class="small"><a href="http://TanaSoftware.COM">©2017 TanaSoftware</a> </p>
+                </div>
             </div>
         </div>
-    </div>
 
-
+    
     <script src="js/jquery-1.12.4.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/jquery.easing.min.js"></script>
@@ -307,11 +307,11 @@
         var sPhone = $("#phone").val();
         $("#dvErrMail").html("");
         if (sName.length <= 0) {
-            showTooltip("iname", "נא להזין שם");
+            showTooltip("iname", "נא להזין שם");            
             return;
         }
         if (sEmail.length <= 0) {
-            showTooltip("iemail", "נא להזין מייל");
+            showTooltip("iemail", "נא להזין מייל");           
             return;
         }
         if (!IsvalidEmail(sEmail)) {
@@ -319,7 +319,7 @@
             return;
         }
         if (sMsg.length <= 0) {
-            showTooltip("message", "נא להזין מלל");
+            showTooltip("message", "נא להזין מלל");            
             return;
         }
         showProgressBar(true);
@@ -604,23 +604,23 @@
         var city, BizName = "";
         var id = location.search;
         id = id.split('=')[1];
-
+        
         $.ajax({
 
             url: "User/GetUserBiz/" + id,
 
-            type: 'GET',
+            type: 'GET',         
 
             contentType: "application/json;charset=utf-8",
 
             success: function (data) {
-
+                
                 $('#spnBizName').text(data.User);
 
             },
 
             error: function (request, status, error) {
-
+                
 
 
             }
@@ -841,7 +841,7 @@
 
 
 
-
+    
 
     function RegisterCustmer() {
 
@@ -951,7 +951,7 @@
 
     init();
 
-
+    
 
 
     function AddUserActivity() {

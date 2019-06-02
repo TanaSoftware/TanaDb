@@ -1,5 +1,6 @@
 ﻿
 
+using System.Collections.Generic;
 using System.Web.Http;
 
 /// <summary>
@@ -52,7 +53,7 @@ namespace Tor
 
         [ActionName("GetQue")]
 
-        public QueDataWrapper GetQue(QueObj id)
+        public List<QueData> GetQue(QueObj id)
 
         {
 
@@ -65,4 +66,3 @@ namespace Tor
     }
 
 }
-

@@ -922,7 +922,7 @@ namespace Tor
 
         {
 
-            if (IsUserGuidExists(guid,true))
+            if (IsUserGuidExists(guid, true))
 
             {
 
@@ -1116,7 +1116,7 @@ namespace Tor
 
         }
 
-        private bool IsUserGuidExists(string guid,bool isUseGuid=false)
+        private bool IsUserGuidExists(string guid, bool isUseGuid = false)
 
         {
 
@@ -1124,7 +1124,7 @@ namespace Tor
 
             {
                 string w = isUseGuid ? "guid" : "Active";
-                string sql = "SELECT count(1) FROM Users WHERE ["+w+"] = @guid;";
+                string sql = "SELECT count(1) FROM Users WHERE [" + w + "] = @guid;";
 
                 DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
@@ -1446,6 +1446,5 @@ namespace Tor
     }
 
 }
-
 
 
