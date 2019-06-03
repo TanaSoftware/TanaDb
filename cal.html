@@ -866,8 +866,7 @@
                 today: 'היום',
                 left: 'הבא'
             },
-            displayEventTime: false,
-            timeZone: 'UTC',
+            displayEventTime: false,           
             defaultView: view,//'timeGrid',
             minTime: minimumTime,
             maxTime: maximumTime,
@@ -949,13 +948,13 @@
         //        return;
         //}
 
-        var s = moment(InfoObj.start).add(-3, 'hours');
+        var s = moment(InfoObj.start);//.add(-3, 'hours');
         var timeDiff = moment().diff(s, 'second');
         if (timeDiff > 200) {
             messageHandler.Show("לא ניתן להזמין תור");
             return;
         }
-        var e = moment(InfoObj.end).add(-3, 'hours');
+        var e = moment(InfoObj.end);//.add(-3, 'hours');
 
         $('#txtTimeFrom').val(s.format("HH:mm"));
 

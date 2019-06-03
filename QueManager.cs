@@ -151,10 +151,109 @@ namespace Tor
 
                 IEnumerable<QueData> QueDataRows = db.QueryData<QueData>(sql, 1, new { UserId = que.UserId, FromDate = que.FromDate, ToDate = que.ToDate, CustomerId = que.CustomerId, EmployeeId=que.EmployeeId });
 
+                var sqlEmp = "Select ActiveDay As [Id],[ActiveHourFromNone] As [start],[ActiveHourToNone] As [end] FROM UsersActivity WHERE EmployeeId=@EmployeeId And ActiveHourFromNone is not null";
 
+                IEnumerable<QueData> BusyQue = db.QueryData<QueData>(sqlEmp, 1, new { EmployeeId = que.EmployeeId });
+                if (BusyQue.Count() > 0)
+                {
+                    var totalDays = (que.ToDate - que.FromDate).TotalDays;
+                    Dictionary<int, QueData> dicQ = new Dictionary<int, QueData>();
+                    foreach (QueData q in BusyQue)
+                    {                        
+                        QueData qData = new QueData();
+                        qData.start = q.start;
+                        qData.end = q.end;
+                        qData.title = "תפוס";
+                        if(!dicQ.ContainsKey(q.Id))
+                            dicQ.Add(q.Id, qData);
 
-                 if(QueDataRows.Count() > 0)
-                    lst = QueDataRows.ToList();
+                    }
+                    
+                    if(totalDays<=1)
+                    {
+                        int currentDay = GetCurrentDay(que.FromDate);
+                        if (dicQ.ContainsKey(currentDay))
+                        {
+                            QueData qData = new QueData();
+                            qData = dicQ[currentDay];
+                            lst.Add(qData);
+                        }
+                        else
+                        {
+                            QueData qData = new QueData();
+                            qData.start = que.FromDate + new TimeSpan(0, 0, 0);
+                            qData.end = que.FromDate + new TimeSpan(23, 59, 0);
+                            qData.title = "תפוס";
+                            lst.Add(qData);
+                        }
+                    }
+                    if (totalDays > 6 && totalDays <= 7)
+                    {
+                        DateTime dt = StartOfWeek(DateTime.Now,DayOfWeek.Sunday);
+                        for (int i = 1; i <= 7; i++)
+                        {                            
+                            if (dicQ.ContainsKey(i))
+                            {
+                                QueData qData = new QueData();
+                                qData = dicQ[i];
+                                TimeSpan tsFrom = new TimeSpan(qData.start.Hour, qData.start.Minute, 0);
+                                qData.start = (dt + tsFrom);
+
+                                TimeSpan tsTo = new TimeSpan(qData.end.Hour, qData.end.Minute, 0);
+                                qData.end = (dt + tsTo);
+                                
+                                lst.Add(qData);                                
+                            }
+                            else
+                            {
+                                QueData qData = new QueData();
+                                qData.start = dt + new TimeSpan(0, 0, 0);
+                                qData.end = dt + new TimeSpan(23,59, 0);
+                                qData.title = "תפוס";
+                                lst.Add(qData);
+                            }
+                            dt = dt.AddDays(1);                            
+
+                        }
+                    }
+                    if(totalDays>7)
+                    {
+                        DateTime now = DateTime.Now;
+                        var startDate = new DateTime(now.Year, now.Month, 1);
+                        //var endDate = startDate.AddMonths(1).AddDays(-1);
+                        for (int i = 0; i < totalDays; i++)
+                        {                            
+                            int currentDay = GetCurrentDay(startDate);
+                            if (dicQ.ContainsKey(currentDay))
+                            {
+                                QueData qData = new QueData();
+                                qData = dicQ[currentDay];
+                                TimeSpan tsFrom = new TimeSpan(qData.start.Hour, qData.start.Minute, 0);
+                                qData.start = (startDate + tsFrom);
+
+                                TimeSpan tsTo = new TimeSpan(qData.end.Hour, qData.end.Minute, 0);
+                                qData.end = (startDate + tsTo);
+
+                                lst.Add(qData);
+                            }
+                            else
+                            {
+                                QueData qData = new QueData();
+                                qData.start = startDate + new TimeSpan(0, 0, 0);
+                                qData.end = startDate + new TimeSpan(23, 59, 0);
+                                qData.title = "תפוס";
+                                lst.Add(qData);
+                            }
+                            startDate = startDate.AddDays(1);
+                        }
+                    }
+                }
+
+                if (QueDataRows.Count() > 0)
+                {                                        
+                    lst.AddRange(QueDataRows);
+                }
+
 
             }
 
@@ -172,6 +271,18 @@ namespace Tor
 
             return lst;
 
+        }
+        public int GetCurrentDay(DateTime dt)
+        {
+            int currentDay = (int)dt.DayOfWeek;
+            
+            return currentDay + 1;
+            
+        }
+        public DateTime StartOfWeek(DateTime dt, DayOfWeek startOfWeek)
+        {
+            int diff = (7 + (dt.DayOfWeek - startOfWeek)) % 7;
+            return dt.AddDays(-1 * diff).Date;
         }
 
         public string AddCustomerQue(Que que)
