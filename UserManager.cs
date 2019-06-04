@@ -758,17 +758,17 @@ namespace Tor
 
             {
 
-                if (IsUserExist(user.User))
+                //if (IsUserExist(user.User))
 
-                {
+                //{
 
-                    userObjWrapper.ErrorMsg = "שם משתמש קיים במערכת";
+                //    userObjWrapper.ErrorMsg = "שם משתמש קיים במערכת";
 
-                    userObjWrapper.guid = "";
+                //    userObjWrapper.guid = "";
 
-                    return userObjWrapper;
+                //    return userObjWrapper;
 
-                }
+                //}
 
                 if (IsMailExist(user.Email))
 
@@ -1017,6 +1017,11 @@ namespace Tor
                         {
 
                             item.Value[i].UserId = userId;
+                            if (item.Value[i].ActiveHourFromNone == "")
+                                item.Value[i].ActiveHourFromNone = null;
+
+                            if (item.Value[i].ActiveHourToNone == "")
+                                item.Value[i].ActiveHourToNone = null;
 
                             db.Execute(sqlUserActivity, 1, item.Value[i]);
 

@@ -412,116 +412,145 @@
                             </div>
 
                             <table class="table table-striped table-bordered">
-
                                 <tr>
-
                                     <td>יום</td>
-
                                     <td>שעות פעילות</td>
-
-                                    <td>
-
-                                        <label>
-
-                                            <input type="checkbox" onclick="EnableNoneActiveHours(this)" id="NoneHours"> שעות לא פעילות
-
-                                        </label>
-
-                                    </td>
-
+                                    <td>שעות לא פעילות</td>
                                 </tr>
-
                                 <tr>
-
-                                    <td style="width:100px;">
-
-                                        <input type="checkbox" checked="checked" id="Day1"> א
-
+                                    <td style="width:100px;"><input type="checkbox" checked="checked" id="Day1"> א
                                     </td>
-
-
-
                                     <td>
-
                                         <div class="form-group floating-label-form-group controls">
-
-                                            <input id="txtfromHour1" data-toggle="tooltip" trigger="manual" data-placement="top" style="width:65px;" type="text" value="08:00" placeholder="משעה" class="form-control input-lg" />
-
+                                            <input id="txtfromHour1" data-toggle="tooltip" trigger="manual" data-placement="top" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control" />
                                         </div>
-
                                         <div class="form-group floating-label-form-group controls">
-
-                                            <input id="txttoHour1" style="width:65px;" type="text" value="17:00" class="form-control input-lg" />
-
+                                            <input id="txttoHour1" style="width:70px;" type="text" value="17:00" class="form-control" />
                                         </div>
-
                                     </td>
-
                                     <td>
-
                                         <div class="form-group floating-label-form-group controls">
-
-                                            <input id="txtfromHourNone1" style="width:65px;" type="text" value="13:00" placeholder="משעה" class="form-control input-lg" />
-
+                                            <input id="txtfromHourNone1" style="width:70px;" type="text" placeholder="משעה" class="form-control" />
                                         </div>
-
                                         <div class="form-group floating-label-form-group controls">
-
-                                            <input id="txttoHourNone1" style="width:65px;" type="text" value="14:00" placeholder="עד שעה" class="form-control input-lg" />
-
+                                            <input id="txttoHourNone1" style="width:70px;" type="text" placeholder="עד שעה" class="form-control" />
                                         </div>
-
                                     </td>
-
-
                                 </tr>
-
                                 <tr>
-
-                                    <td style="width:100px;">
-
-                                        <input type="checkbox" checked="checked" id="Day2"> ב
-
-                                    </td>
-
+                                    <td style="width:100px;"><input type="checkbox" checked="checked" id="Day2"> ב</td>
                                     <td>
-
                                         <div class="form-group floating-label-form-group controls">
-
-                                            <input id="txtfromHour2" style="width:65px;" type="text" value="08:00" placeholder="משעה" class="form-control input-lg" />
-
+                                            <input id="txtfromHour2" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control" />
                                         </div>
-
                                         <div class="form-group floating-label-form-group controls">
-
-                                            <input id="txttoHour2" style="width:65px;" type="text" value="17:00" placeholder="עד שעה" class="form-control input-lg" />
-
+                                            <input id="txttoHour2" style="width:70px;" type="text" value="17:00" placeholder="עד שעה" class="form-control" />
                                         </div>
-
                                     </td>
-
                                     <td>
-
                                         <div class="form-group floating-label-form-group controls">
-
-                                            <input id="txtfromHourNone2" style="width:65px;" type="text" value="13:00" placeholder="משעה " class="form-control input-lg" />
-
+                                            <input id="txtfromHourNone2" style="width:70px;" type="text" placeholder="משעה " class="form-control" />
                                         </div>
-
                                         <div class="form-group floating-label-form-group controls">
-
-                                            <input id="txttoHourNone2" style="width:65px;" type="text" value="14:00" placeholder="עד שעה" class="form-control input-lg" />
-
+                                            <input id="txttoHourNone2" style="width:70px;" type="text" placeholder="עד שעה" class="form-control" />
                                         </div>
-
                                     </td>
-
-
-
                                 </tr>
-
-
-
+                                <tr>
+                                    <td style="width:100px;"><input type="checkbox" checked="checked" id="Day3"> ג</td>
+                                    <td>
+                                        <div class="form-group floating-label-form-group controls">
+                                            <input id="txtfromHour3" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control" />
+                                        </div>
+                                        <div class="form-group floating-label-form-group controls">
+                                            <input id="txttoHour3" style="width:70px;" type="text" value="17:00" placeholder="עד שעה" class="form-control" />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group floating-label-form-group controls">
+                                            <input id="txtfromHourNone3" style="width:70px;" type="text" placeholder="משעה " class="form-control" />
+                                        </div>
+                                        <div class="form-group floating-label-form-group controls">
+                                            <input id="txttoHourNone3" style="width:70px;" type="text" placeholder="עד שעה" class="form-control" />
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width:100px;"><input type="checkbox" checked="checked" id="Day4"> ד</td>
+                                    <td>
+                                        <div class="form-group floating-label-form-group controls">
+                                            <input id="txtfromHour4" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control" />
+                                        </div>
+                                        <div class="form-group floating-label-form-group controls">
+                                            <input id="txttoHour4" style="width:70px;" type="text" value="17:00" placeholder="עד שעה" class="form-control" />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group floating-label-form-group controls">
+                                            <input id="txtfromHourNone4" style="width:70px;" type="text" placeholder="משעה " class="form-control" />
+                                        </div>
+                                        <div class="form-group floating-label-form-group controls">
+                                            <input id="txttoHourNone4" style="width:70px;" type="text" placeholder="עד שעה" class="form-control" />
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width:100px;"><input type="checkbox" checked="checked" id="Day5"> ה</td>
+                                    <td>
+                                        <div class="form-group floating-label-form-group controls">
+                                            <input id="txtfromHour5" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control" />
+                                        </div>
+                                        <div class="form-group floating-label-form-group controls">
+                                            <input id="txttoHour5" style="width:70px;" type="text" value="17:00" placeholder="עד שעה" class="form-control" />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group floating-label-form-group controls">
+                                            <input id="txtfromHourNone5" style="width:70px;" type="text" placeholder="משעה " class="form-control" />
+                                        </div>
+                                        <div class="form-group floating-label-form-group controls">
+                                            <input id="txttoHourNone5" style="width:70px;" type="text" placeholder="עד שעה" class="form-control" />
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width:100px;"><input type="checkbox" checked="checked" id="Day6"> ו</td>
+                                    <td>
+                                        <div class="form-group floating-label-form-group controls">
+                                            <input id="txtfromHour6" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control" />
+                                        </div>
+                                        <div class="form-group floating-label-form-group controls">
+                                            <input id="txttoHour6" style="width:70px;" type="text" value="13:00" placeholder="עד שעה" class="form-control" />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group floating-label-form-group controls">
+                                            <input id="txtfromHourNone6" style="width:70px;" type="text" placeholder="משעה " class="form-control" />
+                                        </div>
+                                        <div class="form-group floating-label-form-group controls">
+                                            <input id="txttoHourNone6" style="width:70px;" type="text" placeholder="עד שעה" class="form-control" />
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width:100px;"><input type="checkbox" id="Day7"> ז</td>
+                                    <td>
+                                        <div class="form-group floating-label-form-group controls">
+                                            <input id="txtfromHour7" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control" />
+                                        </div>
+                                        <div class="form-group floating-label-form-group controls">
+                                            <input id="txttoHour7" style="width:70px;" type="text" value="17:00" placeholder="עד שעה" class="form-control" />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group floating-label-form-group controls">
+                                            <input id="txtfromHourNone7" style="width:70px;" type="text" placeholder="משעה " class="form-control" />
+                                        </div>
+                                        <div class="form-group floating-label-form-group controls">
+                                            <input id="txttoHourNone7" style="width:70px;" type="text" placeholder="עד שעה" class="form-control" />
+                                        </div>
+                                    </td>
+                                </tr>
 
 
                             </table>
@@ -817,16 +846,6 @@
         }
 
 
-        //var bizType = BizType
-
-
-        if (!NoneHours) {
-
-            txtfromHourNone = "";
-
-            txttoHourNone = "";
-
-        }
         var UserActivitiesDiv = $("#UserActivities").html();
         if (UserActivitiesDiv.length == 0) {
             showTooltip("BizType", "נא להזין סוג פעילות");
@@ -899,44 +918,7 @@
 
         });
 
-
-
-
-
-    }
-
-
-
-    function EnableNoneActiveHours(obj) {
-
-        if (obj.checked) {
-
-            $("#txtfromHourNone").removeAttr("disabled");
-
-            $("#txttoHourNone").removeAttr("disabled");
-
-        }
-
-        else {
-
-            $("#txtfromHourNone").attr("disabled", "disabled");
-
-            $("#txttoHourNone").attr("disabled", "disabled");
-
-        }
-
-
-
-    }
-
-
-
-    function init() {
-
-        $("#txtfromHourNone").attr("disabled", "disabled");
-
-        $("#txttoHourNone").attr("disabled", "disabled");
-
+        
     }
 
 
@@ -1049,7 +1031,7 @@
 
         }
 
-        for (var i = 1; i <= 2; i++) {
+        for (var i = 1; i <= 7; i++) {
 
             var id = i.toString();
 
@@ -1258,11 +1240,7 @@
 
         });
 
-    }
-
-    init();
-
-    
+    }    
 
 
     function AddUserActivity() {

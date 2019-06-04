@@ -61,9 +61,25 @@ namespace Tor
 
         public DateTime start { get; set; }
 
-
-
         public DateTime end { get; set; }
+
+    }
+
+    public class QueActiveData
+
+    {
+
+        public int EmployeeId { get; set; }
+        public int UserId { get; set; }
+        public string EmployeeName { get; set; }
+        public int ActiveDay { get; set; }
+        public DateTime ActiveHourFrom { get; set; }
+
+        public DateTime ActiveHourTo { get; set; }
+
+        public DateTime ActiveHourFromNone { get; set; }
+
+        public DateTime ActiveHourToNone { get; set; }
 
     }
 
@@ -151,21 +167,17 @@ namespace Tor
 
                 IEnumerable<QueData> QueDataRows = db.QueryData<QueData>(sql, 1, new { UserId = que.UserId, FromDate = que.FromDate, ToDate = que.ToDate, CustomerId = que.CustomerId, EmployeeId=que.EmployeeId });
 
-                var sqlEmp = "Select ActiveDay As [Id],[ActiveHourFromNone] As [start],[ActiveHourToNone] As [end] FROM UsersActivity WHERE EmployeeId=@EmployeeId And ActiveHourFromNone is not null";
+                var sqlEmp = "Select * FROM UsersActivity WHERE EmployeeId=@EmployeeId And UserId=@UserId";// And ActiveHourFromNone is not null
 
-                IEnumerable<QueData> BusyQue = db.QueryData<QueData>(sqlEmp, 1, new { EmployeeId = que.EmployeeId });
+                IEnumerable<QueActiveData> BusyQue = db.QueryData<QueActiveData>(sqlEmp, 1, new { EmployeeId = que.EmployeeId, UserId = que.UserId });
                 if (BusyQue.Count() > 0)
                 {
                     var totalDays = (que.ToDate - que.FromDate).TotalDays;
-                    Dictionary<int, QueData> dicQ = new Dictionary<int, QueData>();
-                    foreach (QueData q in BusyQue)
+                    Dictionary<int, QueActiveData> dicQ = new Dictionary<int, QueActiveData>();
+                    foreach (QueActiveData q in BusyQue)
                     {                        
-                        QueData qData = new QueData();
-                        qData.start = q.start;
-                        qData.end = q.end;
-                        qData.title = "תפוס";
-                        if(!dicQ.ContainsKey(q.Id))
-                            dicQ.Add(q.Id, qData);
+                        if(!dicQ.ContainsKey(q.ActiveDay))
+                            dicQ.Add(q.ActiveDay, q);
 
                     }
                     
@@ -174,9 +186,14 @@ namespace Tor
                         int currentDay = GetCurrentDay(que.FromDate);
                         if (dicQ.ContainsKey(currentDay))
                         {
-                            QueData qData = new QueData();
-                            qData = dicQ[currentDay];
-                            lst.Add(qData);
+                            if (dicQ[currentDay].ActiveHourFromNone.Year != 1)
+                            {
+                                QueData qData = new QueData();
+                                qData.start = dicQ[currentDay].ActiveHourFromNone;
+                                qData.end = dicQ[currentDay].ActiveHourToNone;
+                                qData.title = "תפוס";
+                                lst.Add(qData);
+                            }                            
                         }
                         else
                         {
@@ -194,15 +211,18 @@ namespace Tor
                         {                            
                             if (dicQ.ContainsKey(i))
                             {
-                                QueData qData = new QueData();
-                                qData = dicQ[i];
-                                TimeSpan tsFrom = new TimeSpan(qData.start.Hour, qData.start.Minute, 0);
-                                qData.start = (dt + tsFrom);
+                                if (dicQ[i].ActiveHourFromNone.Year != 1)
+                                {
+                                    QueData qData = new QueData();
+                                    
+                                    TimeSpan tsFrom = new TimeSpan(dicQ[i].ActiveHourFromNone.Hour, dicQ[i].ActiveHourFromNone.Minute, 0);
+                                    qData.start = (dt + tsFrom);
 
-                                TimeSpan tsTo = new TimeSpan(qData.end.Hour, qData.end.Minute, 0);
-                                qData.end = (dt + tsTo);
-                                
-                                lst.Add(qData);                                
+                                    TimeSpan tsTo = new TimeSpan(dicQ[i].ActiveHourToNone.Hour, dicQ[i].ActiveHourToNone.Minute, 0);
+                                    qData.end = (dt + tsTo);
+                                    qData.title = "תפוס";
+                                    lst.Add(qData);
+                                }                             
                             }
                             else
                             {
@@ -226,15 +246,26 @@ namespace Tor
                             int currentDay = GetCurrentDay(startDate);
                             if (dicQ.ContainsKey(currentDay))
                             {
-                                QueData qData = new QueData();
-                                qData = dicQ[currentDay];
-                                TimeSpan tsFrom = new TimeSpan(qData.start.Hour, qData.start.Minute, 0);
-                                qData.start = (startDate + tsFrom);
+                                if (dicQ[currentDay].ActiveHourFromNone.Year != 1)
+                                {
+                                    QueData qData = new QueData();
+                                    
+                                    TimeSpan tsFrom = new TimeSpan(dicQ[currentDay].ActiveHourFromNone.Hour, dicQ[currentDay].ActiveHourFromNone.Minute, 0);
+                                    qData.start = (startDate + tsFrom);
 
-                                TimeSpan tsTo = new TimeSpan(qData.end.Hour, qData.end.Minute, 0);
-                                qData.end = (startDate + tsTo);
-
-                                lst.Add(qData);
+                                    TimeSpan tsTo = new TimeSpan(dicQ[currentDay].ActiveHourToNone.Hour, dicQ[currentDay].ActiveHourToNone.Minute, 0);
+                                    qData.end = (startDate + tsTo);
+                                    string fromHour = dicQ[currentDay].ActiveHourFromNone.Hour.ToString();
+                                    string fromMin = dicQ[currentDay].ActiveHourFromNone.Minute.ToString();
+                                    string toHour = dicQ[currentDay].ActiveHourToNone.Hour.ToString();
+                                    string toMin = dicQ[currentDay].ActiveHourToNone.Minute.ToString();
+                                    
+                                    //fromMin = fromMin=="0" ? fromMin += "00" : fromMin;
+                                    //toHour = toHour.EndsWith(":0") ? toHour += "00" : toHour;
+                                    //toMin = toMin == "0" ? toMin += "0" : toMin;
+                                    qData.title = "תפוס" + " מ " + fromHour + ":" + fromMin + " עד " + toHour + ":" + toMin;
+                                    lst.Add(qData);
+                                }
                             }
                             else
                             {
