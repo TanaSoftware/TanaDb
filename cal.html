@@ -672,9 +672,10 @@
     }
 
     function SetCal(view) {
+        //todayX = moment($('#datetimepicker1').val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
         SetCalRadioButton(view);
         GetQue(UserData, currentUserDetails, view);
-
+        calendar.gotoDate(todayX);
     }
     function SetCalRadioButton(view) {
         switch (view) {
@@ -1112,8 +1113,8 @@
 
                 if (data == "") {
                     sessionStorage.setItem("LastView", LastView);
-                    GetQue(UserData, currentUserDetails);
-
+                    GetQue(UserData, currentUserDetails, LastView);
+                    calendar.gotoDate(todayX);
                     $('#createEventModal').modal('hide');
 
                 }

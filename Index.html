@@ -7,9 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
-    
+    <link href="css/selectize.css" rel="stylesheet" />
     <title>TanaSoftware</title>
     <style>
+        .hour{
+            width:70px;
+        }
         .tooltip-inner {
             background-color: #f00 !important;
         }
@@ -422,18 +425,18 @@
                                     </td>
                                     <td>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txtfromHour1" data-toggle="tooltip" trigger="manual" data-placement="top" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control" />
+                                            <input id="txtfromHour1" data-toggle="tooltip" trigger="manual" data-placement="top" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control input-time" />                                            
                                         </div>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txttoHour1" style="width:70px;" type="text" value="17:00" class="form-control" />
+                                            <input id="txttoHour1" style="width:70px;" type="text" value="17:00" class="form-control input-time" />                                            
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txtfromHourNone1" style="width:70px;" type="text" placeholder="משעה" class="form-control" />
+                                            <input id="txtfromHourNone1" style="width:70px;" type="text" placeholder="משעה" class="form-control input-time" />                                            
                                         </div>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txttoHourNone1" style="width:70px;" type="text" placeholder="עד שעה" class="form-control" />
+                                            <input id="txttoHourNone1" style="width:70px;" type="text" placeholder="עד שעה" class="form-control input-time" />                                            
                                         </div>
                                     </td>
                                 </tr>
@@ -441,18 +444,18 @@
                                     <td style="width:100px;"><input type="checkbox" checked="checked" id="Day2"> ב</td>
                                     <td>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txtfromHour2" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control" />
+                                            <input id="txtfromHour2" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control input-time" />
                                         </div>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txttoHour2" style="width:70px;" type="text" value="17:00" placeholder="עד שעה" class="form-control" />
+                                            <input id="txttoHour2" style="width:70px;" type="text" value="17:00" placeholder="עד שעה" class="form-control input-time" />
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txtfromHourNone2" style="width:70px;" type="text" placeholder="משעה " class="form-control" />
+                                            <input id="txtfromHourNone2" style="width:70px;" type="text" placeholder="משעה " class="form-control input-time" />
                                         </div>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txttoHourNone2" style="width:70px;" type="text" placeholder="עד שעה" class="form-control" />
+                                            <input id="txttoHourNone2" style="width:70px;" type="text" placeholder="עד שעה" class="form-control input-time" />
                                         </div>
                                     </td>
                                 </tr>
@@ -460,18 +463,18 @@
                                     <td style="width:100px;"><input type="checkbox" checked="checked" id="Day3"> ג</td>
                                     <td>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txtfromHour3" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control" />
+                                            <input id="txtfromHour3" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control input-time" />
                                         </div>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txttoHour3" style="width:70px;" type="text" value="17:00" placeholder="עד שעה" class="form-control" />
+                                            <input id="txttoHour3" style="width:70px;" type="text" value="17:00" placeholder="עד שעה" class="form-control input-time" />
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txtfromHourNone3" style="width:70px;" type="text" placeholder="משעה " class="form-control" />
+                                            <input id="txtfromHourNone3" style="width:70px;" type="text" placeholder="משעה " class="form-control input-time" />
                                         </div>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txttoHourNone3" style="width:70px;" type="text" placeholder="עד שעה" class="form-control" />
+                                            <input id="txttoHourNone3" style="width:70px;" type="text" placeholder="עד שעה" class="form-control input-time" />
                                         </div>
                                     </td>
                                 </tr>
@@ -479,18 +482,18 @@
                                     <td style="width:100px;"><input type="checkbox" checked="checked" id="Day4"> ד</td>
                                     <td>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txtfromHour4" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control" />
+                                            <input id="txtfromHour4" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control input-time" />
                                         </div>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txttoHour4" style="width:70px;" type="text" value="17:00" placeholder="עד שעה" class="form-control" />
+                                            <input id="txttoHour4" style="width:70px;" type="text" value="17:00" placeholder="עד שעה" class="form-control input-time" />
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txtfromHourNone4" style="width:70px;" type="text" placeholder="משעה " class="form-control" />
+                                            <input id="txtfromHourNone4" style="width:70px;" type="text" placeholder="משעה " class="form-control input-time" />
                                         </div>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txttoHourNone4" style="width:70px;" type="text" placeholder="עד שעה" class="form-control" />
+                                            <input id="txttoHourNone4" style="width:70px;" type="text" placeholder="עד שעה" class="form-control input-time" />
                                         </div>
                                     </td>
                                 </tr>
@@ -498,18 +501,18 @@
                                     <td style="width:100px;"><input type="checkbox" checked="checked" id="Day5"> ה</td>
                                     <td>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txtfromHour5" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control" />
+                                            <input id="txtfromHour5" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control input-time" />
                                         </div>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txttoHour5" style="width:70px;" type="text" value="17:00" placeholder="עד שעה" class="form-control" />
+                                            <input id="txttoHour5" style="width:70px;" type="text" value="17:00" placeholder="עד שעה" class="form-control input-time" />
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txtfromHourNone5" style="width:70px;" type="text" placeholder="משעה " class="form-control" />
+                                            <input id="txtfromHourNone5" style="width:70px;" type="text" placeholder="משעה " class="form-control input-time" />
                                         </div>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txttoHourNone5" style="width:70px;" type="text" placeholder="עד שעה" class="form-control" />
+                                            <input id="txttoHourNone5" style="width:70px;" type="text" placeholder="עד שעה" class="form-control input-time" />
                                         </div>
                                     </td>
                                 </tr>
@@ -517,18 +520,18 @@
                                     <td style="width:100px;"><input type="checkbox" checked="checked" id="Day6"> ו</td>
                                     <td>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txtfromHour6" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control" />
+                                            <input id="txtfromHour6" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control input-time" />
                                         </div>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txttoHour6" style="width:70px;" type="text" value="13:00" placeholder="עד שעה" class="form-control" />
+                                            <input id="txttoHour6" style="width:70px;" type="text" value="13:00" placeholder="עד שעה" class="form-control input-time" />
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txtfromHourNone6" style="width:70px;" type="text" placeholder="משעה " class="form-control" />
+                                            <input id="txtfromHourNone6" style="width:70px;" type="text" placeholder="משעה " class="form-control input-time" />
                                         </div>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txttoHourNone6" style="width:70px;" type="text" placeholder="עד שעה" class="form-control" />
+                                            <input id="txttoHourNone6" style="width:70px;" type="text" placeholder="עד שעה" class="form-control input-time" />
                                         </div>
                                     </td>
                                 </tr>
@@ -536,18 +539,18 @@
                                     <td style="width:100px;"><input type="checkbox" id="Day7"> ז</td>
                                     <td>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txtfromHour7" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control" />
+                                            <input id="txtfromHour7" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control input-time" />
                                         </div>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txttoHour7" style="width:70px;" type="text" value="17:00" placeholder="עד שעה" class="form-control" />
+                                            <input id="txttoHour7" style="width:70px;" type="text" value="17:00" placeholder="עד שעה" class="form-control input-time" />
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txtfromHourNone7" style="width:70px;" type="text" placeholder="משעה " class="form-control" />
+                                            <input id="txtfromHourNone7" style="width:70px;" type="text" placeholder="משעה " class="form-control input-time" />
                                         </div>
                                         <div class="form-group floating-label-form-group controls">
-                                            <input id="txttoHourNone7" style="width:70px;" type="text" placeholder="עד שעה" class="form-control" />
+                                            <input id="txttoHourNone7" style="width:70px;" type="text" placeholder="עד שעה" class="form-control input-time" />
                                         </div>
                                     </td>
                                 </tr>
@@ -638,6 +641,7 @@
 
     
     <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="js/cleave.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/jquery.easing.min.js"></script>
     <script src="js/jquery.countdown.min.js"></script>
@@ -1275,5 +1279,17 @@
 
         $('#dvBizTypeAct' + i).remove();
 
+    }
+    
+    SetHourToDddl();
+
+    function SetHourToDddl() {
+        document.querySelectorAll('.input-time').forEach(function(el) {
+            new Cleave(el, 
+                {time: true,
+                timePattern: ["h", "m"]
+                });
+        });
+              
     }
 </script>

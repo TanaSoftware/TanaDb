@@ -206,7 +206,7 @@ namespace Tor
                     }
                     if (totalDays > 6 && totalDays <= 7)
                     {
-                        DateTime dt = StartOfWeek(DateTime.Now,DayOfWeek.Sunday);
+                        DateTime dt = StartOfWeek(que.FromDate, DayOfWeek.Sunday);
                         for (int i = 1; i <= 7; i++)
                         {                            
                             if (dicQ.ContainsKey(i))
@@ -238,8 +238,8 @@ namespace Tor
                     }
                     if(totalDays>7)
                     {
-                        DateTime now = DateTime.Now;
-                        var startDate = new DateTime(now.Year, now.Month, 1);
+                        
+                        var startDate = new DateTime(que.FromDate.Year, que.FromDate.Month, 1);
                         //var endDate = startDate.AddMonths(1).AddDays(-1);
                         for (int i = 0; i < totalDays; i++)
                         {                            
@@ -347,25 +347,18 @@ namespace Tor
                     return "ארעה שגיאה";
 
                 }
+                if (!IsCustomerQueAvailable(que))
+                    return "לא ניתן להזמין תור בזמן הזה";
 
             }
-
-
 
             if (IsCustomerQueExist(que))
-
             {
-
                 return "תור תפוס, אנא קבע במועד אחר";
-
             }
 
-
-
             if (!AddQueToDb(que))
-
             {
-
                 Logger.Write("Error in insert data to Que table, CustomerId: " + que.CustomerId + ", userId: " + que.UserId);
 
                 return "ארעה שגיאה";
@@ -374,15 +367,9 @@ namespace Tor
 
             }
 
-
-
-            return "";
-
-
-
+            return "";            
         }
-
-
+        
 
         private bool IsCustomerQueExist(Que que)
         {
@@ -421,7 +408,37 @@ namespace Tor
 
         }
 
+        private bool IsCustomerQueAvailable(Que que)
 
+        {
+
+            
+            var sql = @"Select * FROM UsersActivity WHERE EmployeeId = @EmployeeId And UserId = @UserId 
+                And ActiveHourFrom<=@FromDate And ActiveHourTo>=@FromDate And ActiveHourFrom<=@ToHour And ActiveHourTo>=@ToHour";
+
+            DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+
+            IEnumerable<QueActiveData> BusyQue = db.QueryData<QueActiveData>(sql, 1, new { EmployeeId = que.EmployeeId, UserId = que.UserId , FromDate =que.FromDate, ToHour =que.ToDate});
+            if (BusyQue.Count() <= 0)
+                return false;
+
+            foreach(QueActiveData q in BusyQue)
+            {
+                if(q.ActiveHourFromNone.Year!=1)
+                {
+                    if (que.FromDate < q.ActiveHourFromNone)
+                        return false;
+                    if (que.FromDate > q.ActiveHourToNone)
+                        return false;
+                    if (que.ToDate > q.ActiveHourToNone)
+                        return false;
+                    if (que.ToDate < q.ActiveHourFromNone)
+                        return false;
+                }
+            }
+            return true;
+
+        }
 
         private bool AddQueToDb(Que que)
 

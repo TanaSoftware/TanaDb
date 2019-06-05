@@ -43,7 +43,8 @@ var selectizeService = {
             .selectize({ valueField: Value, labelField: Title, searchField: Title, options: Options });
 
 
-
+        if (selectizeMe[0] == null)
+            return;
         /// selectize object
 
         var selectize = selectizeMe[0].selectize;
@@ -111,7 +112,7 @@ function showTooltip(txtId, text) {
     });
 
     obj.tooltip('show');
-
+    
     obj.focus();
 
 }
@@ -121,7 +122,7 @@ function hideTooltip(txtId) {
     var obj = $('#' + txtId);
 
     obj.tooltip('hide');
-
+    
 }
 
 
