@@ -63,6 +63,8 @@ namespace Tor
 
         public DateTime end { get; set; }
 
+        public string backgroundColor { get; set; }
+
     }
 
     public class QueActiveData
@@ -192,21 +194,23 @@ namespace Tor
                                 qData.start = dicQ[currentDay].ActiveHourFromNone;
                                 qData.end = dicQ[currentDay].ActiveHourToNone;
                                 qData.title = "תפוס";
+                                qData.backgroundColor = "#f00";
                                 lst.Add(qData);
                             }                            
                         }
                         else
                         {
                             QueData qData = new QueData();
-                            qData.start = que.FromDate + new TimeSpan(0, 0, 0);
-                            qData.end = que.FromDate + new TimeSpan(23, 59, 0);
+                            qData.start = que.FromDate.Date + new TimeSpan(0, 0, 0);
+                            qData.end = que.FromDate.Date + new TimeSpan(23, 59, 0);
                             qData.title = "תפוס";
+                            qData.backgroundColor = "#f00";
                             lst.Add(qData);
                         }
                     }
                     if (totalDays > 6 && totalDays <= 7)
                     {
-                        DateTime dt = StartOfWeek(que.FromDate, DayOfWeek.Sunday);
+                        DateTime dt = StartOfWeek(que.FromDate.Date, DayOfWeek.Sunday);
                         for (int i = 1; i <= 7; i++)
                         {                            
                             if (dicQ.ContainsKey(i))
@@ -221,6 +225,7 @@ namespace Tor
                                     TimeSpan tsTo = new TimeSpan(dicQ[i].ActiveHourToNone.Hour, dicQ[i].ActiveHourToNone.Minute, 0);
                                     qData.end = (dt + tsTo);
                                     qData.title = "תפוס";
+                                    qData.backgroundColor = "#f00";
                                     lst.Add(qData);
                                 }                             
                             }
@@ -230,6 +235,7 @@ namespace Tor
                                 qData.start = dt + new TimeSpan(0, 0, 0);
                                 qData.end = dt + new TimeSpan(23,59, 0);
                                 qData.title = "תפוס";
+                                qData.backgroundColor = "#f00";
                                 lst.Add(qData);
                             }
                             dt = dt.AddDays(1);                            
@@ -264,6 +270,7 @@ namespace Tor
                                     //toHour = toHour.EndsWith(":0") ? toHour += "00" : toHour;
                                     //toMin = toMin == "0" ? toMin += "0" : toMin;
                                     qData.title = "תפוס" + " מ " + fromHour + ":" + fromMin + " עד " + toHour + ":" + toMin;
+                                    qData.backgroundColor = "#f00";
                                     lst.Add(qData);
                                 }
                             }
@@ -273,6 +280,7 @@ namespace Tor
                                 qData.start = startDate + new TimeSpan(0, 0, 0);
                                 qData.end = startDate + new TimeSpan(23, 59, 0);
                                 qData.title = "תפוס";
+                                qData.backgroundColor = "#f00";
                                 lst.Add(qData);
                             }
                             startDate = startDate.AddDays(1);
@@ -412,27 +420,47 @@ namespace Tor
 
         {
 
-            
-            var sql = @"Select * FROM UsersActivity WHERE EmployeeId = @EmployeeId And UserId = @UserId 
-                And ActiveHourFrom<=@FromDate And ActiveHourTo>=@FromDate And ActiveHourFrom<=@ToHour And ActiveHourTo>=@ToHour";
+            int currentDay = GetCurrentDay(que.FromDate);
+            var sql = @"Select * FROM UsersActivity WHERE EmployeeId = @EmployeeId And UserId = @UserId And ActiveDay=@ActiveDay";
 
             DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
-            IEnumerable<QueActiveData> BusyQue = db.QueryData<QueActiveData>(sql, 1, new { EmployeeId = que.EmployeeId, UserId = que.UserId , FromDate =que.FromDate, ToHour =que.ToDate});
+            IEnumerable<QueActiveData> BusyQue = 
+                db.QueryData<QueActiveData>(sql, 1, new { EmployeeId = que.EmployeeId, UserId = que.UserId , ActiveDay = currentDay});
+
             if (BusyQue.Count() <= 0)
                 return false;
 
             foreach(QueActiveData q in BusyQue)
             {
-                if(q.ActiveHourFromNone.Year!=1)
+                TimeSpan tsFr = new TimeSpan(q.ActiveHourFrom.Hour, q.ActiveHourFrom.Minute, 0);
+                DateTime ActiveHourFrom = (que.FromDate.Date + tsFr);
+
+                TimeSpan tsT = new TimeSpan(q.ActiveHourTo.Hour, q.ActiveHourTo.Minute, 0);
+                DateTime ActiveHourTo = (que.ToDate.Date + tsT);
+
+                if (que.FromDate < ActiveHourFrom)
+                    return false;
+
+                if (que.FromDate >= ActiveHourTo)
+                    return false;
+
+                if (que.ToDate < ActiveHourFrom)
+                    return false;
+
+                if (que.ToDate > ActiveHourTo)
+                    return false;
+
+                if (q.ActiveHourFromNone.Year!=1)//there is hour in table
                 {
-                    if (que.FromDate < q.ActiveHourFromNone)
+                    TimeSpan tsFrom = new TimeSpan(q.ActiveHourFromNone.Hour, q.ActiveHourFromNone.Minute, 0);
+                    DateTime ActiveHourFromNone = (que.FromDate.Date + tsFrom);
+                    TimeSpan tsTo = new TimeSpan(q.ActiveHourToNone.Hour, q.ActiveHourToNone.Minute, 0);
+                    DateTime ActiveHourToNone = (que.ToDate.Date + tsTo);
+
+                    if (que.FromDate >= ActiveHourFromNone && que.FromDate< ActiveHourToNone)
                         return false;
-                    if (que.FromDate > q.ActiveHourToNone)
-                        return false;
-                    if (que.ToDate > q.ActiveHourToNone)
-                        return false;
-                    if (que.ToDate < q.ActiveHourFromNone)
+                    if (que.ToDate >= ActiveHourFromNone && que.ToDate <= ActiveHourToNone)
                         return false;
                 }
             }
@@ -539,8 +567,9 @@ namespace Tor
                         FROM Que A INNER JOIN Customer B on A.CustomerId = B.Id
 
                         WHERE A.UserId = @UserId And A.FromDate=@FromDate And A.ToDate=@ToDate And
+                        A.QueType = @QueType And
 
-                        A.CustomerId = @CustomerId And And B.Active=@guid";
+                        A.CustomerId = @CustomerId And A.EmployeeId=@EmployeeId And B.Active=@guid";
 
             //string sql = "SELECT count(1) FROM Customer WHERE [guid] = @guid;";
 

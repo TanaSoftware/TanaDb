@@ -22,6 +22,9 @@
     <script src="js/selectize.js"></script>
     <script src="js/global.js"></script>
     <style>
+        .fc-widget-header {
+            color: #007bff;
+        }
         .selectize-input {
             direction: rtl !important;
             text-align: right !important;
@@ -116,16 +119,16 @@
             <div class="floatR" onclick="SetCal('dayGridMonth')" style="width:50px;"><input class="rdb" id="btnMonthly" type="radio" name="rdbX"><div class="check"></div><span class="floatR">חודשי</span></div>
         </div>
     </div>
-    <div id="dvddlActivity" style="float:right" class="p-2">
-        <select class="form-control" style="width:130px;" id="ddlActivity"></select>
+    <div style="float:right;text-align:left" class="p-2">
+        <select placeholder="בחר עובד" class="form-control" style="width:130px;" id="ddlActivity"></select>
     </div>
     <div id="dvCustomers">
         <div class="d-flex justify-content-center">
 
             <div class="flex-row">
-
+                
                 <div id="dvddlCustomers" style="float:right" class="p-2">
-                    <select class="" style="width:170px;" id="ddlCustomers"></select>
+                    <select placeholder="בחר לקוח" style="width:130px;" id="ddlCustomers"></select>
                 </div>
 
                 <div style="float:right" class="p-2">
@@ -138,7 +141,7 @@
         <div class="d-flex justify-content-center">
 
             <div class="flex-row">
-
+               
                 <div id="dvddlCity" style="float:right" class="p-2">
 
                     <select style="width:100px;" id="ddlCity" placeholder="בחר עיר"></select>
@@ -147,7 +150,7 @@
 
                 <div id="dvddlUserers" style="float:right" class="p-2">
 
-                    <select style="width:150px;" id="ddlUsers" placeholder="בחר בעל עסק"></select>
+                    <select style="width:130px;" id="ddlUsers" placeholder="בחר בעל עסק"></select>
 
                 </div>
 
@@ -536,7 +539,7 @@
 
                         $('#ddlCustomers').selectize()[0].selectize.destroy();
 
-                        selectizeService.InitSelectize("ddlCustomers", 'Id', 'Name', 30, data.customersList, null);
+                        selectizeService.InitSelectize("ddlCustomers", 'Id', 'Name', 38, data.customersList, null);
 
                     }
 
@@ -1080,7 +1083,7 @@
 
         var QueObj = {
 
-            UserId: UserData.UserId,
+            UserId: UserData.isUser ? UserData.UserId : $('#ddlUsers').val(),
 
             guid: UserData.guid,
 
@@ -1090,7 +1093,7 @@
 
             isUser: UserData.isUser,
 
-            CustomerId: $('#ddlCustomers').val(),
+            CustomerId: UserData.isUser ? $('#ddlCustomers').val() : UserData.CustomerId,
 
             QueType: eventId,
             EmployeeId: employeeId
@@ -1161,7 +1164,7 @@
 
         var obj = calendar.getEventById(currentId);
 
-        var eventName = UserData.isUser ? $('#ddlEvent').val() : obj.title;
+        var eventName = $('#ddlEvent').val();
 
         var txtFrom = $("#txtTimeFrom").val();
 
@@ -1169,17 +1172,18 @@
 
         var custId = UserData.isUser ? findCustomerId() : UserData.CustomerId;
 
-        var empId = UserData.isUser ? $('#ddlActivity').val() : 0;
+        var empId = $('#ddlActivity').val();
 
         if (custId < 0) {
 
             return;
 
         }
+        
 
         var QueObj = {
 
-            UserId: UserData.UserId,
+            UserId: UserData.isUser ? UserData.UserId : $('#ddlUsers').val(),
 
             guid: UserData.guid,
 
@@ -1189,7 +1193,7 @@
 
             isUser: UserData.isUser,
 
-            CustomerId: custId,
+            CustomerId: UserData.isUser ? $('#ddlCustomers').val() : UserData.CustomerId,
 
             QueTime: 10,
 
