@@ -10,21 +10,22 @@
     <link href='https://use.fontawesome.com/releases/v5.0.6/css/all.css' rel='stylesheet'>
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' rel='stylesheet' />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css" rel='stylesheet' />
-    <link href="css/genaral.css" rel="stylesheet" />
+    <link href="css/general.css" rel="stylesheet" />
     <script src="js/cal.js"></script>
     <script src="js/moment.js"></script>
 
-    <script src="js/jquery-1.9.1.min.js"></script>
+    <script src="js/jquery.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.he.min.js"></script>
     <script src="js/selectize.js"></script>
-    <script src="js/global.js"></script>
+    
     <style>
         .fc-widget-header {
             color: #007bff;
         }
+
         .selectize-input {
             direction: rtl !important;
             text-align: right !important;
@@ -75,15 +76,15 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item active">
-                    <a class="nav-link" href="Index.html">דף הבית <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="javascript:navigateTo('start.html')">דף הבית <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="Index.html#LoginSec">התחבר</a>
+                    <a class="nav-link" href="javascript:navigateTo('start.html#LoginSec')">התחבר</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="Index.html#RegisterCustomer">הרשם</a>
+                    <a class="nav-link" href="javascript:navigateTo('start.html#RegisterCustomer')">הרשם</a>
                 </li>
-                <li><a href="Index.html#Register" class="nav-link">הרשמה של בעל עסק</a></li>
+                <li><a href="main.html#Register" class="nav-link">הרשמה של בעל עסק</a></li>
             </ul>
         </div>
     </nav>
@@ -126,7 +127,7 @@
         <div class="d-flex justify-content-center">
 
             <div class="flex-row">
-                
+
                 <div id="dvddlCustomers" style="float:right" class="p-2">
                     <select placeholder="בחר לקוח" style="width:130px;" id="ddlCustomers"></select>
                 </div>
@@ -141,7 +142,7 @@
         <div class="d-flex justify-content-center">
 
             <div class="flex-row">
-               
+
                 <div id="dvddlCity" style="float:right" class="p-2">
 
                     <select style="width:100px;" id="ddlCity" placeholder="בחר עיר"></select>
@@ -414,10 +415,18 @@
 
     var customersList;
 
-    init();
+    init();  
 
+    function getScripts() {
+        var v = sessionStorage.getItem("version");
+        $.ajax({
+            url: "js/global.js?ver=" + v,
+            dataType: "script",
+
+        });
+    }
     function init() {
-
+        getScripts();
 
         if (UserData.isUser) {
 
@@ -563,7 +572,7 @@
 
     function getNoActiveDays(BizTypeList) {
         //set unavailable days
-        
+
         for (var i = 0; i < 7; i++) {
 
             var isDayFound = false;
@@ -646,13 +655,13 @@
         return isTodayAvailable;
     }
     function CheckDatePicker(obj) {
-        
+
         todayX = moment(obj.value, 'DD/MM/YYYY').format('YYYY-MM-DD');
         GetQue(UserData, currentUserDetails, GetCalRadioButton());
         calendar.gotoDate(todayX);
-        
+
         $('#datetimepicker1').datepicker('hide');
-        
+
     }
     function setDatePicker(DaysOfWeekDisabled) {
 
@@ -709,7 +718,7 @@
     }
     function GetQue(UserData, currentUserDetails, view) {
         var fromDate, toDate;
-              
+
         var duration = 10;
 
         if (view == null || view == 'timeGrid') {
@@ -750,7 +759,7 @@
         var ActiveHourTo = currentUserDetails != null && currentUserDetails.ActiveHourTo != null ? currentUserDetails.ActiveHourTo : '19:00:00';
         $("#calendar").html("");
         CreateCal(QueObj, ActiveHourFrom, ActiveHourTo, duration, view);
-       
+
     }
 
     function calcHourLength(minimumTime, maximumTime, duration) {
@@ -870,7 +879,7 @@
                 today: 'היום',
                 left: 'הבא'
             },
-            displayEventTime: false,           
+            displayEventTime: false,
             defaultView: view,//'timeGrid',
             minTime: minimumTime,
             maxTime: maximumTime,
@@ -886,13 +895,14 @@
             editable: true,
             eventLimit: true,
             selectable: true,
+            longPressDelay:300,
             //dateClick: function(info) {
             //    alert('clicked ' + info.dateStr);
             //},
-            select: function (info) {
+            select: function (info) {                
                 SetCalData(info);
             },
-            eventClick: function (info) {
+            eventClick: function (info) {                
                 SetCalData(info);
             },
             locale: 'he',
@@ -901,19 +911,19 @@
             //hiddenDays: hiddenDaysArr,
             themeSystem: 'bootstrap',
 
-            allDaySlot: false,            
+            allDaySlot: false,
             events: {
                 url: 'Que/GetQue',
                 method: 'POST',
                 extraParams: data,
-                failure: function() {
-                   
+                failure: function () {
+
                 }
             }
 
         });
 
-       
+
 
         calendar.render();
 
@@ -1007,14 +1017,14 @@
     $("#next").click(function () {
         todayX = moment(todayX).add(1, 'days').format('YYYY-MM-DD');
         $('#datetimepicker1').val(moment(todayX).format('DD/MM/YYYY'));
-        CheckDatePicker(document.getElementById("datetimepicker1"));       
+        CheckDatePicker(document.getElementById("datetimepicker1"));
 
     });
 
 
 
     $("#prev").click(function () {
-        
+
         todayX = moment(todayX).add(-1, 'days').format('YYYY-MM-DD');
         $('#datetimepicker1').val(moment(todayX).format('DD/MM/YYYY'));
         CheckDatePicker(document.getElementById("datetimepicker1"));
@@ -1179,7 +1189,7 @@
             return;
 
         }
-        
+
 
         var QueObj = {
 
@@ -1426,5 +1436,8 @@
         GetQue(UserData, null);
 
     }
-
+    function navigateTo(url) {
+        var v = sessionStorage.getItem("version");
+        location.href = url+"?ver=" + v;
+    }
 </script>

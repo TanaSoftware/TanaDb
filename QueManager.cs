@@ -48,7 +48,7 @@ namespace Tor
         [Required]
         public string QueType { get; set; }
 
-        
+
     }
 
     public class QueData
@@ -167,7 +167,7 @@ namespace Tor
 
 
 
-                IEnumerable<QueData> QueDataRows = db.QueryData<QueData>(sql, 1, new { UserId = que.UserId, FromDate = que.FromDate, ToDate = que.ToDate, CustomerId = que.CustomerId, EmployeeId=que.EmployeeId });
+                IEnumerable<QueData> QueDataRows = db.QueryData<QueData>(sql, 1, new { UserId = que.UserId, FromDate = que.FromDate, ToDate = que.ToDate, CustomerId = que.CustomerId, EmployeeId = que.EmployeeId });
 
                 var sqlEmp = "Select * FROM UsersActivity WHERE EmployeeId=@EmployeeId And UserId=@UserId";// And ActiveHourFromNone is not null
 
@@ -177,13 +177,13 @@ namespace Tor
                     var totalDays = (que.ToDate - que.FromDate).TotalDays;
                     Dictionary<int, QueActiveData> dicQ = new Dictionary<int, QueActiveData>();
                     foreach (QueActiveData q in BusyQue)
-                    {                        
-                        if(!dicQ.ContainsKey(q.ActiveDay))
+                    {
+                        if (!dicQ.ContainsKey(q.ActiveDay))
                             dicQ.Add(q.ActiveDay, q);
 
                     }
-                    
-                    if(totalDays<=1)
+
+                    if (totalDays <= 1)
                     {
                         int currentDay = GetCurrentDay(que.FromDate);
                         if (dicQ.ContainsKey(currentDay))
@@ -196,7 +196,7 @@ namespace Tor
                                 qData.title = "תפוס";
                                 qData.backgroundColor = "#f00";
                                 lst.Add(qData);
-                            }                            
+                            }
                         }
                         else
                         {
@@ -212,13 +212,13 @@ namespace Tor
                     {
                         DateTime dt = StartOfWeek(que.FromDate.Date, DayOfWeek.Sunday);
                         for (int i = 1; i <= 7; i++)
-                        {                            
+                        {
                             if (dicQ.ContainsKey(i))
                             {
                                 if (dicQ[i].ActiveHourFromNone.Year != 1)
                                 {
                                     QueData qData = new QueData();
-                                    
+
                                     TimeSpan tsFrom = new TimeSpan(dicQ[i].ActiveHourFromNone.Hour, dicQ[i].ActiveHourFromNone.Minute, 0);
                                     qData.start = (dt + tsFrom);
 
@@ -227,35 +227,35 @@ namespace Tor
                                     qData.title = "תפוס";
                                     qData.backgroundColor = "#f00";
                                     lst.Add(qData);
-                                }                             
+                                }
                             }
                             else
                             {
                                 QueData qData = new QueData();
                                 qData.start = dt + new TimeSpan(0, 0, 0);
-                                qData.end = dt + new TimeSpan(23,59, 0);
+                                qData.end = dt + new TimeSpan(23, 59, 0);
                                 qData.title = "תפוס";
                                 qData.backgroundColor = "#f00";
                                 lst.Add(qData);
                             }
-                            dt = dt.AddDays(1);                            
+                            dt = dt.AddDays(1);
 
                         }
                     }
-                    if(totalDays>7)
+                    if (totalDays > 7)
                     {
-                        
+
                         var startDate = new DateTime(que.FromDate.Year, que.FromDate.Month, 1);
                         //var endDate = startDate.AddMonths(1).AddDays(-1);
                         for (int i = 0; i < totalDays; i++)
-                        {                            
+                        {
                             int currentDay = GetCurrentDay(startDate);
                             if (dicQ.ContainsKey(currentDay))
                             {
                                 if (dicQ[currentDay].ActiveHourFromNone.Year != 1)
                                 {
                                     QueData qData = new QueData();
-                                    
+
                                     TimeSpan tsFrom = new TimeSpan(dicQ[currentDay].ActiveHourFromNone.Hour, dicQ[currentDay].ActiveHourFromNone.Minute, 0);
                                     qData.start = (startDate + tsFrom);
 
@@ -265,7 +265,7 @@ namespace Tor
                                     string fromMin = dicQ[currentDay].ActiveHourFromNone.Minute.ToString();
                                     string toHour = dicQ[currentDay].ActiveHourToNone.Hour.ToString();
                                     string toMin = dicQ[currentDay].ActiveHourToNone.Minute.ToString();
-                                    
+
                                     //fromMin = fromMin=="0" ? fromMin += "00" : fromMin;
                                     //toHour = toHour.EndsWith(":0") ? toHour += "00" : toHour;
                                     //toMin = toMin == "0" ? toMin += "0" : toMin;
@@ -289,7 +289,7 @@ namespace Tor
                 }
 
                 if (QueDataRows.Count() > 0)
-                {                                        
+                {
                     lst.AddRange(QueDataRows);
                 }
 
@@ -314,9 +314,9 @@ namespace Tor
         public int GetCurrentDay(DateTime dt)
         {
             int currentDay = (int)dt.DayOfWeek;
-            
+
             return currentDay + 1;
-            
+
         }
         public DateTime StartOfWeek(DateTime dt, DayOfWeek startOfWeek)
         {
@@ -375,9 +375,9 @@ namespace Tor
 
             }
 
-            return "";            
+            return "";
         }
-        
+
 
         private bool IsCustomerQueExist(Que que)
         {
@@ -386,7 +386,7 @@ namespace Tor
 
             DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
-            return db.IsExist(sql, new { UserId = que.UserId, FromDate = que.FromDate, ToDate = que.ToDate, EmployeeId=que.EmployeeId }, 1);
+            return db.IsExist(sql, new { UserId = que.UserId, FromDate = que.FromDate, ToDate = que.ToDate, EmployeeId = que.EmployeeId }, 1);
 
         }
 
@@ -425,13 +425,13 @@ namespace Tor
 
             DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
-            IEnumerable<QueActiveData> BusyQue = 
-                db.QueryData<QueActiveData>(sql, 1, new { EmployeeId = que.EmployeeId, UserId = que.UserId , ActiveDay = currentDay});
+            IEnumerable<QueActiveData> BusyQue =
+                db.QueryData<QueActiveData>(sql, 1, new { EmployeeId = que.EmployeeId, UserId = que.UserId, ActiveDay = currentDay });
 
             if (BusyQue.Count() <= 0)
                 return false;
 
-            foreach(QueActiveData q in BusyQue)
+            foreach (QueActiveData q in BusyQue)
             {
                 TimeSpan tsFr = new TimeSpan(q.ActiveHourFrom.Hour, q.ActiveHourFrom.Minute, 0);
                 DateTime ActiveHourFrom = (que.FromDate.Date + tsFr);
@@ -451,14 +451,14 @@ namespace Tor
                 if (que.ToDate > ActiveHourTo)
                     return false;
 
-                if (q.ActiveHourFromNone.Year!=1)//there is hour in table
+                if (q.ActiveHourFromNone.Year != 1)//there is hour in table
                 {
                     TimeSpan tsFrom = new TimeSpan(q.ActiveHourFromNone.Hour, q.ActiveHourFromNone.Minute, 0);
                     DateTime ActiveHourFromNone = (que.FromDate.Date + tsFrom);
                     TimeSpan tsTo = new TimeSpan(q.ActiveHourToNone.Hour, q.ActiveHourToNone.Minute, 0);
                     DateTime ActiveHourToNone = (que.ToDate.Date + tsTo);
 
-                    if (que.FromDate >= ActiveHourFromNone && que.FromDate< ActiveHourToNone)
+                    if (que.FromDate >= ActiveHourFromNone && que.FromDate < ActiveHourToNone)
                         return false;
                     if (que.ToDate >= ActiveHourFromNone && que.ToDate <= ActiveHourToNone)
                         return false;
@@ -618,7 +618,6 @@ namespace Tor
     }
 
 }
-
 
 
 

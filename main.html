@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <title></title>
+</head>
+<body>
+
+</body>
+
+</html>
+<script>
+    start();
+
+    function start() {
+        $.ajax({
+            url: "Site/GetVersion",
+            type: 'GET',            
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                
+                var ver = sessionStorage.setItem("version", data);
+                gotToIndex(data);
+            },
+            error: function (request, status, error) {
+                
+            }
+        });
+    }
+
+    function gotToIndex(ver) {
+        location.href = "start.html?ver=" + ver;
+    }
+</script>
