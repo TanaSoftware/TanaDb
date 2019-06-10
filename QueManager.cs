@@ -382,7 +382,7 @@ namespace Tor
         private bool IsCustomerQueExist(Que que)
         {
 
-            string sql = "SELECT count(1) FROM Que WHERE [UserId] = @UserId And EmployeeId = @EmployeeId And [FromDate]=@FromDate And [ToDate]=@ToDate;";
+            string sql = "SELECT count(1) FROM Que WHERE [UserId] = @UserId And EmployeeId = @EmployeeId And [FromDate]>=@FromDate And [ToDate]<=@ToDate;";
 
             DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
@@ -618,6 +618,5 @@ namespace Tor
     }
 
 }
-
 
 

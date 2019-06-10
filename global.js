@@ -1,8 +1,8 @@
 ﻿var messageHandler = {
 
     Show: function (msg) {
-
-        var htmlName = 'Message.html';
+        var v = sessionStorage.getItem("version");
+        var htmlName = 'Message.html?v='+v;
 
         $.get(htmlName, function (html) {
 
@@ -307,12 +307,13 @@ var CookieManager = {
 }
 
 function goToCal(data) {
-
+    var v = sessionStorage.getItem("version");
+    
     if (data != null) {
 
         sessionStorage.setItem("UserData", JSON.stringify(data));
 
-        location.href = "cal.html";
+        location.href = "cal.html?v=" + v;
 
     }
 

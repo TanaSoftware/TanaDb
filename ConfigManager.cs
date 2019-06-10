@@ -1,22 +1,26 @@
 ﻿using System.Configuration;
+using System.Web.Configuration;
 
 namespace Tor
 {
     public class ConfigManager
-
     {
-
         public static string ConnectionString
         {
-
             get
-
             {
-
-                return ConfigurationManager.ConnectionStrings["MyTorConn"].ConnectionString;
-
+                //tode - encrypt decrypt
+                return WebConfigurationManager.ConnectionStrings["ConnStringDb"].ConnectionString;                
             }
+        }
 
+        public static string MailServer
+        {
+            get
+            {
+                
+                return ConfigurationManager.AppSettings["MailServer"];
+            }
         }
 
         public static string version
@@ -31,6 +35,5 @@ namespace Tor
             }
 
         }
-
     }
 }

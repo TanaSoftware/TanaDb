@@ -20,7 +20,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.he.min.js"></script>
     <script src="js/selectize.js"></script>
-    
     <style>
         .fc-widget-header {
             color: #007bff;
@@ -66,7 +65,26 @@
 
 <body dir="rtl">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+        <div style="text-align:left" class="d-flex justify-content-center">
+            <div>
+
+                <button type="button" style="float:right;margin-top:8px;" class="btn btn-primary btn-sm prevNext" id="prev">&lt;</button>
+
+                <div style="float:right" class="p-2">
+
+                    <div class="input-group date">
+
+                        <input type="text" id="datetimepicker1" onchange="CheckDatePicker(this)" class="form-control" placeholder="תאריך" style="max-width:110px;"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+
+                    </div>
+
+                </div>
+
+                <button type="button" id="next" class="btn btn-primary btn-sm prevNext" style="float:right;margin-top:8px;">&gt;</button>
+
+            </div>
+        </div>
         <a href="#" class="navbar-brand page-scroll">
 
         </a>
@@ -86,31 +104,12 @@
                 </li>
                 <li><a href="main.html#Register" class="nav-link">הרשמה של בעל עסק</a></li>
             </ul>
+
+
         </div>
     </nav>
 
 
-    <div class="d-flex justify-content-center">
-
-        <div>
-
-            <button type="button" style="float:right;margin-top:8px;" class="btn btn-primary btn-sm prevNext" id="prev">&lt;</button>
-
-            <div style="float:right" class="p-2">
-
-                <div class="input-group date">
-
-                    <input type="text" id="datetimepicker1" onchange="CheckDatePicker(this)" class="form-control" placeholder="תאריך" style="max-width:140px;"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-
-                </div>
-
-            </div>
-
-            <button type="button" id="next" class="btn btn-primary btn-sm prevNext" style="float:right;margin-top:8px;">&gt;</button>
-
-        </div>
-
-    </div>
 
     <div class="d-flex justify-content-center">
 
@@ -121,7 +120,7 @@
         </div>
     </div>
     <div style="float:right;text-align:left" class="p-2">
-        <select placeholder="בחר עובד" class="form-control" style="width:130px;" id="ddlActivity"></select>
+        <select placeholder="בחר עובד" class="form-control" style="width:100px;" id="ddlActivity"></select>
     </div>
     <div id="dvCustomers">
         <div class="d-flex justify-content-center">
@@ -129,11 +128,11 @@
             <div class="flex-row">
 
                 <div id="dvddlCustomers" style="float:right" class="p-2">
-                    <select placeholder="בחר לקוח" style="width:130px;" id="ddlCustomers"></select>
+                    <select placeholder="בחר לקוח" style="width:110px;" id="ddlCustomers"></select>
                 </div>
 
                 <div style="float:right" class="p-2">
-                    <button type="button" onclick="AddModalCustomer()" class="btn btn-primary btn-sm" style="margin-right:3px;">הוסף לקוח </button>
+                    <button type="button" onclick="AddModalCustomer()" class="btn btn-primary btn-sm" style="margin-right:10px;">הוסף לקוח </button>
                 </div>
             </div>
         </div>
@@ -415,18 +414,26 @@
 
     var customersList;
 
-    init();  
+    getScripts();
 
     function getScripts() {
         var v = sessionStorage.getItem("version");
         $.ajax({
             url: "js/global.js?ver=" + v,
             dataType: "script",
+            success: function (data) {
 
+                init();
+            },
+            error: function (request, status, error) {
+
+            }
         });
+
+
     }
     function init() {
-        getScripts();
+
 
         if (UserData.isUser) {
 
@@ -443,7 +450,9 @@
             SetCustomer();
 
             $('#dvCustomers').addClass('forceDispNone');
-
+            if (currentUserDetails == null) {
+                setTimeout(showTooltip("ddlCity", "נא לבחור עיר"), 1000);
+            }
         }
 
     }
@@ -629,8 +638,9 @@
         notActiveDays = getNoActiveDays(BizTypeList);
 
         setDatePicker(notActiveDays);
-
-        GetQue(UserData, currentUserDetails);
+        if (LastView == "")
+            LastView = "timeGridWeek";
+        GetQue(UserData, currentUserDetails, LastView);
     }
 
     function CheckTodayAvailable(BizTypeList, day) {
@@ -869,7 +879,7 @@
             plugins: ['interaction', 'dayGrid', 'timeGrid'],
 
             //eventColor: '#378006',
-
+            height: 650,
             header: { // layout header
                 left: '',
                 center: '',
@@ -895,14 +905,14 @@
             editable: true,
             eventLimit: true,
             selectable: true,
-            longPressDelay:300,
+            longPressDelay:130,
             //dateClick: function(info) {
             //    alert('clicked ' + info.dateStr);
             //},
-            select: function (info) {                
+            select: function (info) {
                 SetCalData(info);
             },
-            eventClick: function (info) {                
+            eventClick: function (info) {
                 SetCalData(info);
             },
             locale: 'he',
@@ -1197,13 +1207,13 @@
 
             guid: UserData.guid,
 
-            FromDate: todayX + "T" + txtFrom,
+            FromDate: currentDate + txtFrom,
 
-            ToDate: todayX + "T" + txtTo,
+            ToDate: currentDate + txtTo,
 
             isUser: UserData.isUser,
 
-            CustomerId: UserData.isUser ? $('#ddlCustomers').val() : UserData.CustomerId,
+            CustomerId: custId,
 
             QueTime: 10,
 
@@ -1440,4 +1450,6 @@
         var v = sessionStorage.getItem("version");
         location.href = url+"?ver=" + v;
     }
+
+    //calendar.setOption('height', 700);
 </script>
