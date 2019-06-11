@@ -12,8 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Tor.Dal;
-
-
+using System.Globalization;
 
 namespace Tor
 
@@ -155,7 +154,7 @@ namespace Tor
 
                 DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
-                string select = que.isUser ? "U.Name + ' ' + B.Name" : "CASE When B.Id=@CustomerId THEN U.Name ELSE 'תפוס' END";
+                string select = que.isUser ? "U.Name + ' ' + B.Name" : "CASE When B.Id=@CustomerId THEN U.Name ELSE N'תפוס' END";
                 //string select = que.isUser ? "": "";
                 var sql = @"SELECT A.id," + select + @" As [title],A.FromDate As [start],A.ToDate As [end]
 
@@ -310,6 +309,25 @@ namespace Tor
 
             return lst;
 
+        }
+
+        private List<QueData> GetHeb(DateTime from, DateTime to)
+        {
+            Dictionary<int, int> di = new Dictionary<int, int>();
+            DateTime Today = new DateTime(2019,6,9);
+            List<QueData> lst = new List<QueData>();
+            Calendar HebCal = new HebrewCalendar();
+            int curYear = HebCal.GetYear(Today);    //current numeric hebrew year
+            int curMonth = HebCal.GetMonth(Today);
+            int curDay = HebCal.GetDayOfMonth(Today);
+            DateTime d = HebCal.ToDateTime(curYear, curMonth, curDay, 0, 0, 0, 0);
+            QueData qData = new QueData();
+            //qData.start = startDate + new TimeSpan(0, 0, 0);
+            //qData.end = startDate + new TimeSpan(23, 59, 0);
+            qData.title = "תפוס";
+            qData.backgroundColor = "#f00";
+            lst.Add(qData);
+            return lst;
         }
         public int GetCurrentDay(DateTime dt)
         {

@@ -32,6 +32,11 @@
 
 var selectizeService = {
 
+    setValue: function (id, val) {
+        var selectizeMe = $("#" + id);
+        var selectize = selectizeMe[0].selectize;
+        selectize.setValue(val);
+    },
     InitSelectize: function (ID, Value, Title, Height, Options, SetValue) {
 
 
@@ -89,9 +94,9 @@ var selectizeService = {
 
         var selectize = selectizeMe[0].selectize;
 
-        selectize.addOption({ value: val, text: Title });
+        selectize.addItem({ value: val, text: Title });
 
-        selectize.refreshOptions();
+        //selectize.refreshOptions();
 
     }
 
@@ -307,12 +312,12 @@ var CookieManager = {
 }
 
 function goToCal(data) {
-    var v = sessionStorage.getItem("version");
+    
     
     if (data != null) {
 
         sessionStorage.setItem("UserData", JSON.stringify(data));
-
+        var v = sessionStorage.getItem("version");
         location.href = "cal.html?v=" + v;
 
     }

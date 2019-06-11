@@ -247,7 +247,7 @@ namespace Tor
 
         public string City { get; set; }
 
-
+        public string version { get; set; }
 
         [Required]
 
@@ -1430,20 +1430,21 @@ namespace Tor
             if (UserX == null)
                 return null;
 
-            string cityName = "";
+            //string cityName = "";
             foreach (UserObj u in UserX)
             {
-                string sqlCity = "select name From City where [Id]=@Id";
-                IEnumerable<string> city = db.QueryData<string>(sqlCity, 1, new { Id = u.City });
-                foreach (string c in city)
-                {
-                    cityName = c;
-                }
-                userSearch.City = cityName;
+                //string sqlCity = "select name From City where [Id]=@Id";
+                //IEnumerable<string> city = db.QueryData<string>(sqlCity, 1, new { Id = u.City });
+                //foreach (string c in city)
+                //{
+                //    cityName = c;
+                //}
+                userSearch.City = u.City;
                 userSearch.Adrress = u.Adrress;
                 userSearch.Id = u.Id;
                 userSearch.tel = u.tel;
-                userSearch.User = u.BizName;
+                userSearch.User = u.User;
+                userSearch.version = ConfigManager.version;
                 return userSearch;
             }
             return null;

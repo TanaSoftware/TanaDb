@@ -10,16 +10,17 @@
     <link href='https://use.fontawesome.com/releases/v5.0.6/css/all.css' rel='stylesheet'>
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' rel='stylesheet' />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css" rel='stylesheet' />
-    <link href="css/general.css" rel="stylesheet" />
+    <link href="css/genaral.css" rel="stylesheet" />
     <script src="js/cal.js"></script>
     <script src="js/moment.js"></script>
 
-    <script src="js/jquery.js"></script>
+    <script src="js/jquery-1.9.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.he.min.js"></script>
     <script src="js/selectize.js"></script>
+    <script src="js/global.js"></script>
     <style>
         .fc-widget-header {
             color: #007bff;
@@ -85,29 +86,29 @@
 
             </div>
         </div>
-        <a href="#" class="navbar-brand page-scroll">
+            <a href="#" class="navbar-brand page-scroll">
 
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item active">
-                    <a class="nav-link" href="javascript:navigateTo('start.html')">דף הבית <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="javascript:navigateTo('start.html#LoginSec')">התחבר</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="javascript:navigateTo('start.html#RegisterCustomer')">הרשם</a>
-                </li>
-                <li><a href="main.html#Register" class="nav-link">הרשמה של בעל עסק</a></li>
-            </ul>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="javascript:navigateTo('start.html')">דף הבית <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="javascript:navigateTo('start.html#LoginSec')">התחבר</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="javascript:navigateTo('start.html#RegisterCustomer')">הרשם</a>
+                    </li>
+                    <li><a href="main.html#Register" class="nav-link">הרשמה של בעל עסק</a></li>
+                </ul>
 
 
-        </div>
-    </nav>
+            </div>
+</nav>
 
 
 
@@ -143,31 +144,16 @@
             <div class="flex-row">
 
                 <div id="dvddlCity" style="float:right" class="p-2">
-
                     <select style="width:100px;" id="ddlCity" placeholder="בחר עיר"></select>
-
                 </div>
-
                 <div id="dvddlUserers" style="float:right" class="p-2">
-
-                    <select style="width:130px;" id="ddlUsers" placeholder="בחר בעל עסק"></select>
-
-                </div>
-
-                <!--<div style="float:right" class="p-2">
-
-                    <button type="button" onclick="CheckAvailability()" class="btn btn-primary btn-sm" style="margin-right:3px;">בדוק </button>
-
-                </div>-->
-
+                    <select style="width:110px;" id="ddlUsers" placeholder="בחר בעל עסק"></select>
+                </div>              
             </div>
-
         </div>
     </div>
     <div id="calendar"></div>
-
-
-
+    
     <!--Add event modal-->
 
     <div id="createEventModal" class="modal fade">
@@ -179,7 +165,7 @@
                 <div class="modal-header">
 
                     <div style="float:right;color:#007bff;"><h4>זמן תור</h4></div>
-
+                    <div style="float:right;color:#007bff;padding-right:5px;"><h4><span id="spnEventMsg"></span></h4></div>
                     <div style="float:left">
 
                         <button type="button" class="close" data-dismiss="modal">
@@ -411,7 +397,7 @@
     var notActiveDays = "";
     var currentUserForCustomer;
     var currentUserDetails;
-
+    var UserForCustomerDetails;
     var customersList;
 
     getScripts();
@@ -422,19 +408,21 @@
             url: "js/global.js?ver=" + v,
             dataType: "script",
             success: function (data) {
-
+                
                 init();
             },
             error: function (request, status, error) {
-
+                
             }
         });
 
-
+      
     }
     function init() {
-
-
+        
+        if (UserData == null) {
+            location.href = "main.html";
+        }
         if (UserData.isUser) {
 
             $('#dvUsers').addClass('forceDispNone');
@@ -448,10 +436,22 @@
         else {
 
             SetCustomer();
-
+            
             $('#dvCustomers').addClass('forceDispNone');
-            if (currentUserDetails == null) {
+
+            UserForCustomerDetails = JSON.parse(sessionStorage.getItem("UserForCustomerDetails"));
+            if (UserForCustomerDetails == null) {
                 setTimeout(showTooltip("ddlCity", "נא לבחור עיר"), 1000);
+            }
+            else {
+                setTimeout(function () {
+                    selectizeService.setValue('ddlCity', UserForCustomerDetails.City);
+                    
+                    var selectizeMe = $("#ddlUsers")
+                    var v = selectizeMe[0].selectize;
+                    v.addOption({ Id: UserForCustomerDetails.Id, User: UserForCustomerDetails.User }); //option can be created manually or loaded using Ajax
+                    v.addItem(UserForCustomerDetails.Id);
+                }, 100);
             }
         }
 
@@ -581,25 +581,25 @@
 
     function getNoActiveDays(BizTypeList) {
         //set unavailable days
+        if (BizTypeList != null) {
+            for (var i = 0; i < 7; i++) {
 
-        for (var i = 0; i < 7; i++) {
+                var isDayFound = false;
 
-            var isDayFound = false;
+                for (var j = 0; j < BizTypeList.length; j++) {
 
-            for (var j = 0; j < BizTypeList.length; j++) {
+                    if (BizTypeList[j].ActiveDay == (i + 1)) {
+                        isDayFound = true;
+                    }
+                }
 
-                if (BizTypeList[j].ActiveDay == (i + 1)) {
-                    isDayFound = true;
+                if (!isDayFound) {
+
+                    notActiveDays += i.toString() + ",";
+
                 }
             }
-
-            if (!isDayFound) {
-
-                notActiveDays += i.toString() + ",";
-
-            }
         }
-
         if (notActiveDays.length > 0)
 
             notActiveDays = notActiveDays.substr(0, notActiveDays.length - 1);
@@ -609,7 +609,7 @@
 
     function setUser(userData) {
         var activeDays = [], notActiveDays = "";
-
+        document.getElementById("ddlActivity").options.length = 0;
         var index = 0;
         for (obj in userData.dicBizType) {
             $('#ddlActivity').append($("<option></option>").attr("value", userData.dicBizType[obj][0].EmployeeId).text(obj));
@@ -621,6 +621,7 @@
             setUserActivities(BizTypeList);
         });
 
+        document.getElementById("ddlEvent").options.length = 0;
         for (var i = 0; i < userData.Activities.length; i++) {
             $('#ddlEvent').append($("<option></option>").attr("value", userData.Activities[i].Id).text(userData.Activities[i].Name));
         }
@@ -647,21 +648,21 @@
         //check is Today Available
 
         var isTodayAvailable = false;
+        if (BizTypeList != null) {
+            for (var i = 0; i < BizTypeList.length; i++) {
 
-        for (var i = 0; i < BizTypeList.length; i++) {
+                if (day == BizTypeList[i].ActiveDay) {
 
-            if (day == BizTypeList[i].ActiveDay) {
+                    isTodayAvailable = true;
 
-                isTodayAvailable = true;
+                    currentUserDetails = BizTypeList[i];
 
-                currentUserDetails = BizTypeList[i];
+                    break;
 
-                break;
+                }
 
             }
-
         }
-
         return isTodayAvailable;
     }
     function CheckDatePicker(obj) {
@@ -1007,18 +1008,22 @@
 
                 qCustomer = qCustomer.trim();
 
-                var qTypeId = findEventByName(qType);
+                var qTypeId = findEventByName(UserData.Activities, qType);
                 if (qTypeId != null)
                     $('#ddlEvent').val(qTypeId.Id);
 
                 currentCustomerName = qCustomer;
-
+                $("#spnEventMsg").text(" ל " + currentCustomerName);
+            }
+            else {
+                var qTypeId = findEventByName(currentUserForCustomer.Activities, InfoObj.title);
+                $('#ddlEvent').val(qTypeId.Id);
             }
 
             btnDeleteQue.style.display = "";
 
         }
-
+        //
         $('#createEventModal').modal('show');
 
         //}
@@ -1171,10 +1176,10 @@
 
     }
 
-    function findEventByName(name) {
-        for (var i = 0; i < UserData.Activities.length; i++) {
-            if (UserData.Activities[i].Name == name)
-                return UserData.Activities[i];
+    function findEventByName(Activities,name) {
+        for (var i = 0; i < Activities.length; i++) {
+            if (Activities[i].Name == name)
+                return Activities[i];
         }
         return null;
     }
@@ -1312,13 +1317,13 @@
 
             create: false,
 
-            render: {
+            //render: {
 
-                option: function (item, escape) {
+            //    option: function (item, escape) {
 
-                    return '<div>' + escape(item.User) + '</div>';
-                }
-            },
+            //        return '<div>' + escape(item.User) + '</div>';
+            //    }
+            //},
             onChange: function (value) {
                 // get user default activities
                 var UserSearch = { Id: value, guid: UserData.guid }

@@ -38,11 +38,19 @@ namespace Tor
             //response.Headers.AddCookies(new CookieHeaderValue[] { cookie });
             
             response = Request.CreateResponse(HttpStatusCode.Moved);
-            string fullyQualifiedUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority) + "/TorApp/Biz.html?id="+id;
+            string fullyQualifiedUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority) + "/TorApp/Biz.html?v="+ConfigManager.version  +"&id="+id;
             response.Headers.Location = new Uri(fullyQualifiedUrl);
             return response;
         }
-        
+
+        [HttpGet]
+        [ActionName("GetVersion")]
+        public string GetVersion()
+        {
+            return ConfigManager.version;
+        }
+
+
 
     }
 

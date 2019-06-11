@@ -573,34 +573,9 @@
     }
 
 
-
-    function EnableNoneActiveHours(obj) {
-
-        if (obj.checked) {
-
-            $("#txtfromHourNone").removeAttr("disabled");
-
-            $("#txttoHourNone").removeAttr("disabled");
-
-        }
-
-        else {
-
-            $("#txtfromHourNone").attr("disabled", "disabled");
-
-            $("#txttoHourNone").attr("disabled", "disabled");
-
-        }
-
-
-
-    }
-
-
-
     function init() {
 
-        
+
         var city, BizName = "";
         var id = location.search;
         id = id.split('=')[2];
@@ -618,6 +593,8 @@
 
                     return;
                 }
+                sessionStorage.setItem("UserForCustomerDetails", JSON.stringify(data));
+                sessionStorage.setItem("version", data.version);
                 $('#spnBizName').text(data.User);
 
             },
