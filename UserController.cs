@@ -139,10 +139,16 @@ namespace Tor.Controllers
             UserManager u = new UserManager();
             return u.GetUserByBizName(id);
         }
+
         [HttpPost]
+        public UserDetailsWrapper GetUserDetails(UserSearch id)
+        {
+            UserManager u = new UserManager();
+            return  u.GetUserDetails(id);
+        }
 
+            [HttpPost]
         [ActionName("UserAddCustmer")]
-
         public string UserAddCustmer(CustomerObjBase id)
 
         {

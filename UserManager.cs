@@ -143,8 +143,26 @@ namespace Tor
 
     }
 
+    public class UserDetailsData
+    {
+        public int Id { get; set; }
+        public string User { get; set; }
+        public string Email { get; set; }
+        public string Tel { get; set; }
+        public string BizName { get; set; }
 
 
+        public string BizNameEng { get; set; }
+        public string Adrress { get; set; }
+        public string City { get; set; }
+        public string Country { get; set; }
+    }
+    public class UserDetailsWrapper
+    {
+        public UserDetails userDetails { get; set; }
+
+        public UserDetailsData userDetailsData { get; set; }
+    }
     public class UserDetails
 
     {
@@ -1338,6 +1356,50 @@ namespace Tor
             userDetails.dicBizType = getBizTypeDictionary(user.Id);
             userDetails.Activities = getUserActivities(user.Id);
             return userDetails;
+
+        }
+
+        public UserDetailsWrapper GetUserDetails(UserSearch user)
+
+        {
+            UserDetailsWrapper wrapper = new UserDetailsWrapper();
+            UserDetails userDetails = new UserDetails();
+
+            string sql = "SELECT * FROM Users WHERE [Active] = @guid;";
+
+            DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+
+            bool isUserExists = false;
+
+            IEnumerable<UserDetailsData> UserX = db.QueryData<UserDetailsData>(sql, 1, new { guid = user.guid });
+            int userId = 0;
+
+            foreach (UserDetailsData u in UserX)
+            {
+                UserDetailsData ud = new UserDetailsData();
+                ud.Adrress = u.Adrress;
+                ud.BizName = u.BizName;
+                ud.BizNameEng = u.BizNameEng;
+                ud.City = u.City;
+                ud.Email = u.Email;
+                ud.Tel = u.Tel;
+                ud.User = u.User;
+                userId = u.Id;
+                wrapper.userDetailsData = ud;
+                isUserExists = true;
+            }
+
+            if(!isUserExists)
+            {
+                userDetails.ErrorMsg = "ארעה שגיאה";
+                wrapper.userDetails = userDetails;
+                return wrapper;
+            }
+            userDetails.dicBizType = getBizTypeDictionary(userId);
+            userDetails.Activities = getUserActivities(userId);
+            wrapper.userDetails = userDetails;
+
+            return wrapper;
 
         }
 

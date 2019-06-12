@@ -46,6 +46,7 @@
 
             .fc-content {
                 padding: 5px;
+                font-size:10px;
             }
 
 
@@ -103,14 +104,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="javascript:navigateTo('start.html#RegisterCustomer')">הרשם</a>
                     </li>
-                    <li><a href="main.html#Register" class="nav-link">הרשמה של בעל עסק</a></li>
+                    <li id="liUpdateBiz" style="display:none"><a href="BizUpdate.html" class="nav-link">עדכון פרטי עסק</a></li>
                 </ul>
 
 
             </div>
 </nav>
-
-
 
     <div class="d-flex justify-content-center">
 
@@ -399,6 +398,7 @@
     var currentUserDetails;
     var UserForCustomerDetails;
     var customersList;
+    var isPageLoad = true;
 
     getScripts();
 
@@ -430,7 +430,7 @@
             getMyCustomers();
 
             setUser(UserData);
-
+            $('#liUpdateBiz').show();
         }
 
         else {
@@ -923,14 +923,14 @@
             themeSystem: 'bootstrap',
 
             allDaySlot: false,
-            events: {
+            eventSources: [{
                 url: 'Que/GetQue',
                 method: 'POST',
                 extraParams: data,
                 failure: function () {
 
                 }
-            }
+            }]
 
         });
 
@@ -951,7 +951,7 @@
 
         }
 
-        if (info.event != null && info.event.title == 'תפוס')
+        if (info.event != null && info.event.backgroundColor == '#f00')
             return;
 
         currentId = info.event ? info.event.id : 0;
@@ -1301,10 +1301,34 @@
     function SetCustomer() {
 
         getCities(function (data) {
-            selectizeService.InitSelectize("ddlCity", 'Id', 'Name', null, data, null);
+            //selectizeService.InitSelectize("ddlCity", 'Id', 'Name', null, data, null);
+            $('#ddlCity').selectize({
+
+                valueField: 'Id',
+
+                labelField: 'Name',
+
+                searchField: 'Name',
+
+                options: data,
+
+                create: false,
+                onChange: function (value) {
+                    if (!isPageLoad) {
+                        var $select = $('#ddlUsers').selectize();
+                        var control = $select[0].selectize;
+                        control.clear();
+                        control.clearOptions();
+                        
+                    }
+                    isPageLoad = false;
+                }
+
+
+            });
         });
 
-
+       
         $('#ddlUsers').selectize({
 
             valueField: 'Id',
@@ -1316,14 +1340,6 @@
             options: [],
 
             create: false,
-
-            //render: {
-
-            //    option: function (item, escape) {
-
-            //        return '<div>' + escape(item.User) + '</div>';
-            //    }
-            //},
             onChange: function (value) {
                 // get user default activities
                 var UserSearch = { Id: value, guid: UserData.guid }

@@ -7,12 +7,8 @@ using System.Collections.Generic;
 
 using System.Linq;
 
-using System.Text;
-
-using System.Threading.Tasks;
-
 using Tor.Dal;
-using System.Globalization;
+
 
 namespace Tor
 
@@ -187,7 +183,7 @@ namespace Tor
                         int currentDay = GetCurrentDay(que.FromDate);
                         if (dicQ.ContainsKey(currentDay))
                         {
-                            if (dicQ[currentDay].ActiveHourFromNone.Year != 1)
+                            if (dicQ[currentDay].ActiveHourFromNone.Year != 1 && !HebrewCalendarManager.IsDateInHoliday(que.FromDate))
                             {
                                 QueData qData = new QueData();
                                 qData.start = dicQ[currentDay].ActiveHourFromNone;
@@ -199,12 +195,15 @@ namespace Tor
                         }
                         else
                         {
-                            QueData qData = new QueData();
-                            qData.start = que.FromDate.Date + new TimeSpan(0, 0, 0);
-                            qData.end = que.FromDate.Date + new TimeSpan(23, 59, 0);
-                            qData.title = "תפוס";
-                            qData.backgroundColor = "#f00";
-                            lst.Add(qData);
+                            if (!HebrewCalendarManager.IsDateInHoliday(que.FromDate))
+                            {
+                                QueData qData = new QueData();
+                                qData.start = que.FromDate.Date + new TimeSpan(0, 0, 0);
+                                qData.end = que.FromDate.Date + new TimeSpan(23, 59, 0);
+                                qData.title = "תפוס";
+                                qData.backgroundColor = "#f00";
+                                lst.Add(qData);
+                            }
                         }
                     }
                     if (totalDays > 6 && totalDays <= 7)
@@ -214,7 +213,7 @@ namespace Tor
                         {
                             if (dicQ.ContainsKey(i))
                             {
-                                if (dicQ[i].ActiveHourFromNone.Year != 1)
+                                if (dicQ[i].ActiveHourFromNone.Year != 1 && !HebrewCalendarManager.IsDateInHoliday(dt))
                                 {
                                     QueData qData = new QueData();
 
@@ -230,12 +229,15 @@ namespace Tor
                             }
                             else
                             {
-                                QueData qData = new QueData();
-                                qData.start = dt + new TimeSpan(0, 0, 0);
-                                qData.end = dt + new TimeSpan(23, 59, 0);
-                                qData.title = "תפוס";
-                                qData.backgroundColor = "#f00";
-                                lst.Add(qData);
+                                if (!HebrewCalendarManager.IsDateInHoliday(dt))
+                                {
+                                    QueData qData = new QueData();
+                                    qData.start = dt + new TimeSpan(0, 0, 0);
+                                    qData.end = dt + new TimeSpan(23, 59, 0);
+                                    qData.title = "תפוס";
+                                    qData.backgroundColor = "#f00";
+                                    lst.Add(qData);
+                                }
                             }
                             dt = dt.AddDays(1);
 
@@ -251,7 +253,7 @@ namespace Tor
                             int currentDay = GetCurrentDay(startDate);
                             if (dicQ.ContainsKey(currentDay))
                             {
-                                if (dicQ[currentDay].ActiveHourFromNone.Year != 1)
+                                if (dicQ[currentDay].ActiveHourFromNone.Year != 1 && !HebrewCalendarManager.IsDateInHoliday(startDate))
                                 {
                                     QueData qData = new QueData();
 
@@ -275,12 +277,15 @@ namespace Tor
                             }
                             else
                             {
-                                QueData qData = new QueData();
-                                qData.start = startDate + new TimeSpan(0, 0, 0);
-                                qData.end = startDate + new TimeSpan(23, 59, 0);
-                                qData.title = "תפוס";
-                                qData.backgroundColor = "#f00";
-                                lst.Add(qData);
+                                if (!HebrewCalendarManager.IsDateInHoliday(startDate))
+                                {
+                                    QueData qData = new QueData();
+                                    qData.start = startDate + new TimeSpan(0, 0, 0);
+                                    qData.end = startDate + new TimeSpan(23, 59, 0);
+                                    qData.title = "תפוס";
+                                    qData.backgroundColor = "#f00";
+                                    lst.Add(qData);
+                                }
                             }
                             startDate = startDate.AddDays(1);
                         }
@@ -292,7 +297,9 @@ namespace Tor
                     lst.AddRange(QueDataRows);
                 }
 
-
+                List<QueData> hebList = HebrewCalendarManager.GetHeb(que.FromDate, que.ToDate);
+                if (hebList.Count > 0)
+                    lst.AddRange(hebList);
             }
 
             catch (Exception ex)
@@ -311,24 +318,7 @@ namespace Tor
 
         }
 
-        private List<QueData> GetHeb(DateTime from, DateTime to)
-        {
-            Dictionary<int, int> di = new Dictionary<int, int>();
-            DateTime Today = new DateTime(2019,6,9);
-            List<QueData> lst = new List<QueData>();
-            Calendar HebCal = new HebrewCalendar();
-            int curYear = HebCal.GetYear(Today);    //current numeric hebrew year
-            int curMonth = HebCal.GetMonth(Today);
-            int curDay = HebCal.GetDayOfMonth(Today);
-            DateTime d = HebCal.ToDateTime(curYear, curMonth, curDay, 0, 0, 0, 0);
-            QueData qData = new QueData();
-            //qData.start = startDate + new TimeSpan(0, 0, 0);
-            //qData.end = startDate + new TimeSpan(23, 59, 0);
-            qData.title = "תפוס";
-            qData.backgroundColor = "#f00";
-            lst.Add(qData);
-            return lst;
-        }
+        
         public int GetCurrentDay(DateTime dt)
         {
             int currentDay = (int)dt.DayOfWeek;
