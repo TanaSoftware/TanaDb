@@ -1,13 +1,43 @@
 ﻿var messageHandler = {
 
+    Confirm: function (msg, Ok, Cancel) {
+        var v = sessionStorage.getItem("version");
+        var htmlName = 'Confirm.html?v=' + v;
+
+        $.get(htmlName, function (html) {
+
+            var obj = document.getElementById("dvConfirmMsg");
+
+            if (obj==null)
+                $(html).appendTo('body').modal();
+
+            $('#dvConfirmMsg').html(msg);
+            $('#dvConfirmModal').modal('show');
+        
+        
+            $("#btnModalContinue").click(function () {
+                Ok();
+               
+            });
+
+            $("#btnModalClose").click(function () {
+                Cancel();               
+            });
+
+        });
+    },
+
     Show: function (msg) {
         var v = sessionStorage.getItem("version");
         var htmlName = 'Message.html?v='+v;
 
         $.get(htmlName, function (html) {
+            var obj = document.getElementById("msgHandlerDiv");
 
-            $(html).appendTo('body').modal();
+            if (obj == null)
+                $(html).appendTo('body').modal();
 
+            $('#msgHandlerDiv').modal('show');
             $('#msgText').html(msg);
 
         });
@@ -365,5 +395,55 @@ function Login() {
         }
 
     });
+
+}
+
+function checkValid(txtId, textMsg) {
+
+    $('#' + txtId).tooltip('hide');
+
+    var txt = $("#" + txtId).val();
+
+    if (txt.length <= 0) {
+       
+        $('#' + txtId).tooltip({
+
+            title: textMsg
+
+        });
+
+        $('#' + txtId).tooltip('show');
+
+        $('#' + txtId).focus();
+
+        return false;
+
+    }
+
+    return true;
+
+}
+
+function checkHour(txtId, textMsg) {
+
+    $('#' + txtId).tooltip('hide');
+
+    if (!isHour($("#" + txtId).val())) {
+
+        $('#' + txtId).tooltip({
+
+            title: textMsg
+
+        });
+
+        $('#' + txtId).tooltip('show');
+
+        $('#' + txtId).focus();
+
+        return false;
+
+    }
+
+    return true;
 
 }

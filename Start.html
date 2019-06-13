@@ -946,38 +946,7 @@
         return { EmployeeId: 0, ActiveDay: 0, EmployeeName: "", ActiveHourFrom: "", ActiveHourTo: "", ActiveHourFromNone: "", ActiveHourToNone: "" };
 
     }
-
-
-
-    function checkValid(txtId, textMsg) {
-
-        $('#' + txtId).tooltip('hide');
-
-        var txt = $("#" + txtId).val();
-
-        if (txt.length <= 0) {
-
-            //showTooltip(txtId, textMsg);
-
-            $('#' + txtId).tooltip({
-
-                title: textMsg
-
-            });
-
-            $('#' + txtId).tooltip('show');
-
-            $('#' + txtId).focus();
-
-            return false;
-
-        }
-
-        return true;
-
-    }
-
-
+    
 
     function checkValidDDl(txtId, textMsg) {
 
@@ -1009,29 +978,7 @@
 
 
 
-    function checkHour(txtId, textMsg) {
-
-        $('#' + txtId).tooltip('hide');
-
-        if (!isHour($("#" + txtId).val())) {
-
-            $('#' + txtId).tooltip({
-
-                title: textMsg
-
-            });
-
-            $('#' + txtId).tooltip('show');
-
-            $('#' + txtId).focus();
-
-            return false;
-
-        }
-
-        return true;
-
-    }
+    
     var ActivityCounter = 1;
     function AddActivity() {
 

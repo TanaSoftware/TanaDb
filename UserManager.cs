@@ -159,7 +159,7 @@ namespace Tor
     }
     public class UserDetailsWrapper
     {
-        public UserDetails userDetails { get; set; }
+        public string ErrorMsg { get; set; }
 
         public UserDetailsData userDetailsData { get; set; }
     }
@@ -298,6 +298,7 @@ namespace Tor
 
         public int UserId { get; set; }
 
+        public string guid { get; set; }
     }
 
 
@@ -1333,8 +1334,92 @@ namespace Tor
 
         }
 
+        public string UpdateEmployee(BizTypeObj user)
+        {
+            try
+            {
+                if (!IsUserGuidExists(user.guid))
+                {
 
+                    return "ארעה שגיאה בעדכון עובד";
+                }
+                string sql = "Update UsersActivity set [EmployeeName]=@EmployeeName where [UserId]=@UserId And [EmployeeId]=@EmployeeId";
+                DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
+                var affectedRows = db.Execute(sql, 1, new { EmployeeName = user.EmployeeName, UserId = user.UserId, EmployeeId = user.EmployeeId });
+            }
+            catch(Exception ex)
+            {
+                Logger.Write(ex);
+                return "ארעה שגיאה בעדכון עובד";
+
+            }
+            return "";
+        }
+
+        public string DeleteEmployee(BizTypeObj user)
+        {
+            try
+            {
+                if (!IsUserGuidExists(user.guid))
+                {
+
+                    return "ארעה שגיאה במחיקת עובד";
+                }
+                string sql = "Delete From UsersActivity where [UserId]=@UserId And [EmployeeId]=@EmployeeId";
+                DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+
+                var affectedRows = db.Execute(sql, 1, new { EmployeeName = user.EmployeeName, UserId = user.UserId, EmployeeId = user.EmployeeId });
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+                return "ארעה שגיאה במחיקת עובד";
+
+            }
+            return "";
+        }
+
+        public object AddEmployee(List<BizTypeObj> user)
+        {
+            try
+            {
+                if (user != null && user.Count > 0)
+                {
+
+                    if (!IsUserGuidExists(user[0].guid))
+                    {
+
+                        return new { msg = "ארעה שגיאה בהוספת עובד", EmployeeId=0 };
+                    }
+
+                    DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+                    string sqlCheck = "Select max([EmployeeId]) as EmployeeId from UsersActivity where [UserId]=@UserId";
+                    IEnumerable<int> maxEmployeeId = db.QueryData<int>(sqlCheck, 1, new { UserId = user[0].UserId });
+                    int EmployeeId = 0;
+                    foreach (int u in maxEmployeeId)
+                    {
+                        EmployeeId = u + 1;
+                    }
+                    for (int i = 0; i < user.Count; i++)
+                    {
+                        user[i].EmployeeId = EmployeeId;
+                        string sql = @"Insert into UsersActivity ([EmployeeId],[UserId],[EmployeeName],[ActiveDay],[ActiveHourFrom],[ActiveHourTo],[ActiveHourFromNone],[ActiveHourToNone])
+                            values(@EmployeeId,@UserId,@EmployeeName,@ActiveDay,@ActiveHourFrom,@ActiveHourTo,@ActiveHourFromNone,@ActiveHourToNone)";
+                        var affectedRows = db.Execute(sql, 1, user[i]);
+                        
+                    }
+                    return new { msg = "", EmployeeId = EmployeeId };
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+                return new { msg = "ארעה שגיאה בהוספת עובד", EmployeeId = 0 };
+
+            }
+            return new { msg = "ארעה שגיאה בהוספת עובד", EmployeeId = 0 };
+        }
         public UserDetails GetUserById(UserSearch user)
 
         {
@@ -1363,7 +1448,7 @@ namespace Tor
 
         {
             UserDetailsWrapper wrapper = new UserDetailsWrapper();
-            UserDetails userDetails = new UserDetails();
+            //UserDetails userDetails = new UserDetails();
 
             string sql = "SELECT * FROM Users WHERE [Active] = @guid;";
 
@@ -1391,13 +1476,12 @@ namespace Tor
 
             if(!isUserExists)
             {
-                userDetails.ErrorMsg = "ארעה שגיאה";
-                wrapper.userDetails = userDetails;
+                wrapper.ErrorMsg = "משתמש לא קיים";                
                 return wrapper;
             }
-            userDetails.dicBizType = getBizTypeDictionary(userId);
-            userDetails.Activities = getUserActivities(userId);
-            wrapper.userDetails = userDetails;
+            //userDetails.dicBizType = getBizTypeDictionary(userId);
+            //userDetails.Activities = getUserActivities(userId);
+            //wrapper.userDetails = userDetails;
 
             return wrapper;
 

@@ -141,13 +141,40 @@ namespace Tor.Controllers
         }
 
         [HttpPost]
+        [ActionName("GetUserDetails")]
         public UserDetailsWrapper GetUserDetails(UserSearch id)
         {
             UserManager u = new UserManager();
             return  u.GetUserDetails(id);
         }
 
-            [HttpPost]
+        [HttpPost]
+        [ActionName("UpdateEmployee")]
+        public string UpdateEmployee(BizTypeObj id)
+        {
+            UserManager u = new UserManager();
+            return u.UpdateEmployee(id);
+
+        }
+        [HttpPost]
+        [ActionName("DeleteEmployee")]
+        public string DeleteEmployee(BizTypeObj id)
+        {
+            UserManager u = new UserManager();
+            return u.DeleteEmployee(id);
+
+        }
+
+        [HttpPost]
+        [ActionName("AddEmployee")]
+        public object AddEmployee(List<BizTypeObj> id)
+        {
+            UserManager u = new UserManager();
+            return u.AddEmployee(id);
+
+        }
+
+        [HttpPost]
         [ActionName("UserAddCustmer")]
         public string UserAddCustmer(CustomerObjBase id)
 

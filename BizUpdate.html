@@ -150,7 +150,15 @@
                         </div>
 
                     </div>
+                    <div style="float:left;padding-left:20px;">
 
+                        <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
+
+                        <div id="dvErrRegister"></div>
+
+                        <button onClick="Save();" class="btn btn-blue btn-lg">שמירה</button>
+
+                    </div>
                     <div style="text-align:right">
                         <label>סוגי פעילויות</label><span style="color:red" id="spnActiveDays"></span>
 
@@ -201,14 +209,14 @@
                             </tr>
                             <tr>
                                 <td style="width:100px;">
-                                    <input type="checkbox" checked="checked" id="Day1"> א
+                                    <input type="checkbox" id="Day1"> א
                                 </td>
                                 <td>
                                     <div class="form-group floating-label-form-group controls">
-                                        <input id="txtfromHour1" data-toggle="tooltip" trigger="manual" data-placement="top" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control input-time" />
+                                        <input id="txtfromHour1" data-toggle="tooltip" trigger="manual" data-placement="top" style="width:70px;" type="text"  placeholder="משעה" class="form-control input-time" />
                                     </div>
                                     <div class="form-group floating-label-form-group controls">
-                                        <input id="txttoHour1" style="width:70px;" type="text" value="17:00" class="form-control input-time" />
+                                        <input id="txttoHour1" style="width:70px;" type="text"  class="form-control input-time" />
                                     </div>
                                 </td>
                                 <td>
@@ -221,13 +229,13 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="width:100px;"><input type="checkbox" checked="checked" id="Day2"> ב</td>
+                                <td style="width:100px;"><input type="checkbox" id="Day2"> ב</td>
                                 <td>
                                     <div class="form-group floating-label-form-group controls">
-                                        <input id="txtfromHour2" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control input-time" />
+                                        <input id="txtfromHour2" style="width:70px;" type="text"  placeholder="משעה" class="form-control input-time" />
                                     </div>
                                     <div class="form-group floating-label-form-group controls">
-                                        <input id="txttoHour2" style="width:70px;" type="text" value="17:00" placeholder="עד שעה" class="form-control input-time" />
+                                        <input id="txttoHour2" style="width:70px;" type="text"  placeholder="עד שעה" class="form-control input-time" />
                                     </div>
                                 </td>
                                 <td>
@@ -240,13 +248,13 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="width:100px;"><input type="checkbox" checked="checked" id="Day3"> ג</td>
+                                <td style="width:100px;"><input type="checkbox" id="Day3"> ג</td>
                                 <td>
                                     <div class="form-group floating-label-form-group controls">
-                                        <input id="txtfromHour3" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control input-time" />
+                                        <input id="txtfromHour3" style="width:70px;" type="text"  placeholder="משעה" class="form-control input-time" />
                                     </div>
                                     <div class="form-group floating-label-form-group controls">
-                                        <input id="txttoHour3" style="width:70px;" type="text" value="17:00" placeholder="עד שעה" class="form-control input-time" />
+                                        <input id="txttoHour3" style="width:70px;" type="text"  placeholder="עד שעה" class="form-control input-time" />
                                     </div>
                                 </td>
                                 <td>
@@ -259,13 +267,13 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="width:100px;"><input type="checkbox" checked="checked" id="Day4"> ד</td>
+                                <td style="width:100px;"><input type="checkbox" id="Day4"> ד</td>
                                 <td>
                                     <div class="form-group floating-label-form-group controls">
-                                        <input id="txtfromHour4" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control input-time" />
+                                        <input id="txtfromHour4" style="width:70px;" type="text"  placeholder="משעה" class="form-control input-time" />
                                     </div>
                                     <div class="form-group floating-label-form-group controls">
-                                        <input id="txttoHour4" style="width:70px;" type="text" value="17:00" placeholder="עד שעה" class="form-control input-time" />
+                                        <input id="txttoHour4" style="width:70px;" type="text"  placeholder="עד שעה" class="form-control input-time" />
                                     </div>
                                 </td>
                                 <td>
@@ -278,13 +286,13 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="width:100px;"><input type="checkbox" checked="checked" id="Day5"> ה</td>
+                                <td style="width:100px;"><input type="checkbox" id="Day5"> ה</td>
                                 <td>
                                     <div class="form-group floating-label-form-group controls">
-                                        <input id="txtfromHour5" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control input-time" />
+                                        <input id="txtfromHour5" style="width:70px;" type="text"  placeholder="משעה" class="form-control input-time" />
                                     </div>
                                     <div class="form-group floating-label-form-group controls">
-                                        <input id="txttoHour5" style="width:70px;" type="text" value="17:00" placeholder="עד שעה" class="form-control input-time" />
+                                        <input id="txttoHour5" style="width:70px;" type="text"  placeholder="עד שעה" class="form-control input-time" />
                                     </div>
                                 </td>
                                 <td>
@@ -297,13 +305,13 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="width:100px;"><input type="checkbox" checked="checked" id="Day6"> ו</td>
+                                <td style="width:100px;"><input type="checkbox" id="Day6"> ו</td>
                                 <td>
                                     <div class="form-group floating-label-form-group controls">
-                                        <input id="txtfromHour6" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control input-time" />
+                                        <input id="txtfromHour6" style="width:70px;" type="text"  placeholder="משעה" class="form-control input-time" />
                                     </div>
                                     <div class="form-group floating-label-form-group controls">
-                                        <input id="txttoHour6" style="width:70px;" type="text" value="13:00" placeholder="עד שעה" class="form-control input-time" />
+                                        <input id="txttoHour6" style="width:70px;" type="text" placeholder="עד שעה" class="form-control input-time" />
                                     </div>
                                 </td>
                                 <td>
@@ -319,10 +327,10 @@
                                 <td style="width:100px;"><input type="checkbox" id="Day7"> ז</td>
                                 <td>
                                     <div class="form-group floating-label-form-group controls">
-                                        <input id="txtfromHour7" style="width:70px;" type="text" value="08:00" placeholder="משעה" class="form-control input-time" />
+                                        <input id="txtfromHour7" style="width:70px;" type="text"  placeholder="משעה" class="form-control input-time" />
                                     </div>
                                     <div class="form-group floating-label-form-group controls">
-                                        <input id="txttoHour7" style="width:70px;" type="text" value="17:00" placeholder="עד שעה" class="form-control input-time" />
+                                        <input id="txttoHour7" style="width:70px;" type="text"  placeholder="עד שעה" class="form-control input-time" />
                                     </div>
                                 </td>
                                 <td>
@@ -336,21 +344,7 @@
                             </tr>
 
 
-                        </table>
-
-
-
-
-
-                        <div style="float:left;padding-left:20px;">
-
-                            <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
-
-                            <div id="dvErrRegister"></div>
-
-                            <button onClick="Register();" class="btn btn-blue btn-lg">הרשמה</button>
-
-                        </div>
+                        </table>                       
 
                     </div>
 
@@ -386,9 +380,11 @@
     pixel_from_side = 10;
     pixel_from_start = 80;
     is_set_for_mobile = 1;
+    var UserData = JSON.parse(sessionStorage.getItem("UserData"));
+
     GetUserDetails();
     function GetUserDetails() {
-        var UserData = JSON.parse(sessionStorage.getItem("UserData"));
+        
         var Obj = {
             guid: UserData.guid
         }
@@ -398,7 +394,12 @@
             data: JSON.stringify(Obj),
             contentType: "application/json;charset=utf-8",
             success: function (data) {
-               
+                if(data.ErrorMsg!=null && data.ErrorMsg!=""){
+
+                }
+                else {
+                    fillData(data);
+                }
             },
             error: function (request, status, error) {
                
@@ -406,4 +407,238 @@
         });
     }
 
+    function getEmployeeTemplate(EmployeeId, EmployeeName) {
+        return "<div style='width:100%;' id='dvBizType" + EmployeeId + "'><div style='float:right;width:260px;padding-right:20px;'><input id='txtBizType" + EmployeeId + "' type='text' value='" + EmployeeName + "' /></div><button style='float:right;marging-right:4px;' onclick=deleteBizType('" + EmployeeId + "')>מחק</button><button style='float:right;marging-right:4px;' onclick=UpdateBizType('" + EmployeeId + "')>עדכן</button></div>";
+
+    }
+
+    function fillData(data) {
+        
+        var ud = data.userDetailsData;
+        $('#address').val(ud.Adrress);
+        $('#bizName').val(ud.BizName);
+        $('#bizNameEng').val(ud.BizNameEng);
+        $('#city').val(ud.City);
+        $('#email').val(ud.Email);
+        $('#txtTel').val(ud.Tel);
+        $('#name').val(ud.User);
+        var empData = "";
+        var BizTypeData = "";
+
+        for (var i = 0; i < UserData.Activities.length; i++) {
+            BizTypeData += "<div style='width:100%;' id='dvBizTypeAct" + UserData.Activities[i].Id + "'><div style='float:right;width:260px;padding-right:20px;'>" + UserData.Activities[i].Name + " למשך  " + UserData.Activities[i].ActiveDuration + " דקות</div><button style='float:right;marging-right:4px;' onclick=deleteBizTypeActivity('" + UserData.Activities[i].Id + "')>מחק</button></div>";
+        }
+        $("#UserActivities").html(BizTypeData);
+
+        for (var key in UserData.dicBizType) {
+            var arr = UserData.dicBizType[key];
+            empData += getEmployeeTemplate(arr[0].EmployeeId, arr[0].EmployeeName);
+
+            for (var i = 0; i < arr.length; i++) {
+
+                var id = arr[i].ActiveDay;            
+
+                document.getElementById('Day' + id).checked = true;
+
+                $('#txtfromHour' + id).val(arr[i].ActiveHourFrom);
+
+                $('#txttoHour' + id).val(arr[i].ActiveHourTo);
+
+                $('#txtfromHourNone' + id).val(arr[i].ActiveHourFromNone);
+
+                $('#txttoHourNone' + id).val(arr[i].ActiveHourFromNone);                               
+                
+            }
+
+        }
+        $("#Activities").html(empData);
+    
+    }
+
+    function deleteBizTypeActivity(BizTypeId) {
+
+    }
+
+    function AddActivity() {
+
+        var data = "";
+        var ActivitiesData = {};
+        var ActivitiesTempData = new Array();
+
+        if (!checkValid("EmployeeName", "נא להזין שם עובד")) {
+
+            return;
+
+        }
+
+        for (var i = 1; i <= 7; i++) {
+
+            var id = i.toString();
+
+            var Day = document.getElementById('Day' + id).checked;
+
+
+            if (Day) {
+
+
+
+                if (!checkValid("txtfromHour" + id, "נא להזין משעה")) {
+
+                    return;
+
+                }
+
+                if (!checkHour("txtfromHour" + id, "שעה לא חוקית")) {
+
+                    return;
+
+                }
+
+                if (!checkValid("txttoHour" + id, "נא להזין עד שעה")) {
+
+                    return;
+
+                }
+
+                if (!checkHour("txttoHour" + id)) {
+
+                    return;
+
+                }
+
+                var item = GetBizTypeItem();
+
+                item.UserId = UserData.UserId;
+                item.guid = UserData.guid;
+                item.EmployeeId = 0;
+                item.EmployeeName = $('#EmployeeName').val();
+
+                item.ActiveDay = id;                
+
+                item.ActiveHourFrom = $('#txtfromHour' + id).val();
+
+                item.ActiveHourTo = $('#txttoHour' + id).val();
+
+                item.ActiveHourFromNone = $('#txtfromHourNone' + id).val();
+
+                item.ActiveHourToNone = $('#txttoHourNone' + id).val();
+
+                ActivitiesTempData.push(item);
+            }
+
+        }
+
+
+        $.ajax({
+            url: "User/AddEmployee",
+            type: 'POST',
+            data: JSON.stringify(ActivitiesTempData),
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                if (data != null && data.msg != "") {
+
+                    messageHandler.Show(data.msg);
+
+                }
+                else {
+                    var empData = getEmployeeTemplate(data.EmployeeId, $('#EmployeeName').val());
+                    var newDiv = $("#Activities").html();
+                    $("#Activities").html(newDiv + empData);
+                    $('#EmployeeName').val("");
+                    messageHandler.Show(" עובד חדש התווסף בהצלחה");
+                }
+            },
+            error: function (request, status, error) {
+
+            }
+        });
+        
+
+    }
+    function GetBizTypeItem() {
+
+        return { guid:"", UserId:0,EmployeeId: 0, ActiveDay: 0, EmployeeName: "", ActiveHourFrom: "", ActiveHourTo: "", ActiveHourFromNone: "", ActiveHourToNone: "" };
+
+    }
+
+    function deleteBizTypeFromDb(empId) {
+
+        $('#dvConfirmModal').modal('hide');
+        var Obj = {
+            guid: UserData.guid,
+            UserId: UserData.UserId,
+            EmployeeId: empId
+        }
+
+        $.ajax({
+            url: "User/DeleteEmployee",
+            type: 'POST',
+            data: JSON.stringify(Obj),
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                if (data != null && data != "") {
+                   
+                    messageHandler.Show(data);
+                    
+                }
+                else {
+                    $('#dvBizType' + empId).remove();
+                    messageHandler.Show("שם עובד נמחק בהצלחה");
+                }
+            },
+            error: function (request, status, error) {
+
+            }
+        });
+    }
+
+    function CanceldeleteBizType(){
+        $('#dvConfirmModal').modal('hide');
+    }
+    function deleteBizType(empId) {
+
+        messageHandler.Confirm("מחיקה זו תמחוק את כל התורים שקיימים לעובד הנ''ל, האם ברצונך להמשיך?",
+            function () { deleteBizTypeFromDb(empId); }, function () { CanceldeleteBizType(); });
+
+        
+    }
+
+    function UpdateBizType(empId) {
+        
+        var empName = $("#txtBizType" + empId).val();
+
+        if (empName == null || empName == "") {
+            showTooltip("txtBizType" + empId, "נא להזין שם עובד");
+            return;
+        }
+        var Obj = {
+            guid: UserData.guid,
+            EmployeeName: empName,
+            UserId: UserData.UserId,
+            EmployeeId: empId
+        }
+
+        $.ajax({
+            url: "User/UpdateEmployee",
+            type: 'POST',
+            data: JSON.stringify(Obj),
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                if (data != null && data != "") {
+                    messageHandler.Show(data);
+                }
+                else {
+                    messageHandler.Show("שם עובד עודכן בהצלחה");
+                }
+            },
+            error: function (request, status, error) {
+
+            }
+        });
+        
+    }
+
+    function Save() {
+
+    }
 </script>
