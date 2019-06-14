@@ -15,7 +15,13 @@ using Tor.Dal;
 namespace Tor
 
 {
-
+    public class UserActivity
+    {
+        public int UserId { get; set; }
+        public string Name { get; set; }
+        public int ActiveDuration { get; set; }
+        public string guid { get; set; }
+    }
     public class City
 
     {
@@ -1334,21 +1340,29 @@ namespace Tor
 
         }
 
-        public string UpdateEmployee(BizTypeObj user)
+        public string UpdateEmployee(List<BizTypeObj> user)
         {
             try
             {
-                if (!IsUserGuidExists(user.guid))
+                if (!IsUserGuidExists(user[0].guid) || user.Count<=0)
                 {
 
                     return "ארעה שגיאה בעדכון עובד";
                 }
-                string sql = "Update UsersActivity set [EmployeeName]=@EmployeeName where [UserId]=@UserId And [EmployeeId]=@EmployeeId";
                 DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
-                var affectedRows = db.Execute(sql, 1, new { EmployeeName = user.EmployeeName, UserId = user.UserId, EmployeeId = user.EmployeeId });
+                string sqlDel = "Delete from UsersActivity where [UserId]=@UserId And [EmployeeId]=@EmployeeId;";
+                var Rows = db.Execute(sqlDel, 1, user[0]);
+
+                string sqlUserActivity = @"INSERT INTO UsersActivity ([EmployeeId],[UserId],[ActiveDay],[EmployeeName],[ActiveHourFrom],[ActiveHourTo],[ActiveHourFromNone],[ActiveHourToNone]) Values
+                        (@EmployeeId,@UserId,@ActiveDay,@EmployeeName,@ActiveHourFrom,@ActiveHourTo,@ActiveHourFromNone,@ActiveHourToNone);";
+                
+                foreach (BizTypeObj biz in user)
+                {
+                    var affectedRows = db.Execute(sqlUserActivity, 1, biz);
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.Write(ex);
                 return "ארעה שגיאה בעדכון עובד";
@@ -1380,6 +1394,37 @@ namespace Tor
             return "";
         }
 
+        public string DeleteUserActivity(UserActivity userActivity)
+        {
+            if (!IsUserGuidExists(userActivity.guid))
+            {
+                return "משתמש לא קיים";
+            }
+            string sqlAct = "DELETE FROM UsersActivitiesTypes Where Id=@UserId;";
+            DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+            var affectedRows = db.Execute(sqlAct, 1, userActivity);
+            return "";
+        }
+        public int AddUserActivity(UserActivity userActivity)
+        {
+            if (!IsUserGuidExists(userActivity.guid))
+            {
+                return 0;
+            }
+            string sqlAct = "INSERT INTO UsersActivitiesTypes ([UserId],[Name],[ActiveDuration]) Values(@UserId,@Name,@ActiveDuration)";
+            DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+            var affectedRows = db.Execute(sqlAct, 1,  userActivity );
+            string sql = "select max(Id) as id From UsersActivitiesTypes where UserId=@UserId";
+            IEnumerable<int> activityId = db.QueryData<int>(sql, 1, new { UserId = userActivity.UserId});
+            int id = 0;
+            foreach (int u in activityId)
+            {
+                id = u;
+            }
+
+            return id;
+        }
+
         public object AddEmployee(List<BizTypeObj> user)
         {
             try
@@ -1390,7 +1435,7 @@ namespace Tor
                     if (!IsUserGuidExists(user[0].guid))
                     {
 
-                        return new { msg = "ארעה שגיאה בהוספת עובד", EmployeeId=0 };
+                        return new { msg = "ארעה שגיאה בהוספת עובד", EmployeeId = 0 };
                     }
 
                     DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
@@ -1407,7 +1452,7 @@ namespace Tor
                         string sql = @"Insert into UsersActivity ([EmployeeId],[UserId],[EmployeeName],[ActiveDay],[ActiveHourFrom],[ActiveHourTo],[ActiveHourFromNone],[ActiveHourToNone])
                             values(@EmployeeId,@UserId,@EmployeeName,@ActiveDay,@ActiveHourFrom,@ActiveHourTo,@ActiveHourFromNone,@ActiveHourToNone)";
                         var affectedRows = db.Execute(sql, 1, user[i]);
-                        
+
                     }
                     return new { msg = "", EmployeeId = EmployeeId };
                 }
@@ -1474,9 +1519,9 @@ namespace Tor
                 isUserExists = true;
             }
 
-            if(!isUserExists)
+            if (!isUserExists)
             {
-                wrapper.ErrorMsg = "משתמש לא קיים";                
+                wrapper.ErrorMsg = "משתמש לא קיים";
                 return wrapper;
             }
             //userDetails.dicBizType = getBizTypeDictionary(userId);
@@ -1598,5 +1643,4 @@ namespace Tor
     }
 
 }
-
 
