@@ -1,27 +1,31 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />    
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <title></title>
     <link href="css/cal.css" rel="stylesheet" />
+    <link href="css/main.css" rel="stylesheet" />
+    
     <link href="css/selectize.css" rel="stylesheet" />
     <link href='https://use.fontawesome.com/releases/v5.0.6/css/all.css' rel='stylesheet'>
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' rel='stylesheet' />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css" rel='stylesheet' />
-    <link href="css/genaral.css" rel="stylesheet" />
+    <link href="css/general.css" rel="stylesheet" />
     <script src="js/cal.js"></script>
     <script src="js/moment.js"></script>
 
-    <script src="js/jquery-1.9.1.min.js"></script>
+    <script src="js/jquery.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.he.min.js"></script>
     <script src="js/selectize.js"></script>
-    <script src="js/global.js"></script>
+
+    
     <style>
+
         .fc-widget-header {
             color: #007bff;
         }
@@ -66,50 +70,48 @@
 </head>
 
 <body dir="rtl">
+    
+    <nav role="navigation">
+        <div class="menuContainer" onclick="showMenu(this)">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+        </div>
+        <div style="text-align:right; width:100%; position:absolute;background-color:#fff;z-index:1000" id="menuToggle">                      
+            <ul style="display:none;list-style-type: none" id="menuItems">
+                <li class="nav-item active">
+                    <a class="nav-link" href="javascript:navigateTo('start.html')">דף הבית <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:navigateTo('start.html#LoginSec')">התחבר</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:navigateTo('start.html#RegisterCustomer')">הרשם</a>
+                </li>
+                <li id="liUpdateBiz" style="display:none"><a href="javascript:navigateTo('BizUpdate.html')" class="nav-link">עדכון פרטי עסק</a></li>               
+            </ul>
+        </div>
+        <div style="float:right;padding-right: 10px;">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
-        <div style="text-align:left" class="d-flex justify-content-center">
-            <div>
+            <button type="button" style="float:right;margin-top:8px;height:30px;" class="btn btn-primary btn-sm prevNext" id="prev">&lt;</button>
 
-                <button type="button" style="float:right;margin-top:8px;" class="btn btn-primary btn-sm prevNext" id="prev">&lt;</button>
+            <div style="float:right" class="p-2">
 
-                <div style="float:right" class="p-2">
+                <div class="input-group date">
 
-                    <div class="input-group date">
-
-                        <input type="text" id="datetimepicker1" onchange="CheckDatePicker(this)" class="form-control" placeholder="תאריך" style="max-width:110px;"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-
-                    </div>
+                    <input type="text" id="datetimepicker1" onchange="CheckDatePicker(this)" class="form-control" placeholder="תאריך" style="height:30px;max-width:110px;"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 
                 </div>
 
-                <button type="button" id="next" class="btn btn-primary btn-sm prevNext" style="float:right;margin-top:8px;">&gt;</button>
-
             </div>
+
+            <button type="button" id="next" class="btn btn-primary btn-sm prevNext" style="float:right;margin-top:8px;height:30px;">&gt;</button>
+
         </div>
-            <a href="#" class="navbar-brand page-scroll">
 
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="javascript:navigateTo('start.html')">דף הבית <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="javascript:navigateTo('start.html#LoginSec')">התחבר</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="javascript:navigateTo('start.html#RegisterCustomer')">הרשם</a>
-                    </li>
-                    <li id="liUpdateBiz" style="display:none"><a href="BizUpdate.html" class="nav-link">עדכון פרטי עסק</a></li>
-                </ul>
+    </nav>
 
-
-            </div>
-</nav>
+    
 
     <div class="d-flex justify-content-center">
 
@@ -132,7 +134,7 @@
                 </div>
 
                 <div style="float:right" class="p-2">
-                    <button type="button" onclick="AddModalCustomer()" class="btn btn-primary btn-sm" style="margin-right:10px;">הוסף לקוח </button>
+                    <button type="button" onclick="AddModalCustomer()" class="btn btn-primary btn-sm" style="margin-right:10px;height:35px;">הוסף לקוח </button>
                 </div>
             </div>
         </div>
@@ -163,8 +165,7 @@
 
                 <div class="modal-header">
 
-                    <div style="float:right;color:#007bff;"><h4>זמן תור</h4></div>
-                    <div style="float:right;color:#007bff;padding-right:5px;"><h4><span id="spnEventMsg"></span></h4></div>
+                    <div style="float:right;color:#007bff;"><h4>זמן תור<span id="spnEventMsg"></span></h4></div>
                     <div style="float:left">
 
                         <button type="button" class="close" data-dismiss="modal">
@@ -399,8 +400,18 @@
     var UserForCustomerDetails;
     var customersList;
     var isPageLoad = true;
+    var currentId = -1;
+    var currentDate = "";
+    var currentCustomerName = "";
+    var LastView = "";
+    var calendar;
 
     getScripts();
+
+    function showMenu(x) {
+        x.classList.toggle("change");
+        $("#menuItems").toggle();
+    }
 
     function getScripts() {
         var v = sessionStorage.getItem("version");
@@ -418,6 +429,7 @@
 
       
     }
+
     function init() {
         
         if (UserData == null) {
@@ -456,12 +468,12 @@
         }
 
     }
+
     function AddModalCustomer() {
 
         $('#AddCustomerModal').modal('show');
 
     }
-
 
     function AddCustomer() {
 
@@ -773,104 +785,14 @@
 
     }
 
-    function calcHourLength(minimumTime, maximumTime, duration) {
-
-
-
-        var startTime = moment(minimumTime, momentHourFormat);
-
-        var endTime = moment(maximumTime, momentHourFormat);
-
-        var durationX = moment.duration(endTime.diff(startTime));
-
-        var hours = parseInt(durationX.asHours());
-
-        var minutes = parseInt(durationX.asMinutes()) % 60;
-
-        var total = ((hours * 60) + minutes) / duration;
-
-        return total
-
-    }
-
-    function getEmptyEvent(index, start, end) {
-        return { id: index, title: "פנוי", start: start, end: end, editable: true };
-    }
-
-    function createEmptyDaySchedule(data, minimumTime, maximumTime, duration) {
-
-        var dataNew = [];
-
-        var len = calcHourLength(minimumTime, maximumTime, duration);
-
-        var startTime = moment(minimumTime, momentHourFormat);
-
-        var endTime = moment(minimumTime, momentHourFormat).add(duration, "minutes");
-
-        var j = 0;
-
-        for (var i = 0; i < len; i++) {
-
-
-
-            var t1 = data != null && data[j] != null ? moment(data[j].start).format(momentHourFormat) : 0;
-
-            if (t1 == startTime.format(momentHourFormat)) {
-
-                var d = getEmptyEvent(i, data[j].start, data[j].end);
-
-                d.id = data[j].Id;
-
-                d.title = data[j].title;
-
-                d.start = data[j].start;
-
-                d.end = data[j].end;
-
-                d.color = "#007bff";
-
-                d.textColor = "#fff";
-
-                dataNew.push(d);
-
-                j++;
-
-            }
-
-            else
-
-                dataNew.push(getEmptyEvent(i, todayX + "T" + startTime.format(momentHourFormat), todayX + "T" + endTime.format(momentHourFormat)));
-
-
-
-            startTime = endTime;
-
-            endTime = moment(endTime, momentHourFormat).add(duration, "minutes");
-
-        }
-
-        return dataNew;
-
-    }
-
-    var currentId = -1;
-    var currentDate = "";
-    var currentCustomerName = "";
-    var LastView = "";
-    var calendar;
-
-
+            
     function CreateCal(data, minimumTime, maximumTime, duration, view) {
-
-        //var len = calcHourLength(minimumTime, maximumTime, duration);
+        
         LastView = view;
-        //var hiddenDaysArr = notActiveDays.length>0 ? notActiveDays.split(','):[];
-        //for (var i = 0; i < hiddenDaysArr.length; i++) {
-        //    hiddenDaysArr[i] = parseInt(hiddenDaysArr[i]);
-        //}
+        
         var dataEvents;
 
-        dataEvents = data;//createEmptyDaySchedule(data, minimumTime, maximumTime, duration);
+        dataEvents = data;
 
         var calendarEl = document.getElementById('calendar');
 
@@ -910,10 +832,10 @@
             //dateClick: function(info) {
             //    alert('clicked ' + info.dateStr);
             //},
-            select: function (info) {
+            select: function (info) {                
                 SetCalData(info);
             },
-            eventClick: function (info) {
+            eventClick: function (info) {                
                 SetCalData(info);
             },
             locale: 'he',
@@ -941,8 +863,56 @@
         //return calendar;
 
     }
+    
 
+    function deleteDayNoneWork(d) {
+        
+        if (d) {
+            var date = moment(d).format('YYYY-MM-DD') + "T";
+            var obj = {
+                UserId: UserData.UserId,
+                EmployeeId: $('#ddlActivity').val(),
+                From: date + "00:00:00",
+                To: date + "23:59:59",
+                guid: UserData.guid
+
+            };
+            $.ajax({
+
+                url: "User/AddUserExtraActivity",
+
+                type: 'POST',
+
+                data: JSON.stringify(obj),
+
+                contentType: "application/json;charset=utf-8",
+
+                success: function (data) {
+                    $('#dvConfirmModal').modal('hide');
+                    if (data != "") {
+                        messageHandler.Show(data);
+                    }
+                    else {
+                        GetQue(UserData, currentUserDetails, LastView);
+                        calendar.gotoDate(todayX);
+                    }
+
+                },
+
+                error: function (request, status, error) {
+                    $('#dvConfirmModal').modal('hide');
+                }
+
+            });
+        }
+    }
+    function CanceldeleteDay() {
+        $('#dvConfirmModal').modal('hide');
+    }
+
+    
     function SetCalData(info) {
+        
         var SelectedCustomer = $('#ddlCustomers').val();
 
         if (info.event == null && UserData.isUser && SelectedCustomer == "") {
@@ -951,27 +921,19 @@
 
         }
 
-        if (info.event != null && info.event.backgroundColor == '#f00')
-            return;
+        if (info.event != null && info.event.backgroundColor == '#f00') {
+            if (UserData.isUser) {
+                messageHandler.Confirm("האם ברצונך לעבוד ביום זה?",
+                    function () { deleteDayNoneWork(info.event.start); return; }, function () { CanceldeleteDay(); return; });
 
+            }
+            
+            return;
+        }
+        
         currentId = info.event ? info.event.id : 0;
         var InfoObj = info.event ? info.event : info;
-        currentDate = moment(InfoObj.start).format('YYYY-MM-DD') + "T";
-
-        //if (currentUserForCustomer != null && currentUserForCustomer.dicBizType != null) {
-        //    var BizTypeList = currentUserForCustomer.dicBizType[$('#ddlActivity :selected').text()];
-        //    var check = moment(InfoObj.start, 'YYYY/MM/DD');
-        //    var isInDay = false;
-        //    var day   = check.format('D');
-        //    for (var i = 0; i < BizTypeList.length; i++) {
-        //        if (BizTypeList[i].ActiveDay == day) {
-        //            isInDay = true;
-        //            break;
-        //        }
-        //    }
-        //    if (!isInDay)
-        //        return;
-        //}
+        currentDate = moment(InfoObj.start).format('YYYY-MM-DD') + "T";       
 
         var s = moment(InfoObj.start);//.add(-3, 'hours');
         var timeDiff = moment().diff(s, 'second');
@@ -988,9 +950,11 @@
         $('#ddlEvent').val("0");
 
 
-        if (info.event == null)
+        if (info.event == null) {
 
             btnDeleteQue.style.display = "none";
+            currentCustomerName = $('#ddlCustomers').text();
+        }
 
         else {
 
@@ -1013,7 +977,7 @@
                     $('#ddlEvent').val(qTypeId.Id);
 
                 currentCustomerName = qCustomer;
-                $("#spnEventMsg").text(" ל " + currentCustomerName);
+               
             }
             else {
                 var qTypeId = findEventByName(currentUserForCustomer.Activities, InfoObj.title);
@@ -1023,10 +987,21 @@
             btnDeleteQue.style.display = "";
 
         }
-        //
+        if (!UserData.isUser) {
+            $('#txtTimeFrom').attr("disabled", "disabled");
+            $('#txtTimeTo').attr("disabled", "disabled");
+
+        }
+        else {
+            $('#txtTimeFrom').removeAttr("disabled");
+            $('#txtTimeTo').removeAttr("disabled");
+            $("#spnEventMsg").text(" ל" + currentCustomerName);
+        }
+
+
         $('#createEventModal').modal('show');
 
-        //}
+        
     }
 
     $("#next").click(function () {
@@ -1112,9 +1087,9 @@
 
             guid: UserData.guid,
 
-            FromDate: currentDate + txtFrom,
+            FromDate: currentDate + txtFrom+":00",
 
-            ToDate: currentDate + txtTo,
+            ToDate: currentDate + txtTo+":00",
 
             isUser: UserData.isUser,
 
@@ -1244,7 +1219,7 @@
 
                 if (data == "") {
 
-                    GetQue(UserData, currentUserDetails);
+                    GetQue(UserData, currentUserDetails,LastView);
 
                     $('#createEventModal').modal('hide');
 
@@ -1468,6 +1443,7 @@
 
     }
     function navigateTo(url) {
+        sessionStorage.setItem("remember_me", "1");
         var v = sessionStorage.getItem("version");
         location.href = url+"?ver=" + v;
     }

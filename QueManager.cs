@@ -65,7 +65,7 @@ namespace Tor
     public class QueActiveData
 
     {
-
+        public int ActiveDuration { get; set; }
         public int EmployeeId { get; set; }
         public int UserId { get; set; }
         public string EmployeeName { get; set; }
@@ -100,6 +100,11 @@ namespace Tor
 
     {
 
+        
+        private bool IsDateInDateList(DateTime date,List<UserExtraActivity> extra)
+        {
+            return extra.Exists(x => x.From == date);
+        }
         public List<QueData> GetQue(QueObj que)
 
         {
@@ -169,7 +174,19 @@ namespace Tor
                 IEnumerable<QueActiveData> BusyQue = db.QueryData<QueActiveData>(sqlEmp, 1, new { EmployeeId = que.EmployeeId, UserId = que.UserId });
                 if (BusyQue.Count() > 0)
                 {
+
+                    var sqlExtraEmp = "Select * FROM [UserExtraActivity] WHERE EmployeeId=@EmployeeId And UserId=@UserId";// And ActiveHourFromNone is not null
+                    IEnumerable<UserExtraActivity> extra = db.QueryData<UserExtraActivity>(sqlExtraEmp, 1, new { EmployeeId = que.EmployeeId, UserId = que.UserId });
+                    List<UserExtraActivity> userExtraActivity = new List<UserExtraActivity>();
+                    foreach (UserExtraActivity extraAct in extra)
+                    {
+                        UserExtraActivity userExtra = new UserExtraActivity();
+                        userExtra = extraAct;
+                        userExtraActivity.Add(userExtra);
+                    }
+
                     var totalDays = (que.ToDate - que.FromDate).TotalDays;
+
                     Dictionary<int, QueActiveData> dicQ = new Dictionary<int, QueActiveData>();
                     foreach (QueActiveData q in BusyQue)
                     {
@@ -183,7 +200,7 @@ namespace Tor
                         int currentDay = GetCurrentDay(que.FromDate);
                         if (dicQ.ContainsKey(currentDay))
                         {
-                            if (dicQ[currentDay].ActiveHourFromNone.Year != 1 && !HebrewCalendarManager.IsDateInHoliday(que.FromDate))
+                            if (dicQ[currentDay].ActiveHourFromNone.Year != 1 && !HebrewCalendarManager.IsDateInHoliday(que.FromDate) && !IsDateInDateList(que.FromDate,userExtraActivity))
                             {
                                 QueData qData = new QueData();
                                 qData.start = dicQ[currentDay].ActiveHourFromNone;
@@ -213,7 +230,7 @@ namespace Tor
                         {
                             if (dicQ.ContainsKey(i))
                             {
-                                if (dicQ[i].ActiveHourFromNone.Year != 1 && !HebrewCalendarManager.IsDateInHoliday(dt))
+                                if (dicQ[i].ActiveHourFromNone.Year != 1 && !HebrewCalendarManager.IsDateInHoliday(dt) && !IsDateInDateList(dt, userExtraActivity))
                                 {
                                     QueData qData = new QueData();
 
@@ -229,7 +246,7 @@ namespace Tor
                             }
                             else
                             {
-                                if (!HebrewCalendarManager.IsDateInHoliday(dt))
+                                if (!HebrewCalendarManager.IsDateInHoliday(dt) && !IsDateInDateList(dt, userExtraActivity))
                                 {
                                     QueData qData = new QueData();
                                     qData.start = dt + new TimeSpan(0, 0, 0);
@@ -277,7 +294,7 @@ namespace Tor
                             }
                             else
                             {
-                                if (!HebrewCalendarManager.IsDateInHoliday(startDate))
+                                if (!HebrewCalendarManager.IsDateInHoliday(startDate) && !IsDateInDateList(startDate, userExtraActivity))
                                 {
                                     QueData qData = new QueData();
                                     qData.start = startDate + new TimeSpan(0, 0, 0);
@@ -390,12 +407,23 @@ namespace Tor
         private bool IsCustomerQueExist(Que que)
         {
 
-            string sql = "SELECT count(1) FROM Que WHERE [UserId] = @UserId And EmployeeId = @EmployeeId And [FromDate]>=@FromDate And [ToDate]<=@ToDate;";
+            string sql = @"SELECT count(1) FROM Que 
+                           WHERE [UserId] = @UserId And EmployeeId = @EmployeeId And 
+                           [FromDate]>@FromDate And [ToDate]<@ToDate";
+
 
             DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
-            return db.IsExist(sql, new { UserId = que.UserId, FromDate = que.FromDate, ToDate = que.ToDate, EmployeeId = que.EmployeeId }, 1);
+             return db.IsExist(sql, new { UserId = que.UserId, FromDate = que.FromDate, ToDate = que.ToDate, EmployeeId = que.EmployeeId }, 1);
+            //IEnumerable<int> data =
+            //     db.QueryData<int>(sql, 1, new { UserId = que.UserId, FromDate = que.FromDate, ToDate = que.ToDate, EmployeeId = que.EmployeeId });
 
+            //bool isExist = false;
+            //foreach(int i in data)
+            //{
+            //    isExist = true;
+            //}
+            //return isExist;
         }
 
 
@@ -427,9 +455,22 @@ namespace Tor
         private bool IsCustomerQueAvailable(Que que)
 
         {
-
+            
             int currentDay = GetCurrentDay(que.FromDate);
-            var sql = @"Select * FROM UsersActivity WHERE EmployeeId = @EmployeeId And UserId = @UserId And ActiveDay=@ActiveDay";
+            //var sql = @"Select * FROM UsersActivity WHERE EmployeeId = @EmployeeId And UserId = @UserId And ActiveDay=@ActiveDay";
+            string sql = @"SELECT UA.EmployeeId
+                          ,UAT.[ActiveDuration]
+	                      ,UA.UserId
+	                      ,UA.EmployeeName
+	                      ,UA.ActiveDay
+	                      ,UA.ActiveHourFrom
+	                      ,UA.ActiveHourTo
+	                      ,UA.ActiveHourFromNone
+	                      ,UA.ActiveHourToNone
+                      FROM [UsersActivitiesTypes] UAT
+                      INNER JOIN UsersActivity UA
+                      on UAT.UserId = UA.UserId
+                      where UA.EmployeeId = @EmployeeId And UA.UserId = @UserId And ActiveDay=@ActiveDay";
 
             DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
@@ -439,8 +480,14 @@ namespace Tor
             if (BusyQue.Count() <= 0)
                 return false;
 
+
+            TimeSpan iDuration = que.ToDate - que.FromDate;
+
             foreach (QueActiveData q in BusyQue)
             {
+                if (iDuration.Minutes > q.ActiveDuration)
+                    return false;
+
                 TimeSpan tsFr = new TimeSpan(q.ActiveHourFrom.Hour, q.ActiveHourFrom.Minute, 0);
                 DateTime ActiveHourFrom = (que.FromDate.Date + tsFr);
 
