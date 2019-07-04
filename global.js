@@ -11,18 +11,19 @@
             if (obj == null)
                 $(html).appendTo('body').modal();
 
+            
+            $("#btnModalContinue").unbind().click(function ()
+            {
+                
+            });
+            $("#btnModalClose").unbind().click(function () {
+
+            });
+            $("#btnModalContinue").click(Ok);
+            $("#btnModalClose").click(Cancel);
+            
             $('#dvConfirmMsg').html(msg);
             $('#dvConfirmModal').modal('show');
-
-
-            $("#btnModalContinue").click(function () {
-                Ok();
-
-            });
-
-            $("#btnModalClose").click(function () {
-                Cancel();
-            });
 
         });
     },
@@ -50,9 +51,7 @@
 
         $("#msgHandlerDiv").modal('hide');
 
-        $('.modal-backdrop,fade.show').remove();
-
-        $("#msgHandlerDiv").remove();
+        $('.modal-backdrop,fade.show').remove();     
 
     }
 
@@ -132,7 +131,18 @@ var selectizeService = {
 
 }
 
-
+function SetHour() {
+    try {
+        document.querySelectorAll('.input-time').forEach(function (el) {
+            new Cleave(el,
+                {
+                    time: true,
+                    timePattern: ["h", "m"]
+                });
+        });
+    }
+    catch (e) { }
+}
 
 function showTooltip(txtId, text) {
 
@@ -149,7 +159,8 @@ function showTooltip(txtId, text) {
     obj.tooltip('show');
 
     obj.focus();
-
+    event.stopPropagation();
+    event.preventDefault();
 }
 
 function hideTooltip(txtId) {
@@ -355,13 +366,36 @@ function goToCal(data) {
 }
 
 function Login() {
-
     var userObj = { Mail: "", Password: "" };
 
-    userObj.Mail = $('#emailLogin').val();
+    if (localStorage.chkbx && localStorage.chkbx != '') {
+        userObj.Mail = localStorage.usrname;
 
-    userObj.Password = $('#passwordLogin').val();
+        userObj.Password = localStorage.pass;
+    }
+    else {
+        
 
+        var mail = $('#emailLogin').val();
+        var pass = $('#passwordLogin').val();
+
+        if (!checkValid("emailLogin", "נא להזין מייל")) {
+
+            return;
+
+        }
+
+        if (!checkValid("passwordLogin", "נא להזין סיסמה")) {
+
+            return;
+
+        }
+
+
+        userObj.Mail = mail;
+
+        userObj.Password = pass;
+    }
 
 
     $.ajax({
@@ -377,6 +411,13 @@ function Login() {
         success: function (data) {
 
             if (data != null) {
+
+                if ($('#remember_me').is(':checked')) {                    
+                    localStorage.usrname = $('#emailLogin').val();
+                    localStorage.pass = $('#passwordLogin').val();
+                    localStorage.chkbx = $('#remember_me').val();
+                    
+                }
 
                 goToCal(data);
 
@@ -474,4 +515,19 @@ function checkValidDDl(txtId, textMsg) {
 
     return true;
 
+}
+
+function testPassword(pwString) {
+    var strength = 0;
+    var strengthLang = 0;
+    strengthLang += /[א-ת]+/.test(pwString) ? 1 : 0;
+    strengthLang += /[A-Z]+/.test(pwString) ? 1 : 0;
+    strengthLang += /[a-z]+/.test(pwString) ? 1 : 0;
+    strength += /[0-9]+/.test(pwString) ? 1 : 0;
+    
+
+    if (strengthLang+strength < 2)
+        return false;
+
+    return true;
 }

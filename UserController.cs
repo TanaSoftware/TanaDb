@@ -41,6 +41,16 @@ namespace Tor.Controllers
 
         [HttpPost]
 
+        [ActionName("PostEmail")]
+        public bool PostEmail(MailObj id)
+        {
+            UserManager userManager = new UserManager();
+
+            return userManager.ContanctUs(id);
+        }
+
+        [HttpPost]
+
         [ActionName("Register")]
 
         public UserDetails Register(UserObj id)
@@ -64,6 +74,21 @@ namespace Tor.Controllers
             UserManager userManager = new UserManager();
 
             return userManager.RegisterCustmer(id);
+
+        }
+
+
+        [HttpPost]
+
+        [ActionName("AddUserExtraActivity")]
+
+        public string AddUserExtraActivity(UserExtraActivity id)
+
+        {
+
+            UserManager userManager = new UserManager();
+
+            return userManager.AddUserExtraActivity(id);
 
         }
 
@@ -149,8 +174,16 @@ namespace Tor.Controllers
         }
 
         [HttpPost]
+        [ActionName("DeleteUserActivity")]
+        public string DeleteUserActivity(UserActivity id)
+        {
+            UserManager u = new UserManager();
+            return u.DeleteUserActivity(id);
+        }
+
+        [HttpPost]
         [ActionName("UpdateEmployee")]
-        public string UpdateEmployee(BizTypeObj id)
+        public string UpdateEmployee(List<BizTypeObj> id)
         {
             UserManager u = new UserManager();
             return u.UpdateEmployee(id);
@@ -162,6 +195,15 @@ namespace Tor.Controllers
         {
             UserManager u = new UserManager();
             return u.DeleteEmployee(id);
+
+        }
+
+        [HttpPost]
+        [ActionName("AddUserActivity")]
+        public int AddUserActivity(UserActivity id)
+        {
+            UserManager u = new UserManager();
+            return u.AddUserActivity(id);
 
         }
 
@@ -201,6 +243,21 @@ namespace Tor.Controllers
             return userManager.GetCities();
 
         }
+
+        [HttpPost]
+
+        [ActionName("SaveUser")]
+
+        public string SaveUser(UserObj id)
+
+        {
+
+            UserManager userManager = new UserManager();
+
+            return userManager.SaveUser(id);
+
+        }
+
 
     }
 

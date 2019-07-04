@@ -1,15 +1,8 @@
 ﻿using System;
-
 using System.Collections.Generic;
-
 using System.ComponentModel.DataAnnotations;
-
-using System.Net;
-
-using System.Net.Mail;
-
+using System.IO;
 using Tor.Dal;
-
 
 
 namespace Tor
@@ -22,13 +15,18 @@ namespace Tor
         public int ActiveDuration { get; set; }
         public string guid { get; set; }
     }
-    public class City
-
+    public class UserExtraActivity
     {
+        public int UserId { get; set; }
+        public int EmployeeId { get; set; }
+        public DateTime From { get; set; }
+        public DateTime To { get; set; }
 
+        public string guid { get; set; }
+    }
+    public class City
+    {
         public int Id { get; set; }
-
-
 
         public string Name { get; set; }
 
@@ -191,6 +189,8 @@ namespace Tor
 
         public Dictionary<string, List<BizTypeObj>> dicBizType { get; set; }
         public IEnumerable<UserActivities> Activities { get; set; }
+
+        public Dictionary<int, List<string>> dicEmployeeActivities { get; set; }
     }
 
     public class UserObj
@@ -247,6 +247,9 @@ namespace Tor
         [Required]
         public Dictionary<string, List<BizTypeObj>> dicBizType { get; set; }
 
+        [Required]
+        public Dictionary<int, List<string>> dicEmployeeActivities { get; set; }
+
     }
 
 
@@ -276,6 +279,10 @@ namespace Tor
         [Required]
 
         public string guid { get; set; }
+
+        public string logo { get; set; }
+
+        public string img { get; set; }
 
     }
 
@@ -325,6 +332,21 @@ namespace Tor
         public string Name { get; set; }
 
         public int ActiveDuration { get; set; }
+    }
+
+    public class EmployeeActivities
+    {
+        public int EmployeeId { get; set; }        
+
+        public int ActivityId { get; set; }
+    }
+
+    public class MailObj
+    {
+        public string name { get; set; }
+        public string Msg { get; set; }
+        public string email { get; set; }
+        public string phone { get; set; }
     }
 
     public class UserManager
@@ -398,6 +420,7 @@ namespace Tor
 
                 userDetails.dicBizType = getBizTypeDictionary(user.Id);
                 userDetails.Activities = getUserActivities(user.Id);
+                userDetails.dicEmployeeActivities = getEmployeeActivities(user.Id);
                 userDetails.UserId = user.Id;
 
                 return userDetails;
@@ -425,6 +448,32 @@ namespace Tor
 
             return null;
 
+        }
+
+        private Dictionary<int, List<string>> getEmployeeActivities(int userId)
+        {
+            Dictionary<int, List<string>> dic = new Dictionary<int, List<string>>();
+            string sqlCust = "SELECT [EmployeeId],[ActivityId] FROM [EmployeesActivities] WHERE [UserId] = @UserId;";
+            DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+
+            IEnumerable<EmployeeActivities> userAct = db.QueryData<EmployeeActivities>(sqlCust, 1, new { UserId = userId });
+            List<string> lst = new List<string>();
+            int empId = 0;
+            foreach(EmployeeActivities u in userAct)
+            {
+                lst.Add(u.ActivityId.ToString());
+                if (empId != u.EmployeeId) {
+                    lst = new List<string>();
+                    dic.Add(u.EmployeeId, lst);
+                    empId = u.EmployeeId;
+                }
+                else
+                {   
+                    dic[empId] = lst;
+                }
+
+            }
+            return dic;
         }
         private IEnumerable<UserActivities> getUserActivities(int userId)
         {
@@ -505,6 +554,11 @@ namespace Tor
 
             }
 
+
+            string guid = Guid.NewGuid().ToString();
+
+            customer.guid = guid;
+
             if (!AddCustomerToDb(customer, 0))
 
             {
@@ -514,10 +568,7 @@ namespace Tor
                 return userDetails;
 
             }
-
-            string guid = Guid.NewGuid().ToString();
-
-            customer.guid = guid;
+            
 
             if (!sendCustomerMail(customer))
 
@@ -540,58 +591,19 @@ namespace Tor
         }
 
         private bool sendCustomerMail(CustomerObj user)
-
         {
-
-            try
-
-            {
-
-                MailMessage mail = new MailMessage("shilacohen@walla.com", "shilacohen@walla.com");
-
-                SmtpClient client = new SmtpClient();
-
-                client.UseDefaultCredentials = true;
-
-                client.EnableSsl = true;
-
-                NetworkCredential cred = new NetworkCredential("shilacoh3@gmail.com", "moon5honey");
-
-                client.Credentials = cred;
-
-                client.Port = 587;
-
-                client.DeliveryMethod = SmtpDeliveryMethod.Network;
-
-                client.Host = "smtp.gmail.com";
-
-                mail.Subject = "הרשמה למערכת תורים";
-
-                mail.Body = " שלום - להמשך רישום למערכת תורים נא ללחוץ על הקישור הבא - " + "http://localhost:58055/user/ConfirmCustomeRegister/" + user.guid;
-
-                client.Send(mail);
-
-            }
-
-            catch (Exception ex)
-
-            {
-
-                Logger.Write(ex);
-
-                return false;
-
-            }
-
-            return true;
+            string baseUerl = ConfigManager.BaseUrl;
+            string content = " : שלום - להמשך רישום למערכת תורים נא ללחוץ על הקישור הבא" + " <a href='" + baseUerl + "/user/ConfirmCustomeRegister/" + user.guid + "'>לחץ כאן לאישור</a>";
+            string[] arr = new string[1];
+            arr[0] = user.Email;
+            return MailSender.sendMail("הרשמה למערכת תורים", content, arr, "tana@TanaSoftware.com");            
 
         }
 
         private bool AddCustomerToDb(CustomerObj user, int userId)
 
         {
-
-            bool Issuccess = false;
+            
 
             try
 
@@ -649,15 +661,13 @@ namespace Tor
 
                 Logger.Write(ex);
 
-                Issuccess = false;
+                return false;
 
             }
 
+            
 
-
-            Issuccess = true;
-
-            return Issuccess;
+            return true;
 
         }
 
@@ -773,6 +783,32 @@ namespace Tor
 
         }
 
+        public string SaveUser(UserObj userObj)
+        {
+            if(!IsUserGuidExists(userObj.guid))
+            {
+                return "ארעה שגיאה";
+            }
+            
+            try
+            {
+                string sql = "";
+                if (string.IsNullOrEmpty(userObj.Password))//without password
+                    sql = @"Update Users Set [User]=@User,[Email]=@Email,[Tel]=@tel,[BizName]=@BizName,[BizNameEng]=@BizNameEng,
+                        [Adrress]=@Adrress,[City]=@City where [Id]=@Id And [Active]=@guid;";
+                else//with password
+                    sql = @"Update Users Set [User]=@User,[Email]=@Email,[Tel]=@tel,[BizName]=@BizName,[Password]=@Password,[BizNameEng]=@BizNameEng,
+                        [Adrress]=@Adrress,[City]=@City where [Id]=@Id And [Active]=@guid;";
+                DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+                var affectedRows = db.Execute(sql, 1, userObj);
+            }
+            catch(Exception ex)
+            {
+                Logger.Write(ex);
+                return "ארעה שגיאה";
+            }
+            return "נתוני משתמש נשמרו בהצלחה";
+        }
         public UserDetails RegisterUser(UserObj user)
 
         {
@@ -818,7 +854,34 @@ namespace Tor
                     return userObjWrapper;
 
                 }
+                if(user.UserActivities==null)
+                {
+                    userObjWrapper.ErrorMsg = "נא להזין פעילות";
 
+                    userObjWrapper.guid = "";
+
+                    return userObjWrapper;
+                }
+                foreach (var item in user.UserActivities)
+                {
+
+                    if(item.Value.Length<=0)
+                    {
+                        userObjWrapper.ErrorMsg = "נא להזין משך פעילות";
+
+                        userObjWrapper.guid = "";
+
+                        return userObjWrapper;
+                    }
+                    if (item.Value.Length > 3)
+                    {
+                        userObjWrapper.ErrorMsg = "נא להזין משך פעילות עד 720 דקות";
+
+                        userObjWrapper.guid = "";
+
+                        return userObjWrapper;
+                    }
+                }
                 if (!AddUserToDb(user))
 
                 {
@@ -856,60 +919,33 @@ namespace Tor
         }
 
         private bool sendMail(UserObj user)
-
         {
+            string baseUerl = ConfigManager.BaseUrl;
+            string content = " : שלום - להמשך רישום למערכת תורים נא ללחוץ על הקישור הבא" + " <a href='"+ baseUerl + "/user/ConfirmRegister/" + user.guid + "'>לחץ כאן לאישור</a>";
+            string[] arr = new string[1];
+            arr[0] = user.Email;
+            return MailSender.sendMail("הרשמה למערכת תורים", content, arr, "tana@TanaSoftware.com");
+            //return MailSender.sendMail(user.Email, user.guid, "הרשמה למערכת תורים", " שלום - להמשך רישום למערכת תורים נא ללחוץ על הקישור הבא - ", "/user/ConfirmRegister/");               
 
-            try
+        }
 
-            {
-
-                //MailMessage mail = new MailMessage("shilacohen@walla.com", "shilacohen@walla.com");
-
-                //SmtpClient client = new SmtpClient();
-
-                //client.UseDefaultCredentials = true;
-
-                //client.EnableSsl = true;
-
-                //NetworkCredential cred = new NetworkCredential("shilacoh3@gmail.com", "moon5honey");
-
-                //client.Credentials = cred;
-
-                //client.Port = 587;
-
-                //client.DeliveryMethod = SmtpDeliveryMethod.Network;
-
-
-
-                //client.Host = "smtp.gmail.com";
-
-                //mail.Subject = "הרשמה למערכת תורים";
-
-                //mail.Body = " שלום - להמשך רישום למערכת תורים נא ללחוץ על הקישור הבא - " + "http://localhost:58055/user/ConfirmRegister/" + user.guid;
-
-                //client.Send(mail);
-
-            }
-
-            catch (Exception ex)
-
-            {
-
-                Logger.Write(ex);
-
-                return false;
-
-            }
-
-            return true;
-
+        public bool ContanctUs(MailObj mail)
+        {
+            string[] arr = new string[1];
+            arr[0] = ConfigManager.MailTo;
+            return MailSender.sendMail("מייל נשלח מטלפון :  - " + mail.phone + ", מייל :  " + mail.email
+                + ", שם :" + mail.name, mail.Msg, arr, mail.email);
         }
 
         public string ActivateCustomer(string guid)
 
         {
+            string sql = "SELECT count(1) FROM Customer WHERE [guid] = @guid;";
 
-            if (IsCustomerGuidExists(guid))
+            DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+
+            bool isExist = db.IsExist(sql, new { guid = guid }, 1); ;
+            if (isExist)
 
             {
 
@@ -917,9 +953,7 @@ namespace Tor
 
                 {
 
-                    string sqlUsersUpdate = "UPDATE Customer SET [Active]=@Active where [guid]=@guid;";
-
-                    DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+                    string sqlUsersUpdate = "UPDATE Customer SET [Active]=@Active where [guid]=@guid;";                    
 
                     var affectedRows = db.Execute(sqlUsersUpdate, 1, new { Active = guid, guid = guid });
 
@@ -1030,6 +1064,8 @@ namespace Tor
                         var affectedA = db.Execute(sqlAct, 1, new { UserId = userId, Name = item.Key, ActiveDuration = item.Value });
                     }
 
+                    
+
                     string sqlUserActivity = @"INSERT INTO UsersActivity ([EmployeeId],[UserId],[ActiveDay],[EmployeeName],[ActiveHourFrom],[ActiveHourTo],[ActiveHourFromNone],[ActiveHourToNone]) Values
                         (@EmployeeId,@UserId,@ActiveDay,@EmployeeName,@ActiveHourFrom,@ActiveHourTo,@ActiveHourFromNone,@ActiveHourToNone);";
 
@@ -1052,6 +1088,27 @@ namespace Tor
 
                         }
 
+                    }
+                    string sqlActEmp = "select [Id],[Name],[ActiveDuration] From [UsersActivitiesTypes] where [UserId]=@UserId";
+
+                    IEnumerable<UserActivities> ActEmployyees = db.QueryData<UserActivities>(sqlActEmp, 1, new { UserId = userId });
+
+                    
+                    string sqlEmployeesActivities = "INSERT INTO EmployeesActivities ([UserId],[EmployeeId],[ActivityId]) Values(@UserId,@EmployeeId,@ActivityID)";
+                    foreach (var item in user.dicEmployeeActivities)
+                    {
+                        foreach(UserActivities u in ActEmployyees)
+                        {
+                            for (int i = 0; i < item.Value.Count; i++)
+                            {
+                                if (item.Value[i] ==u.Name)
+                                {
+                                    var affectedA = db.Execute(sqlEmployeesActivities, 1, new { UserId = userId, EmployeeId = item.Key, ActivityID = u.Id });
+                                }
+                            }
+
+                        }
+                        
                     }
 
                 }
@@ -1344,7 +1401,7 @@ namespace Tor
         {
             try
             {
-                if (!IsUserGuidExists(user[0].guid) || user.Count<=0)
+                if (!IsUserGuidExists(user[0].guid) || user.Count <= 0)
                 {
 
                     return "ארעה שגיאה בעדכון עובד";
@@ -1356,9 +1413,15 @@ namespace Tor
 
                 string sqlUserActivity = @"INSERT INTO UsersActivity ([EmployeeId],[UserId],[ActiveDay],[EmployeeName],[ActiveHourFrom],[ActiveHourTo],[ActiveHourFromNone],[ActiveHourToNone]) Values
                         (@EmployeeId,@UserId,@ActiveDay,@EmployeeName,@ActiveHourFrom,@ActiveHourTo,@ActiveHourFromNone,@ActiveHourToNone);";
-                
+
                 foreach (BizTypeObj biz in user)
                 {
+                    if (biz.ActiveHourFromNone == "")
+                        biz.ActiveHourFromNone = null;
+
+                    if (biz.ActiveHourToNone == "")
+                        biz.ActiveHourToNone = null;
+
                     var affectedRows = db.Execute(sqlUserActivity, 1, biz);
                 }
             }
@@ -1411,11 +1474,22 @@ namespace Tor
             {
                 return 0;
             }
+
+
+            if (userActivity.ActiveDuration <= 0)
+            {
+                return 0;
+            }
+            if (userActivity.ActiveDuration > 720)
+            {
+                return 0;
+            }
+            
             string sqlAct = "INSERT INTO UsersActivitiesTypes ([UserId],[Name],[ActiveDuration]) Values(@UserId,@Name,@ActiveDuration)";
             DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
-            var affectedRows = db.Execute(sqlAct, 1,  userActivity );
+            var affectedRows = db.Execute(sqlAct, 1, userActivity);
             string sql = "select max(Id) as id From UsersActivitiesTypes where UserId=@UserId";
-            IEnumerable<int> activityId = db.QueryData<int>(sql, 1, new { UserId = userActivity.UserId});
+            IEnumerable<int> activityId = db.QueryData<int>(sql, 1, new { UserId = userActivity.UserId });
             int id = 0;
             foreach (int u in activityId)
             {
@@ -1621,6 +1695,9 @@ namespace Tor
             if (UserX == null)
                 return null;
 
+
+            
+
             //string cityName = "";
             foreach (UserObj u in UserX)
             {
@@ -1636,11 +1713,45 @@ namespace Tor
                 userSearch.tel = u.tel;
                 userSearch.User = u.User;
                 userSearch.version = ConfigManager.version;
+                DirectoryInfo d = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory+@"\\img\");
+                FileInfo[] Files = d.GetFiles("*.*"); 
+                
+                foreach (FileInfo file in Files)
+                {
+                    if (file.Name.Contains("LOGO"))
+                        userSearch.logo = file.FullName;
+                    else
+                        userSearch.img = file.FullName;
+
+                }
                 return userSearch;
             }
             return null;
         }
+
+        public string AddUserExtraActivity(UserExtraActivity user)
+        {
+            try
+            {
+                if (!IsUserGuidExists(user.guid))
+                {
+                    return "ארעה שגיאה";
+                }
+                string sql = @"INSERT INTO UserExtraActivity ([UserId],[EmployeeId],[From],[To]) Values
+
+                        (@UserId,@EmployeeId,@From,@To);";
+
+                DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+
+                var affectedRows = db.Execute(sql, 1, user);
+            }
+            catch(Exception ex)
+            {
+                Logger.Write(ex);
+                return "ארעה שגיאה";
+            }
+            return "";
+        }
     }
 
 }
-
