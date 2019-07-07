@@ -116,7 +116,7 @@
 
                             </div>
 
-                            <div class="form-group">
+                            <!--<div class="form-group">
 
                                 <div class="form-group floating-label-form-group controls">
 
@@ -124,7 +124,7 @@
 
                                 </div>
 
-                            </div>
+                            </div>-->
 
                             <div class="form-group">
 
@@ -140,20 +140,12 @@
 
                                 <div class="form-group floating-label-form-group controls">
 
-                                    <select id="city" type="text" placeholder="כתובת" class="form-control  input-lg">
-
-                                        <option value="0">בחר עיר</option>
-
-                                        <option value="6600">חולון</option>
-
-                                        <option value="5000">תל אביב</option>
-
-                                    </select>
+                                    <select id="city" type="text" placeholder="כתובת"></select>
 
                                 </div>
 
                             </div>
-                            <div class="form-group" style="float:left;padding-left:20px;">
+                            <div class="form-group" style="float:left;">
 
                                 <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
 
@@ -178,8 +170,9 @@
 
                                 <div class="form-group" style="width:100%;padding-bottom:10px;padding-top:10px;">
 
-                                    <input style="float:right;width:180px;margin-bottom:10px;margin-right:3px;" maxlength="50" id="BizType" type="text" placeholder="הזן סוג פעילות" class="form-control input-lg" />
-                                    <select id="ddlDuration" style="float:right;min-width:80px;max-width:160px; margin-right:3px;" placeholder="משך פעילות" class="form-control input-lg">
+                                    <input style="float:right;width:120px;margin-bottom:10px;margin-right:3px;" maxlength="50" id="BizType" type="text" placeholder="הזן סוג פעילות" class="form-control input-lg" />
+                                    <input style="float:right;width:80px;margin-right:4px;" id="txtDuration" type="number" placeholder="משך פעילות" maxlength="3" class="form-control input-lg" />
+                                    <!--<select id="ddlDuration" style="float:right;min-width:80px;max-width:140px; margin-right:3px;" placeholder="משך פעילות" class="form-control input-lg">
 
                                         <option value="0">משך פעילות</option>
 
@@ -195,8 +188,8 @@
 
                                         <option>60</option>
 
-                                    </select>
-                                    <button onclick="AddUserActivity();" class="btn btn-blue btn-lg" style="float:right;margin-right:5px;">הוסף</button>
+                                    </select>-->
+                                    <button onclick="AddUserActivity();" class="btn btn-blue btn-lg" style="float:right;width:50px; margin-right:5px;">הוסף</button>
 
                                 </div>
                                 <div style="width:100%;padding-top:5px;float:right">
@@ -362,12 +355,12 @@
                         </div>
                     </div>
                 </div>
-                    </div>
+            </div>
 
-                </div>
+        </div>
 
     </section>
-    <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="js/jquery.js"></script>
     <script src="js/cleave.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/jquery.easing.min.js"></script>
@@ -383,7 +376,7 @@
     <script src="js/wow.min.js"></script>
     <script src="js/main.js"></script>
     <script src="js/selectize.js"></script>
-    <script src="js/global.js"></script>
+    
     <script src="https://www.negishim.com/accessibility/accessibility_pro.js" type="text/javascript"></script>
 </body>
 </html>
@@ -393,8 +386,29 @@
     pixel_from_start = 80;
     is_set_for_mobile = 1;
     var UserData = JSON.parse(sessionStorage.getItem("UserData"));
+    getScripts();
 
-    GetUserDetails();
+    function getScripts() {
+        var v = sessionStorage.getItem("version");
+        $.ajax({
+            url: "js/global.js?ver=" + v,
+            dataType: "script",
+            success: function (data) {
+
+                getCities(function (data) {
+                    selectizeService.InitSelectize("city", 'Id', 'Name', 46, data, null);
+
+                    GetUserDetails();
+                });
+
+                
+            }
+        });
+
+
+    }
+
+    
     function GetUserDetails() {
 
         var Obj = {
@@ -420,13 +434,13 @@
     }
 
     function getEmployeeTemplate(EmployeeId, EmployeeName) {
-        return "<div class='row' style='width:100%;' id='dvBizType" + EmployeeId + "'><div style='float:right;width:260px;padding-right:20px;'><input onclick=SetEmployeeData('" + EmployeeName+"'); id='txtBizType" + EmployeeId + "' type='text' value='" + EmployeeName + "' /></div><button style='float:right;margin-right:4px;' onclick=deleteBizType('" + EmployeeId + "')>מחק</button><button style='float:right;margin-right:4px;' onclick=UpdateBizType('" + EmployeeId + "')>עדכן</button></div>";
+        return "<div class='row' style='width:100%;' id='dvBizType" + EmployeeId + "'><div style='float:right;padding-right:20px;'><input style='width:140px;' onclick=SetEmployeeData('" + EmployeeName + "'); id='txtBizType" + EmployeeId + "' type='text' value='" + EmployeeName + "' /></div><button style='float:right;margin-right:4px;' onclick=deleteBizType('" + EmployeeId + "')>מחק</button><button style='float:right;margin-right:4px;' onclick=UpdateBizType('" + EmployeeId + "')>עדכן</button></div>";
 
     }
 
 
     function getBizTypeTemplate(Id, Name, ActiveDuration) {
-        return "<div class='row' style='width:100%;' id='dvBizTypeAct" + Id + "'><div style='float:right;width:260px;padding-right:20px;'>" + Name + " למשך  " + ActiveDuration + " דקות</div><button style='float:right;margin-right:4px;' onclick=deleteBizTypeActivity('" + Id + "')>מחק</button></div>";
+        return "<div class='row' style='width:100%;' id='dvBizTypeAct" + Id + "'><div style='float:right;width:200px;padding-right:20px;'>" + Name + " למשך  " + ActiveDuration + " דקות</div><button style='float:right;margin-right:4px;' onclick=deleteBizTypeActivity('" + Id + "')>מחק</button></div>";
     }
 
     function fillData(data) {
@@ -435,7 +449,8 @@
         $('#address').val(ud.Adrress);
         $('#bizName').val(ud.BizName);
         $('#bizNameEng').val(ud.BizNameEng);
-        $('#city').val(ud.City);
+        //$('#city').val(ud.City);
+        selectizeService.setValue('city', ud.City);
         $('#email').val(ud.Email);
         $('#txtTel').val(ud.Tel);
         $('#name').val(ud.User);
@@ -449,7 +464,7 @@
 
         for (var key in UserData.dicBizType) {
             var arr = UserData.dicBizType[key];
-            empData += getEmployeeTemplate(arr[0].EmployeeId, arr[0].EmployeeName);            
+            empData += getEmployeeTemplate(arr[0].EmployeeId, arr[0].EmployeeName);
         }
         $("#Activities").html(empData);
 
@@ -493,11 +508,11 @@
         $('#dvConfirmModal').modal('hide');
     }
     function deleteActivityFromDb(BizTypeId) {
-        
+
         $('#dvConfirmModal').modal('hide');
         var Obj = {
             guid: UserData.guid,
-            UserId: BizTypeId            
+            UserId: BizTypeId
         }
 
         $.ajax({
@@ -524,13 +539,13 @@
         var data = "";
         var ActivitiesData = {};
         var ActivitiesTempData = new Array();
-
+        var empName = $('#EmployeeName').val();
         if (!checkValid("EmployeeName", "נא להזין שם עובד")) {
 
             return;
 
         }
-        
+
         ActivitiesTempData = getEmployeeHours(0);
         if (ActivitiesTempData.length <= 0)
             return;
@@ -555,7 +570,7 @@
                     var dicBizType = UserData.dicBizType;
                     dicBizType[empName] = ActivitiesTempData;
                     UserData.dicBizType = dicBizType;
-                    sessionStorage.setItem("UserData", JSON.stringify(UserData));                    
+                    sessionStorage.setItem("UserData", JSON.stringify(UserData));
                     messageHandler.Show(" עובד חדש התווסף בהצלחה");
                 }
             },
@@ -623,9 +638,9 @@
 
                 item.ActiveHourTo = $('#txttoHour' + id).val();
 
-                item.ActiveHourFromNone = $('#txtfromHourNone' + id).val();
+                item.ActiveHourFromNone = $('#txtfromHourNone' + id).val() == "" ? null : $('#txtfromHourNone' + id).val();
 
-                item.ActiveHourToNone = $('#txttoHourNone' + id).val();
+                item.ActiveHourToNone = $('#txttoHourNone' + id).val() == "" ? null : $('#txttoHourNone' + id).val();
 
                 ActivitiesTempData.push(item);
             }
@@ -710,9 +725,9 @@
             showTooltip("txtBizType" + empId, "נא להזין שם עובד");
             return;
         }
-        
+
         var ActivitiesTempData = getEmployeeHours(empId, empName);
-        if (ActivitiesTempData.length <= 0)
+        if (ActivitiesTempData==null || ActivitiesTempData.length <= 0)
             return;
 
         $.ajax({
@@ -741,6 +756,161 @@
 
     function Save() {
 
+        var user = $("#name").val();
+
+        var password = $("#password").val();
+
+        var email = $("#email").val();
+
+        var bizName = $("#bizName").val();
+
+        var bizNameEng = $("#bizNameEng").val();
+
+        //var creditCard = $("#creditCard").val();
+
+        var address = $("#address").val();
+
+        var city = $("#city").val();
+
+        var tel = $("#txtTel").val();
+
+        $("#spnActiveDays").text("");
+
+
+        if (user.length <= 0) {
+
+            showTooltip("name", "נא להזין שם");
+
+            return;
+
+        }
+
+
+        if (password && password.length > 0 && password.length < 8) {
+
+            showTooltip("password", "נא להזין לפחות 8 תווים");
+
+            return;
+
+        }
+        if (password && !testPassword(password)) {
+            showTooltip("password", "נא להזין תווים ומספרים");
+
+            return;
+        }
+        if (email.length <= 0) {
+
+            showTooltip("email", "נא להזין מייל");
+
+            return;
+
+        }
+
+        if (tel.length <= 0) {
+
+            showTooltip("txtTel", "נא להזין מספר טלפון נייד");
+
+            return;
+
+        }
+
+        if (!IsvalidEmail(email)) {
+
+            showTooltip("email", "נא להזין מייל תקין");
+
+            return;
+
+        }
+
+
+
+        if (bizName.length <= 0) {
+
+            showTooltip("bizName", "נא להזין שם עסק");
+
+            return;
+
+        }
+
+
+
+        if (bizNameEng.length <= 0) {
+
+            showTooltip("bizNameEng", "נא להזין שם עסק באנגלית");
+
+            return;
+
+        }
+
+
+
+        //if (creditCard.length <= 0) {
+
+        //    showTooltip("creditCard", "נא להזין כרטיס אשראי ");
+
+        //    return;
+
+        //}
+
+
+
+        if (address.length <= 0) {
+
+            showTooltip("address", "נא להזין כתובת");
+
+            return;
+
+        }
+
+
+
+        if (city == "0") {
+
+            showTooltip("city", "נא להזין עיר");
+
+            return;
+
+        }
+
+
+       
+        var userObj = {
+            Id: UserData.UserId,
+            User: user,
+
+            Password: password,
+
+            Email: email,
+
+            tel: tel,
+
+            BizName: bizName,
+
+            BizNameEng: bizNameEng,
+
+            Adrress: address,
+
+            City: city,
+
+            Country: "Israel",
+            guid:UserData.guid
+        }
+
+
+        $.ajax({
+            url: "User/SaveUser",
+            type: 'POST',
+            data: JSON.stringify(userObj),
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                
+                messageHandler.Show(data);
+                
+            },
+            error: function (request, status, error) {
+
+            }
+        });
     }
 
     function AddUserActivity() {
@@ -754,11 +924,20 @@
             return;
         }
 
-        if (!checkValidDDl("ddlDuration", "נא להזין משך פעילות")) {
+        if (!checkValid("txtDuration", "נא להזין משך פעילות")) {
             return;
         }
-
-        var duration = $("#ddlDuration").val();
+        
+        
+        var duration = $("#txtDuration").val();
+        if (parseInt(duration<=0)) {
+            showTooltip("txtDuration", "נא להזין מספר גדול מאפס");
+            return;
+        }
+        if (duration.length > 3) {
+            showTooltip("txtDuration", "נא להזין מקסימום 720 דקות");
+            return;
+        }
         var Obj = {
             UserId: UserData.UserId,
             Name: bizType,
@@ -780,6 +959,7 @@
 
                     $("#UserActivities").html(newDiv + newBizDiv);
                     $('#BizType').val("");
+                    $('#txtDuration').val("");
                     messageHandler.Show("פעילות עודכנה בהצלחה");
                 }
             },
@@ -787,9 +967,20 @@
 
             }
         });
-            
-            
-        }
 
-    
+
+        }
+    SetHourToDddl();
+
+    function SetHourToDddl() {
+        document.querySelectorAll('.input-time').forEach(function (el) {
+            new Cleave(el,
+                {
+                    time: true,
+                    timePattern: ["h", "m"]
+                });
+        });
+
+    }
+
 </script>

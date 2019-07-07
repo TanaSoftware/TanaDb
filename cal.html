@@ -546,12 +546,17 @@
             var empId = $('#ddlActivity :selected').text();
             var BizTypeList = userData.dicBizType[empId];
             setUserActivities(BizTypeList);
+
+            var id = parseInt($('#ddlActivity').val());
+            var empActList = UserData.dicEmployeeActivities[id];
+            setEmployeeActivities(empActList);
         });
 
-        document.getElementById("ddlEvent").options.length = 0;
-        for (var i = 0; i < userData.Activities.length; i++) {
-            $('#ddlEvent').append($("<option></option>").attr("value", userData.Activities[i].Id).text(userData.Activities[i].Name));
-        }
+       
+
+        var empActList = UserData.dicEmployeeActivities[1];//get default emp
+        setEmployeeActivities(empActList);
+        
 
         var currentEmployee = $('#ddlActivity :selected').text();
         var BizTypeList = userData.dicBizType[currentEmployee];
@@ -560,6 +565,20 @@
 
     }
 
+    function setEmployeeActivities(empActList) {
+
+        document.getElementById("ddlEvent").options.length = 0;//reset activities
+        for (var i = 0; i < UserData.Activities.length; i++) {
+            if (include(empActList, UserData.Activities[i].Id))
+                $('#ddlEvent').append($("<option></option>").attr("value", UserData.Activities[i].Id).text(UserData.Activities[i].Name));
+        }
+    }
+
+    function include(arr, obj) {
+        for(var i=0; i<arr.length; i++) {
+            if (arr[i] == obj) return true;
+        }
+    }
     function setUserActivities(BizTypeList) {
         CheckTodayAvailable(BizTypeList, UserData.day);
 
