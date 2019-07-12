@@ -51,7 +51,10 @@
 
                     <div class="panel panel-primary">
                         <div class="panel-heading">
-                            <h3 class="panel-title">עדכון פרטי בעל העסק</h3>
+                            <h3 class="panel-title">
+                                עדכון פרטי בעל העסק
+                                <span style="float:left;"><button onclick="goBack()">חזרה</button></span>
+                                </h3>
                         </div>
 
                         <div class="panel-body">
@@ -189,7 +192,7 @@
                                         <option>60</option>
 
                                     </select>-->
-                                    <button onclick="AddUserActivity();" class="btn btn-blue btn-lg" style="float:right;width:50px; margin-right:5px;">הוסף</button>
+                                    <button onclick="AddUserActivity();" class="btn btn-blue btn-lg" style="float:right; margin-right:5px;">הוסף</button>
 
                                 </div>
                                 <div style="width:100%;padding-top:5px;float:right">
@@ -357,10 +360,26 @@
                 </div>
             </div>
 
+            <div class="row">
+                <ul>
+                    באפשרותך להעלאות שני תמונות לאתר שלך:
+                    <li>
+                        <span style="float:right;width:70px;">לוגו: </span><input style="float:right;" id="fileupload1" name="myfile1" type="file" />
+                        <span style="float:right;margin-right:20px;">(גודל מומלץ 100/25)</span>
+                    </li>
+                    <li>
+                        <span style="float:right;width:70px;">תמנת רקע</span><input style="float:right;" id="fileupload2" name="myfile2" type="file" />
+                        <span style="float:right;margin-right:20px;">(גודל מומלץ 600/400)</span>
+                    </li>
+                </ul>
+                <ul>
+                    <li><button style="float:right;" onclick="upload()">העלאת תמונות</button></li>
+                </ul>
+            </div>
         </div>
 
     </section>
-    <script src="js/jquery.js"></script>
+    <script src="js/jquery-1.12.4.min.js"></script>
     <script src="js/cleave.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/jquery.easing.min.js"></script>
@@ -433,11 +452,36 @@
         });
     }
 
-    function getEmployeeTemplate(EmployeeId, EmployeeName) {
-        return "<div class='row' style='width:100%;' id='dvBizType" + EmployeeId + "'><div style='float:right;padding-right:20px;'><input style='width:140px;' onclick=SetEmployeeData('" + EmployeeName + "'); id='txtBizType" + EmployeeId + "' type='text' value='" + EmployeeName + "' /></div><button style='float:right;margin-right:4px;' onclick=deleteBizType('" + EmployeeId + "')>מחק</button><button style='float:right;margin-right:4px;' onclick=UpdateBizType('" + EmployeeId + "')>עדכן</button></div>";
-
+    function getActivityNameByById(id){
+        for (var i = 0; i < UserData.Activities.length; i++) {
+            if (UserData.Activities[i].Id == id)
+                return UserData.Activities[i].Name;
+        }
+    }
+    function checkEmployeeActivities(EmployeeActivities,id){
+        for (var i = 0; i < EmployeeActivities.length; i++) {
+            if (EmployeeActivities[i] == id)
+                return true;
+        }
+        return false;
+    }
+    function getEmployeeTemplate(EmployeeId, EmployeeName, EmployeeActivities) {
+        
+        var ret = "<div class='row' style='width:100%;' id='dvBizType" + EmployeeId + "'><div style='float:right;padding-right:20px;'><input style='width:140px;' onclick=SetEmployeeData('" + EmployeeName + "'); id='txtBizType" + EmployeeId + "' type='text' value='" + EmployeeName + "' /></div><button style='float:right;margin-right:4px;' onclick=deleteBizType('" + EmployeeId + "')>מחק</button><button style='float:right;margin-right:4px;' onclick=UpdateBizType('" + EmployeeId + "')>עדכן</button></div>";
+        for (var i = 0; i < UserData.Activities.length; i++) {
+            var bizType = UserData.Activities[i].Name;
+            var checked = "";
+            if (checkEmployeeActivities(EmployeeActivities,UserData.Activities[i].Id))
+                checked = "checked='checked'";
+            ret += getEmployeeActivityTemplate(EmployeeId,UserData.Activities[i].Id, bizType, checked);
+        }
+        return ret;
     }
 
+    
+    function getEmployeeActivityTemplate(EmployeeId,Id, bizType, checked){
+        return "<div id='dvActEmp" + EmployeeId + "Act" + Id + "' style='padding-right:20px;'><label style='width:120px;' for='chk_" + EmployeeId + "Act" + Id + "'>" + bizType + "</label><input " + checked + " id='chk_" + EmployeeId + "Act" + Id + "' type='checkbox' value='" + bizType + "' /></div>";
+    }
 
     function getBizTypeTemplate(Id, Name, ActiveDuration) {
         return "<div class='row' style='width:100%;' id='dvBizTypeAct" + Id + "'><div style='float:right;width:200px;padding-right:20px;'>" + Name + " למשך  " + ActiveDuration + " דקות</div><button style='float:right;margin-right:4px;' onclick=deleteBizTypeActivity('" + Id + "')>מחק</button></div>";
@@ -464,10 +508,10 @@
 
         for (var key in UserData.dicBizType) {
             var arr = UserData.dicBizType[key];
-            empData += getEmployeeTemplate(arr[0].EmployeeId, arr[0].EmployeeName);
+            empData += getEmployeeTemplate(arr[0].EmployeeId, arr[0].EmployeeName, UserData.dicEmployeeActivities[arr[0].EmployeeId]);
         }
         $("#Activities").html(empData);
-
+        
     }
 
     function SetEmployeeData(key) {
@@ -930,7 +974,7 @@
         
         
         var duration = $("#txtDuration").val();
-        if (parseInt(duration<=0)) {
+        if (parseInt(duration <= 0)) {
             showTooltip("txtDuration", "נא להזין מספר גדול מאפס");
             return;
         }
@@ -958,6 +1002,14 @@
                     var newDiv = $("#UserActivities").html();
 
                     $("#UserActivities").html(newDiv + newBizDiv);
+
+                    for (var key in UserData.dicBizType) {
+                        var arr = UserData.dicBizType[key];
+                        var d = getEmployeeActivityTemplate(arr[0].EmployeeId,data, bizType, "");
+                        var lastActivityId = UserData.Activities[UserData.Activities.length - 1].Id;
+                        
+                        $(d).insertAfter("#dvActEmp" + arr[0].EmployeeId + "Act" + lastActivityId );
+                    }
                     $('#BizType').val("");
                     $('#txtDuration').val("");
                     messageHandler.Show("פעילות עודכנה בהצלחה");
@@ -983,4 +1035,31 @@
 
     }
 
+
+    function upload() {
+        var formData = new FormData();
+        var file = document.getElementById('fileupload1').files[0];
+        var file2 = document.getElementById('fileupload2').files[0];
+        formData.append("file", file, file.name);
+        formData.append("file2", file2, file2.name);
+        formData.append("userId", UserData.UserId);
+        formData.append("guid", UserData.guid);
+
+        $.ajax({
+            url: "Image/UploadImage",
+            type: 'POST',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (data) {               
+                messageHandler.Show("תמונה עודכנה בהצלחה");                
+            },
+            error: function (request, status, error) {
+                messageHandler.Show(error);
+            }
+        });
+    
+
+    }
 </script>

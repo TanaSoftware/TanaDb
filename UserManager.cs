@@ -336,7 +336,7 @@ namespace Tor
 
     public class EmployeeActivities
     {
-        public int EmployeeId { get; set; }        
+        public int EmployeeId { get; set; }
 
         public int ActivityId { get; set; }
     }
@@ -459,16 +459,17 @@ namespace Tor
             IEnumerable<EmployeeActivities> userAct = db.QueryData<EmployeeActivities>(sqlCust, 1, new { UserId = userId });
             List<string> lst = new List<string>();
             int empId = 0;
-            foreach(EmployeeActivities u in userAct)
+            foreach (EmployeeActivities u in userAct)
             {
                 lst.Add(u.ActivityId.ToString());
-                if (empId != u.EmployeeId) {
+                if (empId != u.EmployeeId)
+                {
                     lst = new List<string>();
                     dic.Add(u.EmployeeId, lst);
                     empId = u.EmployeeId;
                 }
                 else
-                {   
+                {
                     dic[empId] = lst;
                 }
 
@@ -543,7 +544,15 @@ namespace Tor
                 return userDetails;
 
             }
+            if (IsMailExist(customer.Email))
 
+            {
+
+                userDetails.ErrorMsg = "מייל קיים במערכת";
+
+                return userDetails;
+
+            }
             if (IsCustomerTelExist(customer.tel))
 
             {
@@ -568,7 +577,7 @@ namespace Tor
                 return userDetails;
 
             }
-            
+
 
             if (!sendCustomerMail(customer))
 
@@ -596,14 +605,14 @@ namespace Tor
             string content = " : שלום - להמשך רישום למערכת תורים נא ללחוץ על הקישור הבא" + " <a href='" + baseUerl + "/user/ConfirmCustomeRegister/" + user.guid + "'>לחץ כאן לאישור</a>";
             string[] arr = new string[1];
             arr[0] = user.Email;
-            return MailSender.sendMail("הרשמה למערכת תורים", content, arr, "tana@TanaSoftware.com");            
+            return MailSender.sendMail("הרשמה למערכת תורים", content, arr, "tana@TanaSoftware.com");
 
         }
 
         private bool AddCustomerToDb(CustomerObj user, int userId)
 
         {
-            
+
 
             try
 
@@ -665,7 +674,7 @@ namespace Tor
 
             }
 
-            
+
 
             return true;
 
@@ -785,11 +794,11 @@ namespace Tor
 
         public string SaveUser(UserObj userObj)
         {
-            if(!IsUserGuidExists(userObj.guid))
+            if (!IsUserGuidExists(userObj.guid))
             {
                 return "ארעה שגיאה";
             }
-            
+
             try
             {
                 string sql = "";
@@ -802,7 +811,7 @@ namespace Tor
                 DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
                 var affectedRows = db.Execute(sql, 1, userObj);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.Write(ex);
                 return "ארעה שגיאה";
@@ -842,6 +851,17 @@ namespace Tor
                     return userObjWrapper;
 
                 }
+                if (IsCustomerMailExist(user.Email))
+
+                {
+
+                    userObjWrapper.ErrorMsg = "מייל קיים במערכת";
+
+                    userObjWrapper.guid = "";
+
+                    return userObjWrapper;
+
+                }
 
                 if (IsBizNameExist(user.BizNameEng))
 
@@ -854,7 +874,7 @@ namespace Tor
                     return userObjWrapper;
 
                 }
-                if(user.UserActivities==null)
+                if (user.UserActivities == null)
                 {
                     userObjWrapper.ErrorMsg = "נא להזין פעילות";
 
@@ -865,7 +885,7 @@ namespace Tor
                 foreach (var item in user.UserActivities)
                 {
 
-                    if(item.Value.Length<=0)
+                    if (item.Value.Length <= 0)
                     {
                         userObjWrapper.ErrorMsg = "נא להזין משך פעילות";
 
@@ -921,7 +941,7 @@ namespace Tor
         private bool sendMail(UserObj user)
         {
             string baseUerl = ConfigManager.BaseUrl;
-            string content = " : שלום - להמשך רישום למערכת תורים נא ללחוץ על הקישור הבא" + " <a href='"+ baseUerl + "/user/ConfirmRegister/" + user.guid + "'>לחץ כאן לאישור</a>";
+            string content = " : שלום - להמשך רישום למערכת תורים נא ללחוץ על הקישור הבא" + " <a href='" + baseUerl + "/user/ConfirmRegister/" + user.guid + "'>לחץ כאן לאישור</a>";
             string[] arr = new string[1];
             arr[0] = user.Email;
             return MailSender.sendMail("הרשמה למערכת תורים", content, arr, "tana@TanaSoftware.com");
@@ -953,7 +973,7 @@ namespace Tor
 
                 {
 
-                    string sqlUsersUpdate = "UPDATE Customer SET [Active]=@Active where [guid]=@guid;";                    
+                    string sqlUsersUpdate = "UPDATE Customer SET [Active]=@Active where [guid]=@guid;";
 
                     var affectedRows = db.Execute(sqlUsersUpdate, 1, new { Active = guid, guid = guid });
 
@@ -988,12 +1008,12 @@ namespace Tor
                 try
 
                 {
-
-                    string sqlUsersUpdate = "UPDATE Users SET [Active]=@Active where [guid]=@guid;";
+                    DateTime d = DateTime.Now;
+                    string sqlUsersUpdate = "UPDATE Users SET [Active]=@Active,[StartDate]=@StartDate where [guid]=@guid;";
 
                     DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
-                    var affectedRows = db.Execute(sqlUsersUpdate, 1, new { Active = guid, guid = guid });
+                    var affectedRows = db.Execute(sqlUsersUpdate, 1, new { Active = guid, guid = guid, StartDate=d });
 
                     return "Ok";
 
@@ -1064,7 +1084,7 @@ namespace Tor
                         var affectedA = db.Execute(sqlAct, 1, new { UserId = userId, Name = item.Key, ActiveDuration = item.Value });
                     }
 
-                    
+
 
                     string sqlUserActivity = @"INSERT INTO UsersActivity ([EmployeeId],[UserId],[ActiveDay],[EmployeeName],[ActiveHourFrom],[ActiveHourTo],[ActiveHourFromNone],[ActiveHourToNone]) Values
                         (@EmployeeId,@UserId,@ActiveDay,@EmployeeName,@ActiveHourFrom,@ActiveHourTo,@ActiveHourFromNone,@ActiveHourToNone);";
@@ -1093,22 +1113,22 @@ namespace Tor
 
                     IEnumerable<UserActivities> ActEmployyees = db.QueryData<UserActivities>(sqlActEmp, 1, new { UserId = userId });
 
-                    
+
                     string sqlEmployeesActivities = "INSERT INTO EmployeesActivities ([UserId],[EmployeeId],[ActivityId]) Values(@UserId,@EmployeeId,@ActivityID)";
                     foreach (var item in user.dicEmployeeActivities)
                     {
-                        foreach(UserActivities u in ActEmployyees)
+                        foreach (UserActivities u in ActEmployyees)
                         {
                             for (int i = 0; i < item.Value.Count; i++)
                             {
-                                if (item.Value[i] ==u.Name)
+                                if (item.Value[i] == u.Name)
                                 {
                                     var affectedA = db.Execute(sqlEmployeesActivities, 1, new { UserId = userId, EmployeeId = item.Key, ActivityID = u.Id });
                                 }
                             }
 
                         }
-                        
+
                     }
 
                 }
@@ -1203,7 +1223,7 @@ namespace Tor
 
         }
 
-        private bool IsUserGuidExists(string guid, bool isUseGuid = false)
+        public bool IsUserGuidExists(string guid, bool isUseGuid = false)
 
         {
 
@@ -1484,7 +1504,7 @@ namespace Tor
             {
                 return 0;
             }
-            
+
             string sqlAct = "INSERT INTO UsersActivitiesTypes ([UserId],[Name],[ActiveDuration]) Values(@UserId,@Name,@ActiveDuration)";
             DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
             var affectedRows = db.Execute(sqlAct, 1, userActivity);
@@ -1696,7 +1716,7 @@ namespace Tor
                 return null;
 
 
-            
+
 
             //string cityName = "";
             foreach (UserObj u in UserX)
@@ -1713,9 +1733,9 @@ namespace Tor
                 userSearch.tel = u.tel;
                 userSearch.User = u.User;
                 userSearch.version = ConfigManager.version;
-                DirectoryInfo d = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory+@"\\img\");
-                FileInfo[] Files = d.GetFiles("*.*"); 
-                
+                DirectoryInfo d = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory + @"\\img\");
+                FileInfo[] Files = d.GetFiles("*.*");
+
                 foreach (FileInfo file in Files)
                 {
                     if (file.Name.Contains("LOGO"))
@@ -1745,7 +1765,7 @@ namespace Tor
 
                 var affectedRows = db.Execute(sql, 1, user);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.Write(ex);
                 return "ארעה שגיאה";

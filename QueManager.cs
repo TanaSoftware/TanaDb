@@ -100,8 +100,8 @@ namespace Tor
 
     {
 
-        
-        private bool IsDateInDateList(DateTime date,List<UserExtraActivity> extra)
+
+        private bool IsDateInDateList(DateTime date, List<UserExtraActivity> extra)
         {
             return extra.Exists(x => x.From == date);
         }
@@ -200,7 +200,7 @@ namespace Tor
                         int currentDay = GetCurrentDay(que.FromDate);
                         if (dicQ.ContainsKey(currentDay))
                         {
-                            if (dicQ[currentDay].ActiveHourFromNone.Year != 1 && !HebrewCalendarManager.IsDateInHoliday(que.FromDate) && !IsDateInDateList(que.FromDate,userExtraActivity))
+                            if (dicQ[currentDay].ActiveHourFromNone.Year != 1 && !HebrewCalendarManager.IsDateInHoliday(que.FromDate) && !IsDateInDateList(que.FromDate, userExtraActivity))
                             {
                                 QueData qData = new QueData();
                                 qData.start = dicQ[currentDay].ActiveHourFromNone;
@@ -335,7 +335,7 @@ namespace Tor
 
         }
 
-        
+
         public int GetCurrentDay(DateTime dt)
         {
             int currentDay = (int)dt.DayOfWeek;
@@ -414,7 +414,7 @@ namespace Tor
 
             DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
-             return db.IsExist(sql, new { UserId = que.UserId, FromDate = que.FromDate, ToDate = que.ToDate, EmployeeId = que.EmployeeId }, 1);
+            return db.IsExist(sql, new { UserId = que.UserId, FromDate = que.FromDate, ToDate = que.ToDate, EmployeeId = que.EmployeeId }, 1);
             //IEnumerable<int> data =
             //     db.QueryData<int>(sql, 1, new { UserId = que.UserId, FromDate = que.FromDate, ToDate = que.ToDate, EmployeeId = que.EmployeeId });
 
@@ -455,7 +455,7 @@ namespace Tor
         private bool IsCustomerQueAvailable(Que que)
 
         {
-            
+
             int currentDay = GetCurrentDay(que.FromDate);
             //var sql = @"Select * FROM UsersActivity WHERE EmployeeId = @EmployeeId And UserId = @UserId And ActiveDay=@ActiveDay";
             string sql = @"SELECT UA.EmployeeId
@@ -633,7 +633,42 @@ namespace Tor
             return db.IsExist(sql, que, 1);
 
         }
-
+        public string ApproveQue(string decryptedQueId)
+        {
+            try
+            {
+                SecureData sec = new SecureData();
+                string queId = sec.DecryptTextWithNoSpecialCharecters(decryptedQueId, "shalomHa!@");
+                //IsApproved field
+                string sqlUpdate = "UPDATE Que SET [IsApproved]=1 where [id]=@QueId;";
+                DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+                var affectedRows = db.Execute(sqlUpdate, 1, new { QueId = queId });
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+                return "ארעה שגיאה";
+            }
+            return "";
+        }
+        public string DeleteQue(string decryptedQueId)
+        {
+            try
+            {
+                SecureData sec = new SecureData();
+                string queId = sec.DecryptTextWithNoSpecialCharecters(decryptedQueId, "shalomHa!@");
+                //IsApproved field
+                string sqlUpdate = "Delete FROM Que where [id]=@QueId;";
+                DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+                var affectedRows = db.Execute(sqlUpdate, 1, new { QueId = queId });
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+                return "ארעה שגיאה";
+            }
+            return "";
+        }
         private bool DeleteQueFromDb(Que que)
 
         {
@@ -673,5 +708,4 @@ namespace Tor
     }
 
 }
-
 

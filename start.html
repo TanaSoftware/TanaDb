@@ -6,10 +6,21 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/main.css" rel="stylesheet">
+    <link href="css/main.css?v=7" rel="stylesheet">
     <link href="css/selectize.css" rel="stylesheet" />
     <title>TanaSoftware</title>
     <style>
+        .footer {
+            position: absolute;
+            bottom: 0;
+            padding: 1rem;
+            width: 100%;
+        }
+
+        .fullHeight {
+            height: 100%;
+        }
+
         .hour {
             width: 70px;
         }
@@ -25,6 +36,10 @@
         }
 
         @media only screen and (max-width: 760px) {
+            #picblock {
+                height: 32px;
+                margin-top: 10px;
+            }
 
             input[type=checkbox] {
                 /* Double-sized Checkboxes */
@@ -45,7 +60,7 @@
 <body dir="rtl" id="page-top" data-spy="scroll" data-target=".navbar-fixed-top" class="top">
 
     <nav class="navbar navbar-unibody navbar-custom navbar-fixed-top navbar-onepage">
-        <div class="container">
+        <div class="">
             <div class="navbar-header">
                 <button type="button" data-toggle="collapse" data-target=".navbar-main-collapse" class="navbar-toggle">
                     <span class="sr-only">Toggle navigation</span>
@@ -53,44 +68,46 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button><a id="dvUserLoggedIn"></a><a href="#page-top" class="navbar-brand page-scroll">
-                    <img src="img/Tana1.png" alt="Logo" class="logo"><img src="img/Tana2.png" alt="Logo" class="logodark">
+                    <img src="img/Tana1.png" style="width:100px;margin-top:12px;" alt="Logo" class="logo"><img src="img/Tana2.png" style="width:100px;margin-top:12px;" alt="Logo" class="logodark">
                 </a>
             </div>
 
             <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
                 <ul class="nav navbar-nav">
-                    <li class="hidden"><a href="#page-top"></a></li>
-
-                    <li><a href="#contact" class="page-scroll">צור קשר</a></li>
-
-                    <li><a href="#LoginSec" class="page-scroll">התחבר</a></li>
-                    <li><a href="#RegisterCustomer" class="page-scroll">הרשמה</a></li>
-                    <li><a href="#Register" class="page-scroll">הרשמה של בעל עסק</a></li>
                     <li><a href="#page-top" class="page-scroll">דף הבית</a></li>
+                    <li><a href="#" onclick="javascript:goToCustomer('LoginSec')" class="page-scroll">כניסת משתמש</a></li>
+                    <li><a href="#" onclick="javascript:goToRegisterBiz('LoginSec')" class="page-scroll">כניסת בעל עסק</a></li>
+                    <li><a href="#" onclick="javascript:goToContact('Contact.html')" class="page-scroll">צור קשר</a></li>
 
                 </ul>
             </div>
+
         </div>
     </nav>
 
     <header id="Carousel-intro" data-ride="carousel" class="intro carousel carousel-big slide carousel-fade">
-        <ol class="carousel-indicators">
+
+        <ol style="padding-left:40px;" class="carousel-indicators">
             <li data-target="#Carousel-intro" data-slide-to="0" class="active"></li>
             <li data-target="#Carousel-intro" data-slide-to="1"></li>
-            <li data-target="#Carousel-intro" data-slide-to="2"></li>
+            <!-- <li data-target="#Carousel-intro" data-slide-to="2"></li>-->
         </ol>
+
         <div class="carousel-inner">
             <div class="item active">
-                <div style="background-image:url(img/f.jpg)" class="fill">
+                <div style="background-image:url(img/f.png)" class="fill">
                     <div class="intro-body">
                         <div class="container">
                             <div class="row">
-                                <div class="col-lg-10 col-lg-offset-1">
-                                    <h1>בעל עסק</h1>
-                                    <h1>הזמן שלך יקר</h1>
-                                    <h1>הרשם עכשיו וחסוך לך זמן יקר</h1>
-                                    <a class="btn btn-blue btn-lg page-scroll wow fadeInLeft" href="#Register">לחץ כאן להרשמה</a>
+                                <div class="toriImg"></div>
+                                <div class="clock"></div>
+                                <div class="col-lg-10 col-lg-offset-1" style="padding-top:140px;">
+
+                                    <h5>התור שלך בקליק</h5>
+                                    <!--<a href="javascript:goToCustomer('LoginSec')" class="btn btn-blue btn-lg page-scroll wow fadeInLeft">כניסת לקוחות</a>-->
+                                    <button class="btn btn-blue btn-lg page-scroll wow fadeInLeft" onclick="goToCustomer('LoginSec')">&nbsp;&nbsp;כניסת לקוחות&nbsp;&nbsp;</button>
                                 </div>
+
                             </div>
                         </div>
 
@@ -99,14 +116,16 @@
             </div>
 
             <div class="item">
-                <div style="background-image:url(img/f.jpg)" class="fill">
+                <div style="background-image:url(img/f.png)" class="fill">
                     <div class="intro-body">
                         <div class="container">
                             <div class="row">
-                                <div class="col-lg-10 col-lg-offset-1">
-                                    <h1>זמן תור</h1>
-                                    <h1>מכל מקום</h1>
-                                    <a class="btn btn-blue btn-lg page-scroll wow fadeInLeft" href="#Register">לחץ כאן להרשמה</a>
+                                <div class="toriImg"></div>
+                                <div class="clock"></div>
+                                <div class="col-lg-10 col-lg-offset-1" style="padding-top:140px;">
+                                    <h5>התור אצלך בקליק</h5>
+
+                                    <button class="btn btn-blue btn-lg page-scroll wow fadeInLeft" onclick="goToRegisterBiz('LoginSec')">&nbsp;&nbsp;כניסת בעל עסק&nbsp;&nbsp;</button>
                                 </div>
                             </div>
                         </div>
@@ -114,36 +133,38 @@
                 </div>
             </div>
 
-            <div class="item">
-                <div style="background-image:url(img/f.jpg)" class="fill">
+
+            <!--<div class="item">
+                <div style="background-image:url(img/f.png)" class="fill">
                     <div class="intro-body">
                         <div class="container">
                             <div class="row">
                                 <div class="col-lg-10 col-lg-offset-1">
-                                    <h1>מערכת לזימון תורים</h1>
-                                    <h1>לכל עסק</h1>
+                                    <h2>מערכת לזימון תורים</h2>
+                                    <h2>לכל עסק</h2>
                                     <a class="btn btn-blue btn-lg page-scroll wow fadeInLeft" href="#Register">לחץ כאן להרשמה</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>-->
 
         </div>
-        <a href="#Carousel-intro" data-slide="prev" class="left carousel-control"><span class="icon-prev"></span></a><a href="#Carousel-intro" data-slide="next" class="right carousel-control"><span class="icon-next"></span></a>
+        <a href="#Carousel-intro" data-slide="prev" class="left carousel-control"><span class="icon-prev"></span></a>
+        <a href="#Carousel-intro" data-slide="next" class="right carousel-control"><span class="icon-next"></span></a>
     </header>
 
 
-    <section id="LoginSec" style="padding-top:130px;padding:10px;">
+    <section class="fullHeight" id="LoginSec" style="padding:10px;">
 
-        <div class="container">
+        <div class="container" style="margin-top:140px;">
 
             <div class="row">
 
                 <div class="">
 
-                    <div style="text-align:right;font-weight:bold;">כניסה: </div>
+                    <div style="text-align:right;margin-top:10px;margin-bottom:10px; font-weight:bold;">כניסה: </div>
 
                     <div class="form-group">
 
@@ -171,18 +192,24 @@
 
                         <label>
 
-                            <input type="checkbox">
+                            <input id="remember_me" type="checkbox">
 
                         </label>
 
                     </div>
 
-                    <div style="float:left;padding-left:20px;">
+                    <div style="float:left;padding-left:5px;">
 
                         <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
 
-                        <button onClick="Login();" class="btn btn-blue btn-lg">כניסה</button>
+                        <button style="width:160px;" onClick="LoginMe();" class="btn btn-blue btn-lg">כניסה</button>
 
+                    </div>
+                    <div id="dvNewClient" style="float:left; padding-left:20px;">
+
+                        <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
+                        <a href="javascript:goToCustomer('RegisterCustomerX')"><button style="width:160px;" id="btnRegisterCustomer" class="btn btn-blue btn-lg page-scroll wow fadeInLeft">משתמש חדש</button></a>
+                        <a href="javascript:goToRegisterBiz('Register')"><button style="width:160px;" id="btnRegister" class="btn btn-blue btn-lg page-scroll wow fadeInLeft">בעל עסק חדש</button></a>
                     </div>
 
                 </div>
@@ -193,9 +220,9 @@
 
     </section>
 
-    <section id="RegisterCustomer" style="padding-top:100px;padding:10px;">
+    <section class="fullHeight" id="RegisterCustomerX" style="padding:10px;">
 
-        <div class="container">
+        <div class="container" style="margin-top:80px;padding-bottom:100px;">
 
             <div class="row">
 
@@ -251,7 +278,7 @@
 
                         <div id="dvErrRegister"></div>
 
-                        <button onClick="RegisterCustmer();" class="btn btn-blue btn-lg">הרשמה</button>
+                        <button onClick="return RegisterToCustmer();" class="btn btn-blue btn-lg">הרשמה</button>
 
                     </div>
 
@@ -263,116 +290,106 @@
 
     </section>
 
-    <section id="Register" style="padding-top:100px;padding:10px;">
+    <section id="Register" style="margin-top:200px;padding:10px;">
 
         <div class="container">
 
             <div class="row">
 
-                <div class="">
+                <div>
+                    <div>
+                        <div style="text-align:right;font-weight:bold;">הרשמה של בעל העסק: </div>
 
-                    <div style="text-align:right;font-weight:bold;">הרשמה של בעל העסק: </div>
+                        <div class="form-group">
 
-                    <div class="form-group">
+                            <div class="form-group floating-label-form-group controls">
 
-                        <div class="form-group floating-label-form-group controls">
+                                <input id="name" type="text" placeholder="שם" class="form-control input-lg" />
 
-                            <input id="name" type="text" placeholder="שם" class="form-control input-lg" />
-
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="form-group">
-
-                        <div class="form-group floating-label-form-group controls">
-
-                            <input id="password" type="password" placeholder="סיסמה" class="form-control input-lg" />
+                            </div>
 
                         </div>
 
-                    </div>
+                        <div class="form-group">
 
-                    <div class="form-group">
+                            <div class="form-group floating-label-form-group controls">
 
-                        <div class="form-group floating-label-form-group controls">
+                                <input id="password" type="password" placeholder="סיסמה" class="form-control input-lg" />
 
-                            <input id="email" type="email" placeholder="מייל" class="form-control input-lg" />
-
-                        </div>
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <div class="form-group floating-label-form-group controls">
-
-                            <input id="txtTel" type="text" placeholder="טלפון" class="form-control input-lg" />
+                            </div>
 
                         </div>
 
-                    </div>
+                        <div class="form-group">
 
-                    <div class="form-group">
+                            <div class="form-group floating-label-form-group controls">
 
-                        <div class="form-group floating-label-form-group controls">
+                                <input id="email" type="email" placeholder="מייל" class="form-control input-lg" />
 
-                            <input id="bizName" type="text" placeholder="שם עסק בעברית" class="form-control input-lg" />
-
-                        </div>
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <div class="form-group floating-label-form-group controls">
-
-                            <input id="bizNameEng" type="text" placeholder="שם עסק באנגלית" class="form-control input-lg" />
+                            </div>
 
                         </div>
 
-                    </div>
+                        <div class="form-group">
 
-                    <div class="form-group">
+                            <div class="form-group floating-label-form-group controls">
 
-                        <div class="form-group floating-label-form-group controls">
+                                <input id="txtTel" type="text" placeholder="טלפון" class="form-control input-lg" />
 
-                            <input id="creditCard" type="text" placeholder="כרטיס אשראי" class="form-control input-lg" />
-
-                        </div>
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <div class="form-group floating-label-form-group controls">
-
-                            <input id="address" type="text" placeholder="כתובת" class="form-control input-lg" />
+                            </div>
 
                         </div>
 
-                    </div>
+                        <div class="form-group">
 
-                    <div class="form-group">
+                            <div class="form-group floating-label-form-group controls">
 
-                        <div class="form-group floating-label-form-group controls">
+                                <input id="bizName" type="text" placeholder="שם עסק בעברית" class="form-control input-lg" />
 
-                            <select id="city" type="text" placeholder="כתובת" class="form-control  input-lg">
-
-                                <option value="0">בחר עיר</option>
-
-                                <option value="6600">חולון</option>
-
-                                <option value="5000">תל אביב</option>
-
-                            </select>
+                            </div>
 
                         </div>
 
-                    </div>
+                        <div class="form-group">
 
+                            <div class="form-group floating-label-form-group controls">
+
+                                <input id="bizNameEng" type="text" placeholder="שם עסק באנגלית" class="form-control input-lg" />
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <div class="form-group floating-label-form-group controls">
+
+                                <input id="creditCard" type="text" placeholder="כרטיס אשראי" class="form-control input-lg" />
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <div class="form-group floating-label-form-group controls">
+
+                                <input id="address" type="text" placeholder="כתובת" class="form-control input-lg" />
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <div class="form-group floating-label-form-group controls">
+
+                                <select id="city" type="text" placeholder="עיר"></select>
+
+                            </div>
+
+                        </div>
+                    </div>
                     <div style="text-align:right">
                         <label>סוגי פעילויות</label><span style="color:red" id="spnActiveDays"></span>
 
@@ -380,24 +397,9 @@
 
                         <div class="form-group" style="width:100%;padding-bottom:10px;padding-top:10px;">
 
-                            <input style="float:right;width:180px;margin-bottom:10px;margin-right:3px;" maxlength="50" id="BizType" type="text" placeholder="הזן סוג פעילות" class="form-control input-lg" />
-                            <select id="ddlDuration" style="float:right;min-width:80px;max-width:160px; margin-right:3px;" placeholder="משך פעילות" class="form-control input-lg">
+                            <input style="float:right;width:140px;margin-bottom:10px;margin-right:3px;" maxlength="50" id="BizType" type="text" placeholder="הזן סוג פעילות" class="form-control input-lg" />
+                            <input style="float:right;width:80px;margin-right:4px;" id="txtDuration" type="number" placeholder="משך פעילות" maxlength="3" class="form-control input-lg" />
 
-                                <option value="0">משך פעילות</option>
-
-                                <option>10</option>
-
-                                <option>20</option>
-
-                                <option>30</option>
-
-                                <option>40</option>
-
-                                <option>50</option>
-
-                                <option>60</option>
-
-                            </select>
                             <button onclick="AddUserActivity();" class="btn btn-blue btn-lg" style="float:right;margin-right:5px;">הוסף</button>
 
                         </div>
@@ -414,7 +416,7 @@
                             <button onclick="AddActivity();" class="btn btn-blue btn-lg" style="float:right;margin-right:5px;">הוסף</button>
 
                         </div>
-
+                        <div style="float:right; width:100%;padding-bottom:10px;padding-top:10px;" id="dvActivitiesSelection"></div>
                         <table class="table table-striped table-bordered">
                             <tr>
                                 <td>יום</td>
@@ -583,55 +585,9 @@
         </div>
 
     </section>
-    <!-- Contact-->
-    <section id="contact" style="padding:10px;">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-5">
-                    <h3>צור קשר</h3>
-
-                    <hr>
-
-                    <h5>Mail: Tana@TanaSoftware.com</h5>
-
-                </div>
-                <div class="">
-                    <div class="control-group">
-                        <div class="form-group floating-label-form-group controls">
-                            <label for="iname" class="sr-only control-label">שם</label>
-                            <input id="iname" type="text" placeholder="שם" required="" class="form-control input-lg"><span class="help-block text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <div class="form-group floating-label-form-group controls">
-                            <label for="iemail" class="sr-only control-label">מייל</label>
-                            <input id="iemail" type="email" placeholder="מייל" required="" class="form-control input-lg"><span class="help-block text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <div class="form-group floating-label-form-group controls">
-                            <label for="phone" class="sr-only control-label">טלפון</label>
-                            <input id="phone" type="tel" placeholder="טלפון" required="" class="form-control input-lg"><span class="help-block text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <div class="form-group floating-label-form-group controls">
-                            <label for="message" class="sr-only control-label">הודעה</label>
-                            <textarea id="message" rows="2" placeholder="הודעה" required="" aria-invalid="false" class="form-control input-lg"></textarea><span class="help-block text-danger"></span>
-                        </div>
-                    </div>
-                    <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
-                    <div id="dvErrMail"></div>
-                    <div style="float:left;padding-left:20px;">
-                        <button onClick="SendMail();" class="btn btn-blue btn-lg">שלח</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Footer Section-->
-    <div class="container-fluid footer-small bg-gray text-center" style="padding:10px;">
+    <!--<div class="footer" style="padding:10px;">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
                 <p data-wow-iteration="999" data-wow-duration="5s" class="wow flash"><a href="#page-top" class="page-scroll"><i class="icon ion-ios-arrow-up fa-2x"></i></a></p>
@@ -639,10 +595,9 @@
                 <p class="small"><a href="http://TanaSoftware.COM">©2017 TanaSoftware</a> </p>
             </div>
         </div>
-    </div>
+    </div>-->
 
-
-    <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="js/jquery.js"></script>
     <script src="js/cleave.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/jquery.easing.min.js"></script>
@@ -656,7 +611,7 @@
     <script src="js/jquery.swipebox.min.js"></script>
     <script src="js/smoothscroll.min.js"></script>
     <script src="js/wow.min.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/main.js?v=2"></script>
     <script src="js/selectize.js"></script>
     <script src="https://www.negishim.com/accessibility/accessibility_pro.js" type="text/javascript"></script>
 </body>
@@ -671,10 +626,27 @@
     function getScripts() {
         var v = sessionStorage.getItem("version");
         $.ajax({
-            url: "js/global.js?ver="+v,
+            url: "js/global.js?ver=" + v,
             dataType: "script",
-           
+            success: function (data) {
+
+                if (sessionStorage.getItem("remember_me") != "1" && localStorage.chkbx && localStorage.chkbx != '') {
+                    Login();
+                }
+                getCities(function (data) {
+                    selectizeService.InitSelectize("city", 'Id', 'Name', 46, data, null);
+                });
+
+                SetHour();
+
+            }
         });
+
+
+    }
+
+    function goto(hashTag) {
+        location.href = '#' + hashTag;;
     }
 
     function SendMail() {
@@ -732,8 +704,6 @@
 
     function Register() {
 
-
-
         var user = $("#name").val();
 
         var password = $("#password").val();
@@ -752,10 +722,7 @@
 
         var tel = $("#txtTel").val();
 
-
-
         $("#spnActiveDays").text("");
-
 
 
         if (user.length <= 0) {
@@ -784,6 +751,12 @@
 
             return;
 
+        }
+
+        if (password && !testPassword(password)) {
+            showTooltip("password", "נא להזין תווים ומספרים");
+
+            return;
         }
 
         if (email.length <= 0) {
@@ -898,7 +871,8 @@
             CreditCard: creditCard,
 
             dicBizType: ActivitiesData,
-            UserActivities: ActivitiesUserData
+            UserActivities: ActivitiesUserData,
+            dicEmployeeActivities: ActivitiesEmployeeData
         }
 
 
@@ -915,10 +889,11 @@
 
             success: function (data) {
 
-                if (data.ErrorMsg == null || data.ErrorMsg == "")
+                if (data.ErrorMsg == null || data.ErrorMsg == "") {
 
                     messageHandler.Show("נשלח אליך מייל, אנא לחץ על הקישור עלמנת להתחבר למערכת.");
-
+                    goToCustomer('LoginSec');
+                }
                 else
 
                     messageHandler.Show(data.ErrorMsg);
@@ -939,6 +914,7 @@
 
 
     var ActivitiesData = {};
+    var ActivitiesEmployeeData = {};
     var ActivitiesUserData = {};
 
 
@@ -947,37 +923,6 @@
         return { EmployeeId: 0, ActiveDay: 0, EmployeeName: "", ActiveHourFrom: "", ActiveHourTo: "", ActiveHourFromNone: "", ActiveHourToNone: "" };
 
     }
-
-
-
-    function checkValid(txtId, textMsg) {
-
-        $('#' + txtId).tooltip('hide');
-
-        var txt = $("#" + txtId).val();
-
-        if (txt.length <= 0) {
-
-            //showTooltip(txtId, textMsg);
-
-            $('#' + txtId).tooltip({
-
-                title: textMsg
-
-            });
-
-            $('#' + txtId).tooltip('show');
-
-            $('#' + txtId).focus();
-
-            return false;
-
-        }
-
-        return true;
-
-    }
-
 
 
     function checkValidDDl(txtId, textMsg) {
@@ -1010,29 +955,7 @@
 
 
 
-    function checkHour(txtId, textMsg) {
 
-        $('#' + txtId).tooltip('hide');
-
-        if (!isHour($("#" + txtId).val())) {
-
-            $('#' + txtId).tooltip({
-
-                title: textMsg
-
-            });
-
-            $('#' + txtId).tooltip('show');
-
-            $('#' + txtId).focus();
-
-            return false;
-
-        }
-
-        return true;
-
-    }
     var ActivityCounter = 1;
     function AddActivity() {
 
@@ -1045,7 +968,23 @@
             return;
 
         }
+        if ($('#dvActivitiesSelection').html() == "") {
+            showTooltip('BizType', "נא להזין פעילות");
+            return;
+        }
+        var z = 0;
+        var activity = "";
+        for (var x in ActivitiesUserData) {
+            activity = x;
+            if ($('#chk_' + x).is(":checked")) {
+                z++;
+            }
+        }
 
+        if (z == 0) {
+            showTooltip('chk_' + activity, "נא לבחור לפחות פעילות אחת לעובד");
+            return;
+        }
         for (var i = 1; i <= 7; i++) {
 
             var id = i.toString();
@@ -1109,7 +1048,19 @@
 
             ActivitiesData[item.EmployeeName] = ActivitiesTempData;
 
-            data = "<div style='width:100%;' id='dvBizType" + item.EmployeeName + "'><div style='float:right;width:260px;padding-right:20px;'>" + item.EmployeeName + "</div><button style='float:right;marging-right:4px;' onclick=deleteBizType('" + item.EmployeeName + "')>מחק</button></div>";
+            var activities = " ";
+            var arrActs = [];
+            for (var x in ActivitiesUserData) {
+
+                if ($('#chk_' + x).is(":checked")) {
+                    activities += x + ", ";
+                    arrActs.push(x);
+                }
+            }
+            ActivitiesEmployeeData[ActivityCounter] = arrActs;
+            activities = activities.substring(0, activities.length - 2);
+            data = "<div style='width:100%;' id='dvBizType" + item.EmployeeName + "'><div style='float:right;width:120px;padding-right:20px;'>" + item.EmployeeName + "</div><div style='float:right;width:120px;padding-right:10px;'>(" + activities + ")</div><button style='float:right;marging-right:4px;' onclick=deleteBizType('" + item.EmployeeName + "')>מחק</button></div>";
+
 
             var newDiv = $("#Activities").html();
 
@@ -1128,7 +1079,7 @@
     function deleteBizType(i) {
 
         delete ActivitiesData[i];
-
+        delete ActivitiesEmployeeData[i];
         $('#dvBizType' + i).remove();
 
     }
@@ -1148,10 +1099,7 @@
     }
 
 
-
-
-
-    function RegisterCustmer() {
+    function RegisterToCustmer() {
 
         var user = $("#userCust").val();
 
@@ -1160,20 +1108,11 @@
         var email = $("#emailCustomer").val();
 
         var txtTelCust = $("#txtTelCust").val();
-
-        if (email.length <= 0) {
-
-            showTooltip("emailCustomer", "נא להזין מייל");
-
-            return;
-
-        }
-
         if (user.length <= 0) {
 
             showTooltip("userCust", "נא להזין שם");
 
-            return;
+            return false;
 
         }
 
@@ -1181,9 +1120,20 @@
 
             showTooltip("txtTelCust", "נא להזין טלפון נייד");
 
-            return;
+            return false;
 
         }
+
+        if (email.length <= 0) {
+
+            showTooltip("emailCustomer", "נא להזין מייל");
+
+            return false;
+
+        }
+
+
+
 
         if (!IsvalidEmail(email)) {
 
@@ -1191,7 +1141,7 @@
 
             $("#emailCustomer").val("");
 
-            return;
+            return false;
 
         }
 
@@ -1199,7 +1149,7 @@
 
             showTooltip("passwordCustomer", "נא להזין סיסמה");
 
-            return;
+            return false;
 
         }
 
@@ -1211,11 +1161,15 @@
 
             $("#passwordCustomer").val("");
 
-            return;
+            return false;
 
         }
 
+        if (password && !testPassword(password)) {
+            showTooltip("passwordCustomer", "נא להזין תווים ומספרים");
 
+            return false;
+        }
 
         var userObj = {
 
@@ -1241,9 +1195,16 @@
 
             success: function (data) {
 
-                if (data.ErrorMsg != "")
-
+                if (data.ErrorMsg != "" && data.ErrorMsg != null)
+                    messageHandler.Show(data.ErrorMsg);
+                else {
                     messageHandler.Show("נשלח אליך מייל, אנא לחץ על הקישור עלמנת להתחבר למערכת.");
+                    $("#passwordCustomer").val("");
+                    $("#emailCustomer").val("");
+                    $("#txtTelCust").val("");
+                    $("#userCust").val("");
+                    goToCustomer('LoginSec');
+                }
 
             },
 
@@ -1269,12 +1230,23 @@
             return;
         }
 
-        if (!checkValidDDl("ddlDuration", "נא להזין משך פעילות")) {
+        if (!checkValid("txtDuration", "נא להזין משך פעילות בדקות")) {
+            return;
+        }
+        var Duration = $('#txtDuration').val();
+
+        if (Duration <= 0) {
+            showTooltip("txtDuration", "נא להזין מספר גדול מאפס");
+            return;
+        }
+
+        if (Duration.length > 3) {
+            showTooltip("txtDuration", "נא להזין מקסימום 720 דקות");
             return;
         }
         if (ActivitiesUserData[bizType] == null) {
 
-            ActivitiesUserData[bizType] = $('#ddlDuration').val();
+            ActivitiesUserData[bizType] = Duration;
 
             data = "<div style='width:100%;' id='dvBizTypeAct" + bizType + "'><div style='float:right;width:260px;padding-right:20px;'>" + bizType + " למשך  " + ActivitiesUserData[bizType] + " דקות</div><button style='float:right;marging-right:4px;' onclick=deleteBizTypeActivity('" + bizType + "')>מחק</button></div>";
 
@@ -1282,26 +1254,61 @@
 
             $("#UserActivities").html(newDiv + data);
             $('#BizType').val("");
+            $('#txtDuration').val("");
         }
+        var s1 = "<div id='dvAddedAct" + bizType + "' style='text-align:right;color:#007bff'><label style='width:120px;' for='chk_" + bizType + "'>" + bizType + "</label><input id='chk_" + bizType + "' type='checkbox' value='" + bizType + "' /></div>";
 
+        $("#dvActivitiesSelection").append(s1);
     }
     function deleteBizTypeActivity(i) {
         delete ActivitiesUserData[i];
 
         $('#dvBizTypeAct' + i).remove();
-
+        $('#dvAddedAct' + i).remove();
     }
 
-    SetHourToDddl();
 
-    function SetHourToDddl() {
-        document.querySelectorAll('.input-time').forEach(function (el) {
-            new Cleave(el,
-                {
-                    time: true,
-                    timePattern: ["h", "m"]
-                });
-        });
 
+    InitCust();
+    function goToCustomer(id) {
+
+        InitCust();
+        scrollToSection(id);
     }
+    function InitCust() {
+        $('#Register').hide();
+        $('#RegisterCustomerX').show();
+        $('#btnRegisterCustomer').show();
+
+        $('#btnRegister').hide();
+    }
+    function goToRegisterBiz(id) {
+
+        $('#Register').show();
+        $('#RegisterCustomerX').hide();
+        $('#btnRegister').show();
+        $('#btnRegisterCustomer').hide();
+        scrollToSection(id);
+    }
+    function goToContact(url) {
+        var v = sessionStorage.getItem("version");
+        location.href = url + '?v=' + v;
+    }
+
+    function scrollToSection(id) {
+        setTimeout(function () {
+            $([document.documentElement, document.body]).animate({
+                scrollTop: $("#" + id).offset().top
+            }, 1400);
+        }, 100);
+    }
+
+
+    function LoginMe() {
+        localStorage.usrname = "";
+        localStorage.pass = "";
+        localStorage.chkbx = "";
+        Login();
+    }
+
 </script>

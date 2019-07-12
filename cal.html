@@ -1,13 +1,13 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />    
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <title></title>
     <link href="css/cal.css" rel="stylesheet" />
     <link href="css/main.css" rel="stylesheet" />
-    
+
     <link href="css/selectize.css" rel="stylesheet" />
     <link href='https://use.fontawesome.com/releases/v5.0.6/css/all.css' rel='stylesheet'>
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' rel='stylesheet' />
@@ -23,7 +23,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.he.min.js"></script>
     <script src="js/selectize.js"></script>
 
-    
+
     <style>
 
         .fc-widget-header {
@@ -50,7 +50,7 @@
 
             .fc-content {
                 padding: 5px;
-                font-size:10px;
+                font-size: 10px;
             }
 
 
@@ -70,14 +70,14 @@
 </head>
 
 <body dir="rtl">
-    
+
     <nav role="navigation">
         <div class="menuContainer" onclick="showMenu(this)">
             <div class="bar1"></div>
             <div class="bar2"></div>
             <div class="bar3"></div>
         </div>
-        <div style="text-align:right; width:100%; position:absolute;background-color:#fff;z-index:1000" id="menuToggle">                      
+        <div style="text-align:right; width:100%; position:absolute;background-color:#fff;z-index:1000" id="menuToggle">
             <ul style="display:none;list-style-type: none" id="menuItems">
                 <li class="nav-item active">
                     <a class="nav-link" href="javascript:navigateTo('start.html')">דף הבית <span class="sr-only">(current)</span></a>
@@ -88,7 +88,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="javascript:navigateTo('start.html#RegisterCustomer')">הרשם</a>
                 </li>
-                <li id="liUpdateBiz" style="display:none"><a href="javascript:navigateTo('BizUpdate.html')" class="nav-link">עדכון פרטי עסק</a></li>               
+                <li id="liUpdateBiz" style="display:none"><a href="javascript:navigateTo('BizUpdate.html')" class="nav-link">עדכון פרטי עסק</a></li>
             </ul>
         </div>
         <div style="float:right;padding-right: 10px;">
@@ -111,7 +111,7 @@
 
     </nav>
 
-    
+
 
     <div class="d-flex justify-content-center">
 
@@ -149,12 +149,12 @@
                 </div>
                 <div id="dvddlUserers" style="float:right" class="p-2">
                     <select style="width:110px;" id="ddlUsers" placeholder="בחר בעל עסק"></select>
-                </div>              
+                </div>
             </div>
         </div>
     </div>
     <div id="calendar"></div>
-    
+
     <!--Add event modal-->
 
     <div id="createEventModal" class="modal fade">
@@ -334,19 +334,19 @@
             url: "js/global.js?ver=" + v,
             dataType: "script",
             success: function (data) {
-                
+
                 init();
             },
             error: function (request, status, error) {
-                
+
             }
         });
 
-      
+
     }
 
     function init() {
-        
+
         if (UserData == null) {
             location.href = "main.html";
         }
@@ -363,7 +363,7 @@
         else {
 
             SetCustomer();
-            
+
             $('#dvCustomers').addClass('forceDispNone');
 
             UserForCustomerDetails = JSON.parse(sessionStorage.getItem("UserForCustomerDetails"));
@@ -373,7 +373,7 @@
             else {
                 setTimeout(function () {
                     selectizeService.setValue('ddlCity', UserForCustomerDetails.City);
-                    
+
                     var selectizeMe = $("#ddlUsers")
                     var v = selectizeMe[0].selectize;
                     v.addOption({ Id: UserForCustomerDetails.Id, User: UserForCustomerDetails.User }); //option can be created manually or loaded using Ajax
@@ -552,11 +552,12 @@
             setEmployeeActivities(empActList);
         });
 
-       
 
-        var empActList = UserData.dicEmployeeActivities[1];//get default emp
-        setEmployeeActivities(empActList);
-        
+        try {
+            var empActList = UserData.dicEmployeeActivities[1];//get default emp
+            setEmployeeActivities(empActList);
+        }
+        catch (e) { }
 
         var currentEmployee = $('#ddlActivity :selected').text();
         var BizTypeList = userData.dicBizType[currentEmployee];
@@ -575,7 +576,7 @@
     }
 
     function include(arr, obj) {
-        for(var i=0; i<arr.length; i++) {
+        for (var i = 0; i < arr.length; i++) {
             if (arr[i] == obj) return true;
         }
     }
@@ -709,7 +710,7 @@
             ToDate: toDate,
             isUser: UserData.isUser,
             CustomerId: UserData.CustomerId,
-            EmployeeId: currentUserDetails.EmployeeId
+            EmployeeId: currentUserDetails?currentUserDetails.EmployeeId:0
         };
         var ActiveHourFrom = currentUserDetails != null && currentUserDetails.ActiveHourFrom != null ? currentUserDetails.ActiveHourFrom : '09:00:00';
 
@@ -719,11 +720,11 @@
 
     }
 
-            
+
     function CreateCal(data, minimumTime, maximumTime, duration, view) {
-        
+
         LastView = view;
-        
+
         var dataEvents;
 
         dataEvents = data;
@@ -762,14 +763,14 @@
             editable: true,
             eventLimit: true,
             selectable: true,
-            longPressDelay:130,
+            longPressDelay: 130,
             //dateClick: function(info) {
             //    alert('clicked ' + info.dateStr);
             //},
-            select: function (info) {                
+            select: function (info) {
                 SetCalData(info);
             },
-            eventClick: function (info) {                
+            eventClick: function (info) {
                 SetCalData(info);
             },
             locale: 'he',
@@ -797,10 +798,10 @@
         //return calendar;
 
     }
-    
+
 
     function deleteDayNoneWork(d) {
-        
+
         if (d) {
             var date = moment(d).format('YYYY-MM-DD') + "T";
             var obj = {
@@ -844,9 +845,9 @@
         $('#dvConfirmModal').modal('hide');
     }
 
-    
+
     function SetCalData(info) {
-        
+
         var SelectedCustomer = $('#ddlCustomers').val();
 
         if (info.event == null && UserData.isUser && SelectedCustomer == "") {
@@ -861,13 +862,13 @@
                     function () { deleteDayNoneWork(info.event.start); return; }, function () { CanceldeleteDay(); return; });
 
             }
-            
+
             return;
         }
-        
+
         currentId = info.event ? info.event.id : 0;
         var InfoObj = info.event ? info.event : info;
-        currentDate = moment(InfoObj.start).format('YYYY-MM-DD') + "T";       
+        currentDate = moment(InfoObj.start).format('YYYY-MM-DD') + "T";
 
         var s = moment(InfoObj.start);//.add(-3, 'hours');
         var timeDiff = moment().diff(s, 'second');
@@ -884,11 +885,11 @@
         $('#ddlEvent').val("0");
 
 
-        if (info.event == null){
+        if (info.event == null) {
 
             btnDeleteQue.style.display = "none";
             currentCustomerName
-            }
+        }
 
         else {
 
@@ -933,7 +934,7 @@
 
         $('#createEventModal').modal('show');
 
-        
+
     }
 
     $("#next").click(function () {
@@ -1019,9 +1020,9 @@
 
             guid: UserData.guid,
 
-            FromDate: currentDate + txtFrom+":00",
+            FromDate: currentDate + txtFrom + ":00",
 
-            ToDate: currentDate + txtTo+":00",
+            ToDate: currentDate + txtTo + ":00",
 
             isUser: UserData.isUser,
 
@@ -1083,7 +1084,7 @@
 
     }
 
-    function findEventByName(Activities,name) {
+    function findEventByName(Activities, name) {
         for (var i = 0; i < Activities.length; i++) {
             if (Activities[i].Name == name)
                 return Activities[i];
@@ -1151,7 +1152,7 @@
 
                 if (data == "") {
 
-                    GetQue(UserData, currentUserDetails,LastView);
+                    GetQue(UserData, currentUserDetails, LastView);
 
                     $('#createEventModal').modal('hide');
 
@@ -1226,7 +1227,7 @@
                         var control = $select[0].selectize;
                         control.clear();
                         control.clearOptions();
-                        
+
                     }
                     isPageLoad = false;
                 }
@@ -1235,7 +1236,7 @@
             });
         });
 
-       
+
         $('#ddlUsers').selectize({
 
             valueField: 'Id',
@@ -1377,8 +1378,12 @@
     function navigateTo(url) {
         sessionStorage.setItem("remember_me", "1");
         var v = sessionStorage.getItem("version");
-        location.href = url+"?ver=" + v;
+        location.href = url + "?ver=" + v;
     }
 
-    //calendar.setOption('height', 700);
+    //prevent go back
+    history.pushState(null, null, location.href);
+    window.onpopstate = function () {
+        history.go(1);
+    }
 </script>
