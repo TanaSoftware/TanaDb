@@ -286,7 +286,18 @@ namespace Tor
 
     }
 
-
+    public class EmployeeDataWrapper
+    {
+        public List<BizTypeObj> ActivitiesData { get; set; }
+        public List<CheckedActivities> checkedActivities { get; set; }
+    }
+    public class CheckedActivities
+    {
+        public int UserId { get; set; }
+        public int EmployeeId { get; set; }
+        public int ActivityId { get; set; }
+        public bool IsChecked { get; set; }
+    }
 
     public class BizTypeObj
     {
@@ -1013,7 +1024,7 @@ namespace Tor
 
                     DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
-                    var affectedRows = db.Execute(sqlUsersUpdate, 1, new { Active = guid, guid = guid, StartDate=d });
+                    var affectedRows = db.Execute(sqlUsersUpdate, 1, new { Active = guid, guid = guid, StartDate = d });
 
                     return "Ok";
 
@@ -1417,11 +1428,11 @@ namespace Tor
 
         }
 
-        public string UpdateEmployee(List<BizTypeObj> user)
+        public string UpdateEmployee(EmployeeDataWrapper user)
         {
             try
             {
-                if (!IsUserGuidExists(user[0].guid) || user.Count <= 0)
+                if (!IsUserGuidExists(user.ActivitiesData[0].guid) || user.ActivitiesData.Count <= 0)
                 {
 
                     return "ארעה שגיאה בעדכון עובד";
@@ -1429,12 +1440,12 @@ namespace Tor
                 DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
                 string sqlDel = "Delete from UsersActivity where [UserId]=@UserId And [EmployeeId]=@EmployeeId;";
-                var Rows = db.Execute(sqlDel, 1, user[0]);
+                var Rows = db.Execute(sqlDel, 1, user.ActivitiesData[0]);
 
                 string sqlUserActivity = @"INSERT INTO UsersActivity ([EmployeeId],[UserId],[ActiveDay],[EmployeeName],[ActiveHourFrom],[ActiveHourTo],[ActiveHourFromNone],[ActiveHourToNone]) Values
                         (@EmployeeId,@UserId,@ActiveDay,@EmployeeName,@ActiveHourFrom,@ActiveHourTo,@ActiveHourFromNone,@ActiveHourToNone);";
 
-                foreach (BizTypeObj biz in user)
+                foreach (BizTypeObj biz in user.ActivitiesData)
                 {
                     if (biz.ActiveHourFromNone == "")
                         biz.ActiveHourFromNone = null;
@@ -1443,6 +1454,20 @@ namespace Tor
                         biz.ActiveHourToNone = null;
 
                     var affectedRows = db.Execute(sqlUserActivity, 1, biz);
+                }
+
+                string sqlDelEmployeesActivities = "Delete from [EmployeesActivities] where [UserId]=@UserId And [EmployeeId]=@EmployeeId;";
+                var Rows2 = db.Execute(sqlDelEmployeesActivities, 1, user.ActivitiesData[0]);
+
+                string sqlEmployeesActivities = @"INSERT INTO EmployeesActivities ([UserId],[EmployeeId],[ActivityId]) Values
+                        (@UserId,@EmployeeId,@ActivityId);";
+
+                foreach (CheckedActivities CheckedAct in user.checkedActivities)
+                {
+                    if (CheckedAct.IsChecked)
+                    {
+                        var affectedRows = db.Execute(sqlEmployeesActivities, 1, CheckedAct);
+                    }
                 }
             }
             catch (Exception ex)

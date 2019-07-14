@@ -15,11 +15,12 @@
             bottom: 0;
             padding: 1rem;
             width: 100%;
-           
         }
-        .fullHeight{
-            height:100%;
+
+        .fullHeight {
+            height: 100%;
         }
+
         .hour {
             width: 70px;
         }
@@ -36,9 +37,10 @@
 
         @media only screen and (max-width: 760px) {
             #picblock {
-                height:32px;
-                margin-top:10px;
+                height: 32px;
+                margin-top: 10px;
             }
+
             input[type=checkbox] {
                 /* Double-sized Checkboxes */
                 -ms-transform: scale(1.5); /* IE */
@@ -65,32 +67,32 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
-                </button><a id="dvUserLoggedIn"></a><a href="#page-top" class="navbar-brand page-scroll">   
-                <img src="img/Tana1.png" style="width:100px;margin-top:12px;" alt="Logo" class="logo"><img src="img/Tana2.png" style="width:100px;margin-top:12px;" alt="Logo" class="logodark">
-</a>
+                </button><a id="dvUserLoggedIn"></a><a href="#page-top" class="navbar-brand page-scroll">
+                    <img src="img/Tana1.png" style="width:100px;margin-top:12px;" alt="Logo" class="logo"><img src="img/Tana2.png" style="width:100px;margin-top:12px;" alt="Logo" class="logodark">
+                </a>
             </div>
 
             <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
-                <ul class="nav navbar-nav">                    
-                    <li><a href="#page-top" class="page-scroll">דף הבית</a></li>                    
+                <ul class="nav navbar-nav">
+                    <li><a href="#page-top" class="page-scroll">דף הבית</a></li>
                     <li><a href="#" onclick="javascript:goToCustomer('LoginSec')" class="page-scroll">כניסת משתמש</a></li>
-                    <li><a href="#" onclick="javascript:goToRegisterBiz('LoginSec')" class="page-scroll">כניסת בעל עסק</a></li>                                        
+                    <li><a href="#" onclick="javascript:goToRegisterBiz('LoginSec')" class="page-scroll">כניסת בעל עסק</a></li>
                     <li><a href="#" onclick="javascript:goToContact('Contact.html')" class="page-scroll">צור קשר</a></li>
 
                 </ul>
             </div>
-            
+
         </div>
     </nav>
 
     <header id="Carousel-intro" data-ride="carousel" class="intro carousel carousel-big slide carousel-fade">
-       
+
         <ol style="padding-left:40px;" class="carousel-indicators">
             <li data-target="#Carousel-intro" data-slide-to="0" class="active"></li>
             <li data-target="#Carousel-intro" data-slide-to="1"></li>
-           <!-- <li data-target="#Carousel-intro" data-slide-to="2"></li>-->
+            <!-- <li data-target="#Carousel-intro" data-slide-to="2"></li>-->
         </ol>
-        
+
         <div class="carousel-inner">
             <div class="item active">
                 <div style="background-image:url(img/f.png)" class="fill">
@@ -108,7 +110,7 @@
 
                             </div>
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
@@ -122,7 +124,7 @@
                                 <div class="clock"></div>
                                 <div class="col-lg-10 col-lg-offset-1" style="padding-top:140px;">
                                     <h5>התור אצלך בקליק</h5>
-                                    
+
                                     <button class="btn btn-blue btn-lg page-scroll wow fadeInLeft" onclick="goToRegisterBiz('LoginSec')">&nbsp;&nbsp;כניסת בעל עסק&nbsp;&nbsp;</button>
                                 </div>
                             </div>
@@ -130,7 +132,7 @@
                     </div>
                 </div>
             </div>
-            
+
 
             <!--<div class="item">
                 <div style="background-image:url(img/f.png)" class="fill">
@@ -208,7 +210,7 @@
                         <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
                         <a href="javascript:goToCustomer('RegisterCustomerX')"><button style="width:160px;" id="btnRegisterCustomer" class="btn btn-blue btn-lg page-scroll wow fadeInLeft">משתמש חדש</button></a>
                         <a href="javascript:goToRegisterBiz('Register')"><button style="width:160px;" id="btnRegister" class="btn btn-blue btn-lg page-scroll wow fadeInLeft">בעל עסק חדש</button></a>
-</div>
+                    </div>
 
                 </div>
 
@@ -386,7 +388,7 @@
 
                             </div>
 
-                        </div>                        
+                        </div>
                     </div>
                     <div style="text-align:right">
                         <label>סוגי פעילויות</label><span style="color:red" id="spnActiveDays"></span>
@@ -396,8 +398,8 @@
                         <div class="form-group" style="width:100%;padding-bottom:10px;padding-top:10px;">
 
                             <input style="float:right;width:140px;margin-bottom:10px;margin-right:3px;" maxlength="50" id="BizType" type="text" placeholder="הזן סוג פעילות" class="form-control input-lg" />
-                            <input style="float:right;width:80px;margin-right:4px;" id="txtDuration" type="number" placeholder="משך פעילות" maxlength="3"  class="form-control input-lg" />
-                            
+                            <input style="float:right;width:80px;margin-right:4px;" id="txtDuration" type="number" placeholder="משך פעילות" maxlength="3" class="form-control input-lg" />
+
                             <button onclick="AddUserActivity();" class="btn btn-blue btn-lg" style="float:right;margin-right:5px;">הוסף</button>
 
                         </div>
@@ -410,7 +412,7 @@
                         <div style="width:100%;padding-bottom:10px;padding-top:10px;">
 
                             <input style="float:right;width:180px;margin-bottom:10px;margin-right:3px;" maxlength="50" id="EmployeeName" type="text" placeholder="הזן שם עובד" class="form-control input-lg" />
-                            
+
                             <button onclick="AddActivity();" class="btn btn-blue btn-lg" style="float:right;margin-right:5px;">הוסף</button>
 
                         </div>
@@ -583,7 +585,7 @@
         </div>
 
     </section>
- 
+
     <!-- Footer Section-->
     <!--<div class="footer" style="padding:10px;">
         <div class="row">
@@ -624,11 +626,11 @@
     function getScripts() {
         var v = sessionStorage.getItem("version");
         $.ajax({
-            url: "js/global.js?ver="+v,
+            url: "js/global.js?ver=" + v,
             dataType: "script",
             success: function (data) {
 
-                if (sessionStorage.getItem("remember_me")!="1" && localStorage.chkbx && localStorage.chkbx != '') {
+                if (sessionStorage.getItem("remember_me") != "1" && localStorage.chkbx && localStorage.chkbx != '') {
                     Login();
                 }
                 getCities(function (data) {
@@ -636,11 +638,11 @@
                 });
 
                 SetHour();
-                
+
             }
         });
 
-        
+
     }
 
     function goto(hashTag) {
@@ -701,8 +703,6 @@
 
 
     function Register() {
-
-
 
         var user = $("#name").val();
 
@@ -889,10 +889,11 @@
 
             success: function (data) {
 
-                if (data.ErrorMsg == null || data.ErrorMsg == "")
+                if (data.ErrorMsg == null || data.ErrorMsg == "") {
 
                     messageHandler.Show("נשלח אליך מייל, אנא לחץ על הקישור עלמנת להתחבר למערכת.");
-
+                    goToCustomer('LoginSec');
+                }
                 else
 
                     messageHandler.Show(data.ErrorMsg);
@@ -922,7 +923,7 @@
         return { EmployeeId: 0, ActiveDay: 0, EmployeeName: "", ActiveHourFrom: "", ActiveHourTo: "", ActiveHourFromNone: "", ActiveHourToNone: "" };
 
     }
-    
+
 
     function checkValidDDl(txtId, textMsg) {
 
@@ -954,7 +955,7 @@
 
 
 
-    
+
     var ActivityCounter = 1;
     function AddActivity() {
 
@@ -1059,7 +1060,7 @@
             ActivitiesEmployeeData[ActivityCounter] = arrActs;
             activities = activities.substring(0, activities.length - 2);
             data = "<div style='width:100%;' id='dvBizType" + item.EmployeeName + "'><div style='float:right;width:120px;padding-right:20px;'>" + item.EmployeeName + "</div><div style='float:right;width:120px;padding-right:10px;'>(" + activities + ")</div><button style='float:right;marging-right:4px;' onclick=deleteBizType('" + item.EmployeeName + "')>מחק</button></div>";
-            
+
 
             var newDiv = $("#Activities").html();
 
@@ -1099,7 +1100,7 @@
 
 
     function RegisterToCustmer() {
-        
+
         var user = $("#userCust").val();
 
         var password = $("#passwordCustomer").val();
@@ -1112,7 +1113,7 @@
             showTooltip("userCust", "נא להזין שם");
 
             return false;
-            
+
         }
 
         if (txtTelCust.length <= 0) {
@@ -1131,9 +1132,9 @@
 
         }
 
-        
 
-        
+
+
         if (!IsvalidEmail(email)) {
 
             showTooltip("emailCustomer", "נא להזין מייל תקין");
@@ -1181,7 +1182,7 @@
             Email: email
 
         }
-        
+
         $.ajax({
 
             url: "User/RegisterCustmer",
@@ -1193,11 +1194,17 @@
             contentType: "application/json;charset=utf-8",
 
             success: function (data) {
-                
-                if (data.ErrorMsg != "")
+
+                if (data.ErrorMsg != "" && data.ErrorMsg != null)
                     messageHandler.Show(data.ErrorMsg);
-                else
+                else {
                     messageHandler.Show("נשלח אליך מייל, אנא לחץ על הקישור עלמנת להתחבר למערכת.");
+                    $("#passwordCustomer").val("");
+                    $("#emailCustomer").val("");
+                    $("#txtTelCust").val("");
+                    $("#userCust").val("");
+                    goToCustomer('LoginSec');
+                }
 
             },
 
@@ -1250,7 +1257,7 @@
             $('#txtDuration').val("");
         }
         var s1 = "<div id='dvAddedAct" + bizType + "' style='text-align:right;color:#007bff'><label style='width:120px;' for='chk_" + bizType + "'>" + bizType + "</label><input id='chk_" + bizType + "' type='checkbox' value='" + bizType + "' /></div>";
-        
+
         $("#dvActivitiesSelection").append(s1);
     }
     function deleteBizTypeActivity(i) {
@@ -1260,11 +1267,11 @@
         $('#dvAddedAct' + i).remove();
     }
 
-       
+
 
     InitCust();
     function goToCustomer(id) {
-        
+
         InitCust();
         scrollToSection(id);
     }
@@ -1276,7 +1283,7 @@
         $('#btnRegister').hide();
     }
     function goToRegisterBiz(id) {
-        
+
         $('#Register').show();
         $('#RegisterCustomerX').hide();
         $('#btnRegister').show();
@@ -1303,5 +1310,5 @@
         localStorage.chkbx = "";
         Login();
     }
-    
+
 </script>

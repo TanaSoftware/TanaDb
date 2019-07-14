@@ -183,7 +183,7 @@ namespace Tor.Controllers
 
         [HttpPost]
         [ActionName("UpdateEmployee")]
-        public string UpdateEmployee(List<BizTypeObj> id)
+        public string UpdateEmployee(EmployeeDataWrapper id)
         {
             UserManager u = new UserManager();
             return u.UpdateEmployee(id);

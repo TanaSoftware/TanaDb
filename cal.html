@@ -25,7 +25,6 @@
 
 
     <style>
-
         .fc-widget-header {
             color: #007bff;
         }
@@ -124,179 +123,178 @@
     <div style="float:right;text-align:left" class="p-2">
         <select placeholder="בחר עובד" class="form-control" style="width:100px;" id="ddlActivity"></select>
     </div>
-    <div id="dvCustomers">
-        <div class="d-flex justify-content-center">
-
-            <div class="flex-row">
-
-                <div id="dvddlCustomers" style="float:right" class="p-2">
-                    <select placeholder="בחר לקוח" style="width:110px;" id="ddlCustomers"></select>
-                </div>
-
-                <div style="float:right" class="p-2">
-                    <button type="button" onclick="AddModalCustomer()" class="btn btn-primary btn-sm" style="margin-right:10px;height:35px;">הוסף לקוח </button>
-                </div>
-            </div>
-        </div>
+    <div style="float:right;text-align:left" class="p-2">
+        <select style="width:110px;" id="ddlEvent" class="form-control" type="text"></select>
     </div>
-    <div id="dvUsers">
-        <div class="d-flex justify-content-center">
+        <div id="dvCustomers">
+            <div class="d-flex justify-content-center">
 
-            <div class="flex-row">
+                <div class="flex-row">
 
-                <div id="dvddlCity" style="float:right" class="p-2">
-                    <select style="width:100px;" id="ddlCity" placeholder="בחר עיר"></select>
-                </div>
-                <div id="dvddlUserers" style="float:right" class="p-2">
-                    <select style="width:110px;" id="ddlUsers" placeholder="בחר בעל עסק"></select>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="calendar"></div>
-
-    <!--Add event modal-->
-
-    <div id="createEventModal" class="modal fade">
-
-        <div class="modal-dialog vertical-align-center">
-
-            <div class="modal-content" style="width:320px;">
-
-                <div class="modal-header">
-
-                    <div style="float:right;color:#007bff;"><h4>זמן תור<span id="spnEventMsg"></span></h4></div>
-                    <div style="float:left">
-
-                        <button type="button" class="close" data-dismiss="modal">
-
-                            <span aria-hidden="true">&times;</span> <span class="sr-only">close</span>
-
-                        </button>
-
+                    <div id="dvddlCustomers" style="float:right" class="p-2">
+                        <select placeholder="בחר לקוח" style="width:110px;" id="ddlCustomers"></select>
                     </div>
 
-                </div>
-
-                <div id="modalBody" class="modal-body">
-
-                    <table style="border-collapse: separate;border-spacing: 10px;">
-
-                        <tr>
-
-                            <td style="float:right;">תור ל :</td>
-
-                            <td colspan="3">
-
-                                <select style="width:190px;" id="ddlEvent" class="form-control" type="text">
-
-                                    <option value="0">בחר</option>
-
-                                </select>
-
-                                <div id="ddlEventErr"></div>
-
-                            </td>
-
-                        </tr>
-
-
-
-                        <tr>
-
-                            <td>מ :</td>
-
-                            <td><input style="width:70px;" type="text" id="txtTimeFrom" class="form-control"></td>
-
-                            <td>עד :</td>
-
-                            <td><input style="width:70px;" type="text" id="txtTimeTo" class="form-control"></td>
-
-                        </tr>
-
-                    </table>
-
-                </div>
-
-                <div class="modal-footer">
-
-                    <button class="btn" data-dismiss="modal" aria-hidden="true">ביטול</button>
-
-                    <button type="submit" style="margin-right:5px;" class="btn btn-primary" onclick="DeleteQue()" id="btnDeleteQue">מחק</button>
-
-                    <button type="submit" style="margin-right:5px;" class="btn btn-primary" onclick="AddQue()" id="submitButton">שמור</button>
-
-                </div>
-
-            </div>
-
-
-
-        </div>
-
-    </div>
-
-    <div id="AddCustomerModal" class="modal fade">
-
-        <div class="modal-dialog vertical-align-center">
-
-            <div class="modal-content" style="width:320px;">
-
-                <div class="modal-header">
-
-                    <div style="float:right;color:#007bff;"><h4>הוסף לקוח</h4></div>
-
-                    <div style="float:left">
-
-                        <button type="button" class="close" data-dismiss="modal">
-
-                            <span aria-hidden="true">&times;</span> <span class="sr-only">close</span>
-
-                        </button>
-
+                    <div style="float:right" class="p-2">
+                        <button type="button" onclick="AddModalCustomer()" class="btn btn-primary btn-sm" style="margin-right:10px;height:35px;">הוסף לקוח </button>
                     </div>
-
                 </div>
+            </div>
+        </div>
+        <div id="dvUsers">
+            <div class="d-flex justify-content-center">
 
-                <div id="modalBody" class="modal-body">
+                <div class="flex-row">
 
-                    <div class="form-group">
+                    <div id="dvddlCity" style="float:right" class="p-2">
+                        <select style="width:100px;" id="ddlCity" placeholder="בחר עיר"></select>
+                    </div>
+                    <div id="dvddlUserers" style="float:right" class="p-2">
+                        <select style="width:110px;" id="ddlUsers" placeholder="בחר בעל עסק"></select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="calendar"></div>
 
-                        <div class="form-group floating-label-form-group controls">
+        <!--Add event modal-->
 
-                            <input id="userCust" type="text" placeholder="שם משתמש" class="form-control input-lg" />
+        <div id="createEventModal" class="modal fade">
+
+            <div class="modal-dialog vertical-align-center">
+
+                <div class="modal-content" style="width:320px;">
+
+                    <div class="modal-header">
+
+                        <div style="float:right;color:#007bff;"><h4>זמן תור<span id="spnEventMsg"></span></h4></div>
+                        <div style="float:left">
+
+                            <button type="button" class="close" data-dismiss="modal">
+
+                                <span aria-hidden="true">&times;</span> <span class="sr-only">close</span>
+
+                            </button>
 
                         </div>
 
                     </div>
 
-                    <div class="form-group">
+                    <div id="modalBody" class="modal-body">
 
-                        <div class=& quot;form-group floating-label-form-group controls">
+                        <table style="border-collapse: separate;border-spacing: 10px;">
 
-                            <input id="txtTelCust" type="text" placeholder="טלפון נייד" class="form-control input-lg" />
+                            <tr>
 
-                        </div>
+                                <td style="float:right;">תור ל :</td>
+
+                                <td colspan="3">
+
+                                    <div style="text-align:right" id="dvEventName"></div>
+
+                                    <div id="ddlEventErr"></div>
+
+                                </td>
+
+                            </tr>
+
+
+
+                            <tr>
+
+                                <td>מ :</td>
+
+                                <td><input style="width:70px;" type="text" id="txtTimeFrom" class="form-control"></td>
+
+                                <td>עד :</td>
+
+                                <td><input style="width:70px;" type="text" id="txtTimeTo" class="form-control"></td>
+
+                            </tr>
+
+                        </table>
+
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <button class="btn" data-dismiss="modal" aria-hidden="true">ביטול</button>
+
+                        <button type="submit" style="margin-right:5px;" class="btn btn-primary" onclick="DeleteQue()" id="btnDeleteQue">מחק</button>
+
+                        <button type="submit" style="margin-right:5px;" class="btn btn-primary" onclick="AddQue()" id="submitButton">שמור</button>
 
                     </div>
 
                 </div>
 
-                <div class="modal-footer">
 
-                    <button class="btn" data-dismiss="modal" aria-hidden="true">ביטול</button>
-
-                    <button type="submit" style="margin-right:5px;" class="btn btn-primary" onclick="AddCustomer()" id="btnAddCustomer">הוספה</button>
-
-                </div>
 
             </div>
 
-
-
         </div>
 
-    </div>
+        <div id="AddCustomerModal" class="modal fade">
+
+            <div class="modal-dialog vertical-align-center">
+
+                <div class="modal-content" style="width:320px;">
+
+                    <div class="modal-header">
+
+                        <div style="float:right;color:#007bff;"><h4>הוסף לקוח</h4></div>
+
+                        <div style="float:left">
+
+                            <button type="button" class="close" data-dismiss="modal">
+
+                                <span aria-hidden="true">&times;</span> <span class="sr-only">close</span>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <div id="modalBody" class="modal-body">
+
+                        <div class="form-group">
+
+                            <div class="form-group floating-label-form-group controls">
+
+                                <input id="userCust" type="text" placeholder="שם משתמש" class="form-control input-lg" />
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <div class=& quot;form-group floating-label-form-group controls">
+
+                                <input id="txtTelCust" type="text" placeholder="טלפון נייד" class="form-control input-lg" />
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <button class="btn" data-dismiss="modal" aria-hidden="true">ביטול</button>
+
+                        <button type="submit" style="margin-right:5px;" class="btn btn-primary" onclick="AddCustomer()" id="btnAddCustomer">הוספה</button>
+
+                    </div>
+
+                </div>
+
+
+
+            </div>
+
+        </div>
 
 </body>
 
@@ -674,10 +672,23 @@
         else
             return 'timeGrid';
     }
+
+    function getActiveDuration() {
+        var selectedEvent = $('#ddlEvent').val();
+        for (var i = 0; i < UserData.Activities.length; i++) {
+            if (selectedEvent == UserData.Activities[i].Id) {
+                return UserData.Activities[i].ActiveDuration;
+            }
+        }
+        return 10;
+    }
+
+
     function GetQue(UserData, currentUserDetails, view) {
         var fromDate, toDate;
 
         var duration = 10;
+                
 
         if (view == null || view == 'timeGrid') {
             view = 'timeGrid';
@@ -876,13 +887,17 @@
             messageHandler.Show("לא ניתן להזמין תור");
             return;
         }
-        var e = moment(InfoObj.end);//.add(-3, 'hours');
+
+        var duration = getActiveDuration();
 
         $('#txtTimeFrom').val(s.format("HH:mm"));
 
+        var e = s.add(parseInt(duration), 'minutes');// moment(InfoObj.end);//.add(-3, 'hours');
+               
+
         $('#txtTimeTo').val(e.format("HH:mm"));
 
-        $('#ddlEvent').val("0");
+        //$('#ddlEvent').val("0");
 
 
         if (info.event == null) {
@@ -912,7 +927,7 @@
                     $('#ddlEvent').val(qTypeId.Id);
 
                 currentCustomerName = qCustomer;
-                $("#spnEventMsg").text(" ל" + currentCustomerName);
+                $("#spnEventMsg").text(" ל" + currentCustomerName);                
             }
             else {
                 var qTypeId = findEventByName(currentUserForCustomer.Activities, InfoObj.title);
@@ -931,9 +946,9 @@
             $('#txtTimeTo').removeAttr("disabled");
         }
 
-
+        $("#dvEventName").html($("#ddlEvent :selected").text());
         $('#createEventModal').modal('show');
-
+        
 
     }
 

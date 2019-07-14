@@ -54,7 +54,7 @@
                             <h3 class="panel-title">
                                 עדכון פרטי בעל העסק
                                 <span style="float:left;"><button onclick="goBack()">חזרה</button></span>
-                                </h3>
+                            </h3>
                         </div>
 
                         <div class="panel-body">
@@ -379,7 +379,7 @@
         </div>
 
     </section>
-    <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="js/jquery.js"></script>
     <script src="js/cleave.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/jquery.easing.min.js"></script>
@@ -395,7 +395,7 @@
     <script src="js/wow.min.js"></script>
     <script src="js/main.js"></script>
     <script src="js/selectize.js"></script>
-    
+
     <script src="https://www.negishim.com/accessibility/accessibility_pro.js" type="text/javascript"></script>
 </body>
 </html>
@@ -420,14 +420,14 @@
                     GetUserDetails();
                 });
 
-                
+
             }
         });
 
 
     }
 
-    
+
     function GetUserDetails() {
 
         var Obj = {
@@ -466,7 +466,7 @@
         return false;
     }
     function getEmployeeTemplate(EmployeeId, EmployeeName, EmployeeActivities) {
-        
+
         var ret = "<div class='row' style='width:100%;' id='dvBizType" + EmployeeId + "'><div style='float:right;padding-right:20px;'><input style='width:140px;' onclick=SetEmployeeData('" + EmployeeName + "'); id='txtBizType" + EmployeeId + "' type='text' value='" + EmployeeName + "' /></div><button style='float:right;margin-right:4px;' onclick=deleteBizType('" + EmployeeId + "')>מחק</button><button style='float:right;margin-right:4px;' onclick=UpdateBizType('" + EmployeeId + "')>עדכן</button></div>";
         for (var i = 0; i < UserData.Activities.length; i++) {
             var bizType = UserData.Activities[i].Name;
@@ -478,7 +478,7 @@
         return ret;
     }
 
-    
+
     function getEmployeeActivityTemplate(EmployeeId,Id, bizType, checked){
         return "<div id='dvActEmp" + EmployeeId + "Act" + Id + "' style='padding-right:20px;'><label style='width:120px;' for='chk_" + EmployeeId + "Act" + Id + "'>" + bizType + "</label><input " + checked + " id='chk_" + EmployeeId + "Act" + Id + "' type='checkbox' value='" + bizType + "' /></div>";
     }
@@ -511,7 +511,7 @@
             empData += getEmployeeTemplate(arr[0].EmployeeId, arr[0].EmployeeName, UserData.dicEmployeeActivities[arr[0].EmployeeId]);
         }
         $("#Activities").html(empData);
-        
+
     }
 
     function SetEmployeeData(key) {
@@ -570,7 +570,20 @@
                 }
                 else {
                     $('#dvBizTypeAct' + BizTypeId).remove();
+                    var iFountIt = -1;
                     messageHandler.Show("שם פעילות נמחק בהצלחה");
+                    for (var i = 0; i < UserData.Activities.length; i++) {
+                        if (UserData.Activities[i].Id == BizTypeId) {
+                            iFountIt = i;
+                            break;
+                        }
+                    }
+                    if (iFountIt >= 0) {
+                        UserData.Activities.splice(iFountIt, 1);
+                    }
+                    for (var key in UserData.dicBizType) {
+                        $('#dvActEmp' + UserData.dicBizType[key][0].EmployeeId + 'Act' + BizTypeId).remove();
+                    }
                 }
             },
             error: function (request, status, error) {
@@ -774,10 +787,21 @@
         if (ActivitiesTempData==null || ActivitiesTempData.length <= 0)
             return;
 
+        var arrActs = [];
+
+        for (var i = 0; i < UserData.Activities.length; i++) {
+            if ($("#chk_" + empId + "Act" + UserData.Activities[i].Id).is(":checked")) {
+                arrActs.push({ UserId:UserData.UserId, EmployeeId: empId, ActivityId: UserData.Activities[i].Id, IsChecked: true });
+            }
+            else
+                arrActs.push({ UserId: UserData.UserId, EmployeeId: empId, ActivityId: UserData.Activities[i].Id, IsChecked: false });
+        }
+        var dataWrap = { ActivitiesData: ActivitiesTempData, checkedActivities: arrActs };
+
         $.ajax({
             url: "User/UpdateEmployee",
             type: 'POST',
-            data: JSON.stringify(ActivitiesTempData),
+            data: JSON.stringify(dataWrap),
             contentType: "application/json;charset=utf-8",
             success: function (data) {
                 if (data != null && data != "") {
@@ -917,7 +941,7 @@
         }
 
 
-       
+
         var userObj = {
             Id: UserData.UserId,
             User: user,
@@ -947,9 +971,9 @@
             data: JSON.stringify(userObj),
             contentType: "application/json;charset=utf-8",
             success: function (data) {
-                
+
                 messageHandler.Show(data);
-                
+
             },
             error: function (request, status, error) {
 
@@ -971,8 +995,8 @@
         if (!checkValid("txtDuration", "נא להזין משך פעילות")) {
             return;
         }
-        
-        
+
+
         var duration = $("#txtDuration").val();
         if (parseInt(duration <= 0)) {
             showTooltip("txtDuration", "נא להזין מספר גדול מאפס");
@@ -1007,9 +1031,11 @@
                         var arr = UserData.dicBizType[key];
                         var d = getEmployeeActivityTemplate(arr[0].EmployeeId,data, bizType, "");
                         var lastActivityId = UserData.Activities[UserData.Activities.length - 1].Id;
-                        
+
                         $(d).insertAfter("#dvActEmp" + arr[0].EmployeeId + "Act" + lastActivityId );
                     }
+                    UserData.Activities[UserData.Activities.length] = { Id: data, Name: bizType, ActiveDuration: parseInt(duration) };
+
                     $('#BizType').val("");
                     $('#txtDuration').val("");
                     messageHandler.Show("פעילות עודכנה בהצלחה");
@@ -1052,14 +1078,14 @@
             cache: false,
             contentType: false,
             processData: false,
-            success: function (data) {               
-                messageHandler.Show("תמונה עודכנה בהצלחה");                
+            success: function (data) {
+                messageHandler.Show("תמונה עודכנה בהצלחה");
             },
             error: function (request, status, error) {
                 messageHandler.Show(error);
             }
         });
-    
+
 
     }
 </script>

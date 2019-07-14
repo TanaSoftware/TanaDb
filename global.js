@@ -489,6 +489,10 @@ function checkHour(txtId, textMsg) {
 
 }
 
+function goBack() {
+    history.back();
+}
+
 function checkValidDDl(txtId, textMsg) {
 
     $('#' + txtId).tooltip('hide');
