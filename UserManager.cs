@@ -1604,6 +1604,7 @@ namespace Tor
 
             userDetails.dicBizType = getBizTypeDictionary(user.Id);
             userDetails.Activities = getUserActivities(user.Id);
+            userDetails.dicEmployeeActivities = getEmployeeActivities(user.Id);
             return userDetails;
 
         }

@@ -467,20 +467,20 @@
     }
     function getEmployeeTemplate(EmployeeId, EmployeeName, EmployeeActivities) {
 
-        var ret = "<div class='row' style='width:100%;' id='dvBizType" + EmployeeId + "'><div style='float:right;padding-right:20px;'><input style='width:140px;' onclick=SetEmployeeData('" + EmployeeName + "'); id='txtBizType" + EmployeeId + "' type='text' value='" + EmployeeName + "' /></div><button style='float:right;margin-right:4px;' onclick=deleteBizType('" + EmployeeId + "')>מחק</button><button style='float:right;margin-right:4px;' onclick=UpdateBizType('" + EmployeeId + "')>עדכן</button></div>";
+        var ret = "<div class='row' style='width:100%;' id='dvBizType" + EmployeeId + "'><div style='float:right;padding-right:20px;'><input style='width:140px;' onclick=SetEmployeeData(\'" + escape(EmployeeName) + "\'); id='txtBizType" + EmployeeId + "' type='text' value='" + EmployeeName + "' /><input type='hidden' id='hdnBizType" + EmployeeId + "' value='" + EmployeeName + "'/></div><button style='float:right;margin-right:4px;' onclick=deleteBizType('" + EmployeeId + "')>מחק</button><button style='float:right;margin-right:4px;' onclick=UpdateBizType('" + EmployeeId + "')>עדכן</button>";
         for (var i = 0; i < UserData.Activities.length; i++) {
             var bizType = UserData.Activities[i].Name;
             var checked = "";
-            if (checkEmployeeActivities(EmployeeActivities,UserData.Activities[i].Id))
+            if (EmployeeActivities && checkEmployeeActivities(EmployeeActivities, UserData.Activities[i].Id))
                 checked = "checked='checked'";
             ret += getEmployeeActivityTemplate(EmployeeId,UserData.Activities[i].Id, bizType, checked);
         }
-        return ret;
+        return ret+"</div>";
     }
 
 
     function getEmployeeActivityTemplate(EmployeeId,Id, bizType, checked){
-        return "<div id='dvActEmp" + EmployeeId + "Act" + Id + "' style='padding-right:20px;'><label style='width:120px;' for='chk_" + EmployeeId + "Act" + Id + "'>" + bizType + "</label><input " + checked + " id='chk_" + EmployeeId + "Act" + Id + "' type='checkbox' value='" + bizType + "' /></div>";
+        return "<div id='dvActEmp" + EmployeeId + "Act" + Id + "' style='padding-right:20px;clear:both;'><label style='width:120px;' for='chk_" + EmployeeId + "Act" + Id + "'>" + bizType + "</label><input " + checked + " id='chk_" + EmployeeId + "Act" + Id + "' type='checkbox' value='" + bizType + "' /></div>";
     }
 
     function getBizTypeTemplate(Id, Name, ActiveDuration) {
@@ -514,7 +514,8 @@
 
     }
 
-    function SetEmployeeData(key) {
+    function SetEmployeeData(keyEs) {
+        var key = unescape(keyEs);
         var arr = UserData.dicBizType[key];
         for (var i = 1; i <=7; i++) {
             document.getElementById('Day' + i).checked = false;
@@ -604,8 +605,10 @@
         }
 
         ActivitiesTempData = getEmployeeHours(0);
-        if (ActivitiesTempData.length <= 0)
+        if (ActivitiesTempData ==null || ActivitiesTempData.length <= 0)
             return;
+
+        ActivitiesTempData[0].guid = UserData.guid;
 
         $.ajax({
             url: "User/AddEmployee",
@@ -748,13 +751,16 @@
 
                 }
                 else {
-                    var empName = $('#txtBizType' + empId).val();
                     var dicBizType = UserData.dicBizType;
-                    delete dicBizType[empName];
+                    var empName = $('#txtBizType' + empId).val();
+                    var empOldName = $("#hdnBizType" + empId).val();
+                    delete dicBizType[empOldName];
                     UserData.dicBizType = dicBizType;
                     sessionStorage.setItem("UserData", JSON.stringify(UserData));
                     $('#dvBizType' + empId).remove();
                     messageHandler.Show("שם עובד נמחק בהצלחה");
+
+                    
                 }
             },
             error: function (request, status, error) {
@@ -788,14 +794,19 @@
             return;
 
         var arrActs = [];
+        var dicEmployeeActivities = [];
 
         for (var i = 0; i < UserData.Activities.length; i++) {
             if ($("#chk_" + empId + "Act" + UserData.Activities[i].Id).is(":checked")) {
-                arrActs.push({ UserId:UserData.UserId, EmployeeId: empId, ActivityId: UserData.Activities[i].Id, IsChecked: true });
+                arrActs.push({ UserId: UserData.UserId, EmployeeId: empId, ActivityId: UserData.Activities[i].Id, IsChecked: true });
+                dicEmployeeActivities.push(UserData.Activities[i].Id);
             }
             else
                 arrActs.push({ UserId: UserData.UserId, EmployeeId: empId, ActivityId: UserData.Activities[i].Id, IsChecked: false });
         }
+
+        ActivitiesTempData[0].guid = UserData.guid;
+
         var dataWrap = { ActivitiesData: ActivitiesTempData, checkedActivities: arrActs };
 
         $.ajax({
@@ -808,11 +819,16 @@
                     messageHandler.Show(data);
                 }
                 else {
+                     
                     var dicBizType = UserData.dicBizType;
+                    var empOldName = $("#hdnBizType" + empId).val();
+                    delete dicBizType[empOldName];
                     dicBizType[empName] = ActivitiesTempData;
                     UserData.dicBizType = dicBizType;
+                    UserData.dicEmployeeActivities[empId] = dicEmployeeActivities;
                     sessionStorage.setItem("UserData", JSON.stringify(UserData));
-                    messageHandler.Show("שם עובד עודכן בהצלחה");
+                    $("#hdnBizType" + empId).val(empName);
+                    messageHandler.Show("נתוני עובד עודכנו בהצלחה");
                 }
             },
             error: function (request, status, error) {
