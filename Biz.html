@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/main.css" rel="stylesheet">
+    <link href="css/main.css?v=7" rel="stylesheet">
 
     <title>TanaSoftware</title>
     <style>
@@ -41,7 +41,7 @@
 <body dir="rtl" id="page-top" data-spy="scroll" data-target=".navbar-fixed-top" class="top">
 
     <nav class="navbar navbar-unibody navbar-custom navbar-fixed-top navbar-onepage">
-        <div class="container">
+        <div class="">
             <div class="navbar-header">
                 <button type="button" data-toggle="collapse" data-target=".navbar-main-collapse" class="navbar-toggle">
                     <span class="sr-only">Toggle navigation</span>
@@ -49,44 +49,42 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button><a id="dvUserLoggedIn"></a><a href="#page-top" class="navbar-brand page-scroll">
-                    <img src="img/Tana1.png" alt="Logo" class="logo"><img src="img/Tana2.png" alt="Logo" class="logodark">
+                    <img id="imgLogo1" src="img/Tana1.png" style="width:100px; margin-top:12px;" alt="Logo" class="logo">
+                    <img id="imgLogo2" src="img/Tana2.png" style="width:100px;margin-top:12px;" alt="Logo" class="logodark">
                 </a>
             </div>
 
             <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
                 <ul class="nav navbar-nav">
-                    <li class="hidden"><a href="#page-top"></a></li>
-
-                    <li><a href="#contact" class="page-scroll">צור קשר</a></li>
-
-                    <li><a href="#LoginSec" class="page-scroll">התחבר</a></li>
-                    <li><a href="#RegisterCustomer" class="page-scroll">הרשמה</a></li>
-                    <li><a href="#Register" class="page-scroll">הרשמה של בעל עסק</a></li>
                     <li><a href="#page-top" class="page-scroll">דף הבית</a></li>
+                    <li><a href="#" onclick="javascript:goToCustomer('LoginSec')" class="page-scroll">כניסת משתמש</a></li>
+                    <!--<li><a href="#" onclick="javascript:goToRegisterBiz('LoginSec')" class="page-scroll">כניסת בעל עסק</a></li>-->
+                    <li><a href="#" onclick="javascript:goToContact('Contact.html')" class="page-scroll">צור קשר</a></li>
 
                 </ul>
             </div>
+
         </div>
     </nav>
 
     <header id="Carousel-intro" data-ride="carousel" class="intro carousel carousel-big slide carousel-fade">
-        <ol class="carousel-indicators">
-            <li data-target="#Carousel-intro" data-slide-to="0" class="active"></li>
-            <li data-target="#Carousel-intro" data-slide-to="1"></li>
-            <li data-target="#Carousel-intro" data-slide-to="2"></li>
-        </ol>
+
+        
+
         <div class="carousel-inner">
             <div class="item active">
-                <div style="background-image:url(img/f.jpg)" class="fill">
+                <div id="dvBackUrl" style="background-image:url(img/f.png)" class="fill">
                     <div class="intro-body">
                         <div class="container">
                             <div class="row">
-                                <div class="col-lg-10 col-lg-offset-1">
-                                    <h1>ברוכים הבאים למערכת ניהול תורים של</h1>
-                                    <h1><span id="spnBizName"></span></h1>
-                                    <h1>הרשם עכשיו וחסוך לך זמן יקר</h1>
-                                    <a class="btn btn-blue btn-lg page-scroll wow fadeInLeft" href="#Register">לחץ כאן להרשמה</a>
+                                <div class="toriImg"></div>
+                                <div class="clock"></div>
+                                <div class="col-lg-10 col-lg-offset-1" style="padding-top:140px;">
+                                   
+                                    <h5>קבע תור בקלות ל<span id="spnBizName"></span></h5>
+                                    <button class="btn btn-blue btn-lg page-scroll wow fadeInLeft" onclick="goToCustomer('LoginSec')">&nbsp;&nbsp;כניסת לקוחות&nbsp;&nbsp;</button>
                                 </div>
+
                             </div>
                         </div>
 
@@ -94,42 +92,10 @@
                 </div>
             </div>
 
-            <div class="item">
-                <div style="background-image:url(img/f.jpg)" class="fill">
-                    <div class="intro-body">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-lg-10 col-lg-offset-1">
-                                    <h1>זמן תור</h1>
-                                    <h1>מכל מקום</h1>
-                                    <a class="btn btn-blue btn-lg page-scroll wow fadeInLeft" href="#Register">לחץ כאן להרשמה</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="item">
-                <div style="background-image:url(img/f.jpg)" class="fill">
-                    <div class="intro-body">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-lg-10 col-lg-offset-1">
-                                    <h1>מערכת לזימון תורים</h1>
-                                    <h1>לכל עסק</h1>
-                                    <a class="btn btn-blue btn-lg page-scroll wow fadeInLeft" href="#Register">לחץ כאן להרשמה</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+       
         </div>
-        <a href="#Carousel-intro" data-slide="prev" class="left carousel-control"><span class="icon-prev"></span></a><a href="#Carousel-intro" data-slide="next" class="right carousel-control"><span class="icon-next"></span></a>
+        
     </header>
-
 
     <section id="LoginSec" style="padding-top:130px;padding:10px;">
 
@@ -167,7 +133,7 @@
 
                         <label>
 
-                            <input type="checkbox">
+                            <input id="remember_me" type="checkbox">
 
                         </label>
 
@@ -261,19 +227,10 @@
 
 
 
-    <!-- Footer Section-->
-    <div class="container-fluid footer-small bg-gray text-center" style="padding:10px;">
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2">
-                <p data-wow-iteration="999" data-wow-duration="5s" class="wow flash"><a href="#page-top" class="page-scroll"><i class="icon ion-ios-arrow-up fa-2x"></i></a></p>
-
-                <p class="small"><a href="http://TanaSoftware.COM">©2017 TanaSoftware</a> </p>
-            </div>
-        </div>
-    </div>
+   
 
 
-    <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="js/jquery.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/jquery.easing.min.js"></script>
     <script src="js/jquery.countdown.min.js"></script>
@@ -288,7 +245,7 @@
     <script src="js/wow.min.js"></script>
     <script src="js/main.js"></script>
     <script src="js/selectize.js"></script>
-    <script src="js/global.js"></script>
+    
     <script src="https://www.negishim.com/accessibility/accessibility_pro.js" type="text/javascript"></script>
 </body>
 </html>
@@ -298,53 +255,8 @@
     pixel_from_start = 80;
     is_set_for_mobile = 1;
 
-
-
-    function SendMail() {
-        var sName = $("#iname").val();
-        var sMsg = $("#message").val();
-        var sEmail = $("#iemail").val();
-        var sPhone = $("#phone").val();
-        $("#dvErrMail").html("");
-        if (sName.length <= 0) {
-            showTooltip("iname", "נא להזין שם");
-            return;
-        }
-        if (sEmail.length <= 0) {
-            showTooltip("iemail", "נא להזין מייל");
-            return;
-        }
-        if (!IsvalidEmail(sEmail)) {
-            showTooltip("iemail", " נא להזין מייל תקין");
-            return;
-        }
-        if (sMsg.length <= 0) {
-            showTooltip("message", "נא להזין מלל");
-            return;
-        }
-        showProgressBar(true);
-        var Obj = {
-            name: sName,
-            Msg: sMsg,
-            email: sEmail,
-            phone: sPhone
-        }
-        $.ajax({
-            url: "Mail/PostEmail",
-            type: 'POST',
-            data: JSON.stringify(Obj),
-            contentType: "application/json;charset=utf-8",
-            success: function (data) {
-                $("#dvErrMail").html("Email succesfuley sent.");
-                showProgressBar(false);
-            },
-            error: function (request, status, error) {
-                $("#dvErrMail").html("Email failed sent.");
-                showProgressBar(false);
-            }
-        });
-    }
-
+    getScripts();
+  
     function showProgressBar(isShow) {
         if (isShow)
             $("#dvProgBar").show();
@@ -352,227 +264,24 @@
             $("#dvProgBar").hide();
     }
 
-
-    function Register() {
-
-
-
-        var user = $("#name").val();
-
-        var password = $("#password").val();
-
-        var email = $("#email").val();
-
-        var bizName = $("#bizName").val();
-
-        var bizNameEng = $("#bizNameEng").val();
-
-        var creditCard = $("#creditCard").val();
-
-        var address = $("#address").val();
-
-        var city = $("#city").val();
-
-        var tel = $("#txtTel").val();
-
-
-
-        $("#spnActiveDays").text("");
-
-
-
-        if (user.length <= 0) {
-
-            showTooltip("name", "נא להזין שם");
-
-            return;
-
-        }
-
-
-
-        if (password.length <= 0) {
-
-            showTooltip("password", "נא להזין סיסמה");
-
-            return;
-
-        }
-
-
-
-        if (password.length < 8) {
-
-            showTooltip("password", "נא להזין לפחות 8 תווים");
-
-            return;
-
-        }
-
-        if (email.length <= 0) {
-
-            showTooltip("email", "נא להזין מייל");
-
-            return;
-
-        }
-
-        if (tel.length <= 0) {
-
-            showTooltip("txtTel", "נא להזין מספר טלפון נייד");
-
-            return;
-
-        }
-
-        if (!IsvalidEmail(email)) {
-
-            showTooltip("email", "נא להזין מייל תקין");
-
-            return;
-
-        }
-
-
-
-        if (bizName.length <= 0) {
-
-            showTooltip("bizName", "נא להזין שם עסק");
-
-            return;
-
-        }
-
-
-
-        if (bizNameEng.length <= 0) {
-
-            showTooltip("bizNameEng", "נא להזין שם עסק באנגלית");
-
-            return;
-
-        }
-
-
-
-        if (creditCard.length <= 0) {
-
-            showTooltip("creditCard", "נא להזין כרטיס אשראי ");
-
-            return;
-
-        }
-
-
-
-        if (address.length <= 0) {
-
-            showTooltip("address", "נא להזין כתובת");
-
-            return;
-
-        }
-
-
-
-        if (city == "0") {
-
-            showTooltip("city", "נא להזין עיר");
-
-            return;
-
-        }
-
-
-        //var bizType = BizType
-
-
-        if (!NoneHours) {
-
-            txtfromHourNone = "";
-
-            txttoHourNone = "";
-
-        }
-        var UserActivitiesDiv = $("#UserActivities").html();
-        if (UserActivitiesDiv.length == 0) {
-            showTooltip("BizType", "נא להזין סוג פעילות");
-        }
-
-        if (isEmptyObject(ActivitiesData)) {
-
-            showTooltip("EmployeeName", "נא להזין שם עובד")
-
-            return;
-
-        }
-
-
-        var userObj = {
-
-            User: user,
-
-            Password: password,
-
-            Email: email,
-
-            tel: tel,
-
-            BizName: bizName,
-
-            BizNameEng: bizNameEng,
-
-            Adrress: address,
-
-            City: city,
-
-            Country: "Israel",
-
-            CreditCard: creditCard,
-
-            dicBizType: ActivitiesData,
-            UserActivities: ActivitiesUserData
-        }
-
-
-
+    function getScripts() {
+        var v = sessionStorage.getItem("version");
         $.ajax({
-
-            url: "User/Register",
-
-            type: 'POST',
-
-            data: JSON.stringify(userObj),
-
-            contentType: "application/json;charset=utf-8",
-
+            url: "js/global.js?ver=" + v,
+            dataType: "script",
             success: function (data) {
 
-                if (data.ErrorMsg == null || data.ErrorMsg == "")
-
-                    messageHandler.Show("נשלח אליך מייל, אנא לחץ על הקישור עלמנת להתחבר למערכת.");
-
-                else
-
-                    messageHandler.Show(data.ErrorMsg);
-
-            },
-
-            error: function (request, status, error) {
-
-
+                if (sessionStorage.getItem("remember_me") != "1" && localStorage.chkbx && localStorage.chkbx != '') {
+                    Login();
+                }
+                init();
 
             }
-
         });
 
 
-
-
-
     }
-
-
+  
     function init() {
 
 
@@ -596,6 +305,10 @@
                 sessionStorage.setItem("UserForCustomerDetails", JSON.stringify(data));
                 sessionStorage.setItem("version", data.version);
                 $('#spnBizName').text(data.User);
+                if (data.logo)
+                    document.getElementById("imgLogo1").src = data.logo;
+                if (data.img)
+                    document.getElementById("dvBackUrl").src = data.img;
 
             },
 
@@ -609,18 +322,11 @@
     }
 
 
-
-    var ActivitiesData = {};
-    var ActivitiesUserData = {};
-
-
     function GetBizTypeItem() {
 
         return { EmployeeId: 0, ActiveDay: 0, EmployeeName: "", ActiveHourFrom: "", ActiveHourTo: "", ActiveHourFromNone: "", ActiveHourToNone: "" };
 
     }
-
-
 
     function checkValid(txtId, textMsg) {
 
@@ -650,8 +356,6 @@
 
     }
 
-
-
     function checkValidDDl(txtId, textMsg) {
 
         $('#' + txtId).tooltip('hide');
@@ -680,8 +384,6 @@
 
     }
 
-
-
     function checkHour(txtId, textMsg) {
 
         $('#' + txtId).tooltip('hide');
@@ -704,108 +406,7 @@
 
         return true;
 
-    }
-    var ActivityCounter = 1;
-    function AddActivity() {
-
-        var data = "";
-
-        var ActivitiesTempData = new Array();
-
-        if (!checkValid("EmployeeName", "נא להזין שם עובד")) {
-
-            return;
-
-        }
-
-        for (var i = 1; i <= 2; i++) {
-
-            var id = i.toString();
-
-            var Day = document.getElementById('Day' + id).checked;
-
-
-            if (Day) {
-
-
-
-                if (!checkValid("txtfromHour" + id, "נא להזין משעה")) {
-
-                    return;
-
-                }
-
-                if (!checkHour("txtfromHour" + id, "שעה לא חוקית")) {
-
-                    return;
-
-                }
-
-                if (!checkValid("txttoHour" + id, "נא להזין עד שעה")) {
-
-                    return;
-
-                }
-
-                if (!checkHour("txttoHour" + id)) {
-
-                    return;
-
-                }
-
-                var item = GetBizTypeItem();
-
-                item.EmployeeId = ActivityCounter;
-                item.EmployeeName = $('#EmployeeName').val();
-
-                item.ActiveDay = id;
-
-                //item.ActiveDuration = $('#ddlDuration' + id).val();
-
-                item.ActiveHourFrom = $('#txtfromHour' + id).val();
-
-                item.ActiveHourTo = $('#txttoHour' + id).val();
-
-                item.ActiveHourFromNone = $('#txtfromHourNone' + id).val();
-
-                item.ActiveHourToNone = $('#txttoHourNone' + id).val();
-
-                ActivitiesTempData.push(item);
-            }
-
-        }
-
-        if (ActivitiesData[item.EmployeeName] == null) {
-
-            var index = ActivitiesData.length;
-
-            ActivitiesData[item.EmployeeName] = ActivitiesTempData;
-
-            data = "<div style='width:100%;' id='dvBizType" + item.EmployeeName + "'><div style='float:right;width:260px;padding-right:20px;'>" + item.EmployeeName + "</div><button style='float:right;marging-right:4px;' onclick=deleteBizType('" + item.EmployeeName + "')>מחק</button></div>";
-
-            var newDiv = $("#Activities").html();
-
-            ActivityCounter++;
-
-            $("#Activities").html(newDiv + data);
-
-            $('#EmployeeName').val("");
-
-        }
-
-    }
-
-
-
-    function deleteBizType(i) {
-
-        delete ActivitiesData[i];
-
-        $('#dvBizType' + i).remove();
-
-    }
-
-
+    }    
 
     function isEmptyObject(obj) {
 
@@ -818,10 +419,6 @@
         return true;
 
     }
-
-
-
-
 
     function RegisterCustmer() {
 
@@ -887,8 +484,6 @@
 
         }
 
-
-
         var userObj = {
 
             Name: user,
@@ -913,9 +508,16 @@
 
             success: function (data) {
 
-                if (data.ErrorMsg != "")
-
+                if (data.ErrorMsg != "" && data.ErrorMsg != null)
+                    messageHandler.Show(data.ErrorMsg);
+                else {
                     messageHandler.Show("נשלח אליך מייל, אנא לחץ על הקישור עלמנת להתחבר למערכת.");
+                    $("#passwordCustomer").val("");
+                    $("#emailCustomer").val("");
+                    $("#txtTelCust").val("");
+                    $("#userCust").val("");
+                    goToCustomer('LoginSec');
+                }
 
             },
 
@@ -927,44 +529,22 @@
 
         });
 
+    }       
+
+    function goToCustomer(id) {        
+        scrollToSection(id);
     }
 
-    init();
-
-
-
-
-    function AddUserActivity() {
-
-        var data = "";
-
-        var ActivitiesTempData = new Array();
-        var bizType = $('#BizType').val();
-        if (bizType.length == 0) {
-            showTooltip("BizType", "נא להזין שם פעילות");
-            return;
-        }
-
-        if (!checkValidDDl("ddlDuration", "נא להזין משך פעילות")) {
-            return;
-        }
-        if (ActivitiesUserData[bizType] == null) {
-
-            ActivitiesUserData[bizType] = $('#ddlDuration').val();
-
-            data = "<div style='width:100%;' id='dvBizTypeAct" + bizType + "'><div style='float:right;width:260px;padding-right:20px;'>" + bizType + " למשך  " + ActivitiesUserData[bizType] + " דקות</div><button style='float:right;marging-right:4px;' onclick=deleteBizTypeActivity('" + bizType + "')>מחק</button></div>";
-
-            var newDiv = $("#UserActivities").html();
-
-            $("#UserActivities").html(newDiv + data);
-            $('#BizType').val("");
-        }
-
+    function scrollToSection(id) {
+        setTimeout(function () {
+            $([document.documentElement, document.body]).animate({
+                scrollTop: $("#" + id).offset().top
+            }, 1400);
+        }, 100);
     }
-    function deleteBizTypeActivity(i) {
-        delete ActivitiesUserData[i];
 
-        $('#dvBizTypeAct' + i).remove();
-
-    }
+    history.pushState(null, null, location.href);
+    window.onpopstate = function () {
+        history.go(1);
+    };
 </script>

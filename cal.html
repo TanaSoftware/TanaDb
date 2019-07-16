@@ -113,16 +113,18 @@
 
 
     <div class="d-flex justify-content-center">
-
+        <span class="floatR" style="margin-top:32px;margin-left:4px;color:#007bff">קבע תור ל:</span>
+        <div class="floatR">            
+            <select placeholder="בחר עובד" class="form-control" style="width:100px;margin-top:24px;margin-left:8px;" id="ddlActivity"></select>
+        </div>
         <div class="btn-group-sm btn-group-primary" role="group" aria-label="...">
+            
             <div class="floatR" onclick="SetCal('timeGrid')" style="width:40px;"><input class="rdb" id="btnDaily" type="radio" name="rdbX"><div class="check"></div><span class="floatR">יומי</span></div>
             <div class="floatR" onclick="SetCal('timeGridWeek')" style="width:50px;"><input class="rdb" id="btnWeekly" type="radio" name="rdbX"><div class="check"></div><span class="floatR">שבועי</span></div>
             <div class="floatR" onclick="SetCal('dayGridMonth')" style="width:50px;"><input class="rdb" id="btnMonthly" type="radio" name="rdbX"><div class="check"></div><span class="floatR">חודשי</span></div>
         </div>
     </div>
-    <div style="float:right;text-align:left" class="p-2">
-        <select placeholder="בחר עובד" class="form-control" style="width:100px;" id="ddlActivity"></select>
-    </div>
+    
     <div style="float:right;text-align:left" class="p-2">
         <select style="width:110px;" id="ddlEvent" class="form-control" type="text"></select>
     </div>
@@ -278,6 +280,16 @@
 
                         </div>
 
+                        <div class="form-group">
+
+                            <div class="form-group floating-label-form-group controls">
+
+                                <input id="emailCustomer" type="email" placeholder="מייל" class="form-control input-lg" />
+
+                            </div>
+
+                        </div>
+
                     </div>
 
                     <div class="modal-footer">
@@ -394,7 +406,7 @@
 
         var name = $("#userCust").val();
 
-
+        var mail = $("#emailCustomer").val();
 
         if (name.length <= 0) {
 
@@ -412,7 +424,7 @@
 
         }
 
-        var CustomerObj = { Id: UserData.UserId, Name: name, tel: Tel, guid: UserData.guid };
+        var CustomerObj = { Id: UserData.UserId, Name: name, tel: Tel, guid: UserData.guid, mail: mail };
 
         $.ajax({
 
@@ -546,7 +558,7 @@
             setUserActivities(BizTypeList);
 
             var id = parseInt($('#ddlActivity').val());
-            var empActList = UserData.dicEmployeeActivities[id];
+            var empActList = currentUserForCustomer!=null?currentUserForCustomer.dicEmployeeActivities[id]: UserData.dicEmployeeActivities[id];
             setEmployeeActivities(empActList);
         });
 
@@ -565,11 +577,11 @@
     }
 
     function setEmployeeActivities(empActList) {
-
+        var userDataActivities = currentUserForCustomer != null ? currentUserForCustomer.Activities : UserData.Activities;
         document.getElementById("ddlEvent").options.length = 0;//reset activities
-        for (var i = 0; i < UserData.Activities.length; i++) {
-            if (include(empActList, UserData.Activities[i].Id))
-                $('#ddlEvent').append($("<option></option>").attr("value", UserData.Activities[i].Id).text(UserData.Activities[i].Name));
+        for (var i = 0; i < userDataActivities.length; i++) {
+            if (include(empActList, userDataActivities[i].Id))
+                $('#ddlEvent').append($("<option></option>").attr("value", userDataActivities[i].Id).text(userDataActivities[i].Name));
         }
     }
 
@@ -674,10 +686,11 @@
     }
 
     function getActiveDuration() {
+        var userDataActivities = currentUserForCustomer != null ? currentUserForCustomer.Activities : UserData.Activities;
         var selectedEvent = $('#ddlEvent').val();
-        for (var i = 0; i < UserData.Activities.length; i++) {
-            if (selectedEvent == UserData.Activities[i].Id) {
-                return UserData.Activities[i].ActiveDuration;
+        for (var i = 0; i < userDataActivities.length; i++) {
+            if (selectedEvent == userDataActivities[i].Id) {
+                return userDataActivities[i].ActiveDuration;
             }
         }
         return 10;
@@ -1283,7 +1296,7 @@
                             currentUserForCustomer = data;
                             setUser(data);
                             //CheckTodayAvailable(data.dicBizType, data.day);
-
+                            $('#ddlActivity').trigger('change');
                         }
 
                         else {

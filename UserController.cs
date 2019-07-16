@@ -218,7 +218,7 @@ namespace Tor.Controllers
 
         [HttpPost]
         [ActionName("UserAddCustmer")]
-        public string UserAddCustmer(CustomerObjBase id)
+        public string UserAddCustmer(AddedCustomerByUser id)
 
         {
 

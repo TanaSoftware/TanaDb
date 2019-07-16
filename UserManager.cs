@@ -78,6 +78,35 @@ namespace Tor
 
     }
 
+    public class AddedCustomerByUser
+
+    {
+
+        public int Id { get; set; }
+
+
+
+        [Required]
+
+        public string Name { get; set; }
+
+
+
+        [Required]
+
+        public string tel { get; set; }
+
+        public string mail { get; set; }
+
+        [Required]
+        public string guid { get; set; }
+
+
+
+
+
+    }
+
     public class CustomerObj : CustomerObjBase
 
     {
@@ -709,7 +738,7 @@ namespace Tor
 
 
 
-        public string UserAddHisCustomer(CustomerObjBase customer)
+        public string UserAddHisCustomer(AddedCustomerByUser customer)
 
         {
 
@@ -747,11 +776,17 @@ namespace Tor
 
             }
 
-
+            if(customer.mail!=null && customer.mail!="")
+            {
+                if(IsMailExist(customer.mail) && IsCustomerMailExist(customer.mail))
+                {
+                    return "מייל קיים במערכת";
+                }
+            }
 
             CustomerObj user = new CustomerObj();
 
-            user.Email = "";
+            user.Email = customer.mail!=null? customer.mail:"";
 
             user.guid = Guid.NewGuid().ToString();
 
@@ -762,8 +797,7 @@ namespace Tor
             user.tel = customer.tel;
 
             user.Active = "";
-
-
+            
 
             if (!AddCustomerToDb(user, customer.Id))
 

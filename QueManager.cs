@@ -409,7 +409,9 @@ namespace Tor
 
             string sql = @"SELECT count(1) FROM Que 
                            WHERE [UserId] = @UserId And EmployeeId = @EmployeeId And 
-                           [FromDate]>@FromDate And [ToDate]<@ToDate";
+                             ([FromDate]<@FromDate And [ToDate]>@FromDate)
+                            Or ([FromDate]<@ToDate And [ToDate]>@ToDate)";
+                           //[FromDate]>@FromDate And [ToDate]<@ToDate";
 
 
             DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
@@ -470,12 +472,12 @@ namespace Tor
                       FROM [UsersActivitiesTypes] UAT
                       INNER JOIN UsersActivity UA
                       on UAT.UserId = UA.UserId
-                      where UA.EmployeeId = @EmployeeId And UA.UserId = @UserId And ActiveDay=@ActiveDay";
+                      where UA.EmployeeId = @EmployeeId And UA.UserId = @UserId And ActiveDay=@ActiveDay and UAT.Id=@QueType";
 
             DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
             IEnumerable<QueActiveData> BusyQue =
-                db.QueryData<QueActiveData>(sql, 1, new { EmployeeId = que.EmployeeId, UserId = que.UserId, ActiveDay = currentDay });
+                db.QueryData<QueActiveData>(sql, 1, new { EmployeeId = que.EmployeeId, UserId = que.UserId, ActiveDay = currentDay, QueType= que.QueType });
 
             if (BusyQue.Count() <= 0)
                 return false;
