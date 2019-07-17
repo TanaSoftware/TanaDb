@@ -88,6 +88,7 @@
                     <a class="nav-link" href="javascript:navigateTo('start.html#RegisterCustomer')">הרשם</a>
                 </li>
                 <li id="liUpdateBiz" style="display:none"><a href="javascript:navigateTo('BizUpdate.html')" class="nav-link">עדכון פרטי עסק</a></li>
+                <li id="liUpdateCustomer" style="display:none"><a href="javascript:navigateTo('CustomerUpdate.html')" class="nav-link">עדכון פרטי משתמש</a></li>
             </ul>
         </div>
         <div style="float:right;padding-right: 10px;">
@@ -390,6 +391,8 @@
                     v.addItem(UserForCustomerDetails.Id);
                 }, 100);
             }
+            $('#liUpdateCustomer').show();
+            
         }
 
     }
@@ -697,10 +700,23 @@
     }
 
 
+    function getSmallestDuration() {
+        var userDataActivities = currentUserForCustomer != null ? currentUserForCustomer.Activities : UserData.Activities;
+        var duration = 10;
+        for (var i = 0; i < userDataActivities.length; i++) {
+            if (duration > userDataActivities[i].ActiveDuration) {
+                duration = userDataActivities[i].ActiveDuration;
+            }
+        }
+        var d = duration < 10 ? "0" + duration : duration.toString();
+
+        return d;
+    }
+
     function GetQue(UserData, currentUserDetails, view) {
         var fromDate, toDate;
 
-        var duration = 10;
+        var duration = getSmallestDuration();
                 
 
         if (view == null || view == 'timeGrid') {
@@ -1404,7 +1420,7 @@
 
     }
     function navigateTo(url) {
-        sessionStorage.setItem("remember_me", "1");
+        
         var v = sessionStorage.getItem("version");
         location.href = url + "?ver=" + v;
     }

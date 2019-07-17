@@ -720,7 +720,15 @@ namespace Tor
 
         }
 
+        public IEnumerable<CustomerObj> GetCustomerDetails(UserSearch search)
+        {
+            string sql = "select [Name],[Password],[tel],[Email] from [Customer] where guid=@guid";
+            DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
+            IEnumerable<CustomerObj> cust = db.QueryData<CustomerObj>(sql, 1, search);
+
+            return cust;
+        }
 
         public IEnumerable<City> GetCities()
 
@@ -807,7 +815,26 @@ namespace Tor
 
             }
 
+            if (customer.mail != null && customer.mail != "")
+            {
+                string sql = "select [BizName],[Tel],[Email] from [Users] where UserId=@Id guid=@guid";
+                DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
+                IEnumerable<UserDetailsData> userDetalis = db.QueryData<UserDetailsData>(sql, 1, customer);
+                if(userDetalis!=null)
+                {
+                    foreach(UserDetailsData u in userDetalis)
+                    {
+                        string[] arr = new string[1];
+                        arr[0] = u.Email;
+                        string baseUerl = ConfigManager.BaseUrl;
+                        string content = " שלום " + u.BizName + " : הוסיף אותך למערכת זימון תורים - להמשך רישום למערכת תורים נא ללחוץ על הקישור הבא" + " <a href='" + baseUerl + "/user/ConfirmAddedCustomer/" + user.guid + "'>לחץ כאן לאישור</a>";
+                        MailSender.sendMail("הרשמה למערכת תורים", content, arr, "tana@TanaSoftware.com");
+                        break;
+                    }
+                }
+                
+            }
 
             return "";
 
@@ -837,6 +864,16 @@ namespace Tor
 
         }
 
+        public string SaveCustomer(CustomerObj cust)
+        {
+            string sql = "Update [Customer] set [Name]=@Name, [Password]=@Password, [tel]=@tel, [Email]=@Email,[Active]=@guid where [guid]=@guid";
+            DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+            var affectedRows = db.Execute(sql, 1, cust);
+            if (affectedRows == 0)
+                return "ארעה שגיאה";
+
+            return "";
+        }
         public string SaveUser(UserObj userObj)
         {
             if (!IsUserGuidExists(userObj.guid))
@@ -1804,6 +1841,29 @@ namespace Tor
                         userSearch.img = file.FullName;
 
                 }
+                return userSearch;
+            }
+            return null;
+        }
+        public CustomerObj GetUserByGuid(string guid)
+        {
+            CustomerObj userSearch = new CustomerObj();
+
+            string sql = "select * From [Customer] where [guid]=@guid";
+            DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+            IEnumerable<CustomerObj> UserX = db.QueryData<CustomerObj>(sql, 1, new { guid = guid });
+            if (UserX == null)
+                return null;
+
+            
+            //string cityName = "";
+            foreach (CustomerObj u in UserX)
+            {                
+                userSearch.Email = u.Email;
+                userSearch.Name = u.Name;
+                userSearch.Id = u.Id;
+                userSearch.tel = u.tel;
+                
                 return userSearch;
             }
             return null;

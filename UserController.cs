@@ -1,6 +1,8 @@
 ﻿
+using System;
 using System.Collections.Generic;
-
+using System.Net;
+using System.Net.Http;
 using System.Web.Http;
 
 namespace Tor.Controllers
@@ -36,6 +38,31 @@ namespace Tor.Controllers
             UserManager userManager = new UserManager();
 
             return userManager.ActivateCustomer(id);
+
+        }
+
+        [HttpGet]
+        [ActionName("GetUserByGuid")]
+        public CustomerObj GetUserByGuid(string id)
+        {
+            UserManager userManager = new UserManager();
+
+            return userManager.GetUserByGuid(id);
+        }
+
+        [HttpGet]
+        [ActionName("ConfirmAddedCustomer")]
+
+        public HttpResponseMessage ConfirmAddedCustomer(string id)
+
+        {
+
+            var response = new HttpResponseMessage();           
+
+            response = Request.CreateResponse(HttpStatusCode.Moved);
+            string fullyQualifiedUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority) + "/TorApp/CustomerBiz.html?v=" + ConfigManager.version + "&id=" + id;
+            response.Headers.Location = new Uri(fullyQualifiedUrl);
+            return response;
 
         }
 
@@ -230,6 +257,48 @@ namespace Tor.Controllers
 
 
 
+        
+
+        [HttpPost]
+        [ActionName("GetCustomerDetails")]
+
+        public IEnumerable<CustomerObj>  GetCustomerDetails(UserSearch id)
+
+        {
+
+            UserManager userManager = new UserManager();
+
+            return userManager.GetCustomerDetails(id);
+
+        }
+
+        [HttpPost]
+        [ActionName("SaveUser")]
+
+        public string SaveUser(UserObj id)
+
+        {
+
+            UserManager userManager = new UserManager();
+
+            return userManager.SaveUser(id);
+
+        }
+
+        [HttpPost]
+
+        [ActionName("SaveCustomer")]
+
+        public string SaveCustomer(CustomerObj id)
+
+        {
+
+            UserManager userManager = new UserManager();
+
+            return userManager.SaveCustomer(id);
+
+        }
+
         [HttpGet]
 
         [ActionName("GetCity")]
@@ -243,22 +312,6 @@ namespace Tor.Controllers
             return userManager.GetCities();
 
         }
-
-        [HttpPost]
-
-        [ActionName("SaveUser")]
-
-        public string SaveUser(UserObj id)
-
-        {
-
-            UserManager userManager = new UserManager();
-
-            return userManager.SaveUser(id);
-
-        }
-
-
     }
 
 }
