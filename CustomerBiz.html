@@ -1,0 +1,490 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/main.css?v=7" rel="stylesheet">
+
+    <title>TanaSoftware</title>
+    <style>
+        .tooltip-inner {
+            background-color: #f00 !important;
+        }
+
+        .btn {
+            background: #33a6cc;
+            box-shadow: 1px;
+            color: #ffffff;
+        }
+
+        @media only screen and (max-width: 760px) {
+
+            input[type=checkbox] {
+                /* Double-sized Checkboxes */
+                -ms-transform: scale(1.5); /* IE */
+                -moz-transform: scale(1.5); /* FF */
+                -webkit-transform: scale(1.5); /* Safari and Chrome */
+                -o-transform: scale(1.5); /* Opera */
+                transform: scale(1.5);
+                padding-left: 20px !important;
+            }
+        }
+
+        .checkbox-inline {
+            padding-left: 5px !important;
+        }
+    </style>
+</head>
+<body dir="rtl" id="page-top" data-spy="scroll" data-target=".navbar-fixed-top" class="top">
+        
+    <div class="d-flex justify-content-center">
+        <div style="font-size:18px;color:#007bff;padding:10px;">
+            <span  style="float:right"> ברוכים הבאים  </span>
+            <span style="float:right;margin-right:3px;"> למערכת ניהול תורים של </span>
+            <span style="float:right;margin-right:3px;" id="spnBizName"></span>
+        </div>
+        <div style="clear:both; font-size:18px;color:#007bff;padding:10px;">
+            אנא עדכן את פרטיך
+        </div>
+        <div style="font-size:18px;color:#007bff;padding:10px;">
+            ולחץ על המשך לכניסת המערכת
+        </div>
+    </div>
+
+    <section id="RegisterCustomer" style="padding-top:100px;padding:10px;">
+
+        <div class="container">
+
+            <div class="row">
+
+                <div class="">
+
+                    <div style="text-align:right;font-weight:bold;">עדכן פרטי משתמש: </div>
+
+                    <div class="form-group">
+
+                        <div class="form-group floating-label-form-group controls">
+
+                            <input id="userCust" type="text" placeholder="שם משתמש" class="form-control input-lg" />
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <div class=& quot;form-group floating-label-form-group controls">
+
+                            <input id="txtTelCust" type="text" placeholder="טלפון נייד" class="form-control input-lg" />
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <div class="form-group floating-label-form-group controls">
+
+                            <input id="emailLogin" type="email" placeholder="מייל" class="form-control input-lg" />
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <div class="form-group floating-label-form-group controls">
+
+                            <input id="passwordLogin" type="password" placeholder="סיסמה" class="form-control input-lg" />
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div style="float:left;padding-left:20px;">
+
+                        <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
+
+                        <div id="dvErrRegister"></div>
+
+                        <button onClick="SaveCustmer();" class="btn btn-blue btn-lg">המשך</button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>  
+
+   
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/jquery.countdown.min.js"></script>
+    <script src="js/device.min.js"></script>
+    <script src="js/form.min.js"></script>
+    <script src="js/jquery.placeholder.min.js"></script>
+    <script src="js/jquery.shuffle.min.js"></script>
+    <script src="js/jquery.parallax.min.js"></script>
+    <script src="js/jquery.circle-progress.min.js"></script>
+    <script src="js/jquery.swipebox.min.js"></script>
+    <script src="js/smoothscroll.min.js"></script>
+    <script src="js/wow.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/selectize.js"></script>
+    
+    <script src="https://www.negishim.com/accessibility/accessibility_pro.js" type="text/javascript"></script>
+</body>
+</html>
+<script>
+    accessibility_rtl = false;
+    pixel_from_side = 10;
+    pixel_from_start = 80;
+    is_set_for_mobile = 1;
+    
+    var url = new URL(location.href);
+    var guid = url.searchParams.get("id");
+    var userName = url.searchParams.get("user");
+    
+    getScripts();
+  
+    function showProgressBar(isShow) {
+        if (isShow)
+            $("#dvProgBar").show();
+        else
+            $("#dvProgBar").hide();
+    }
+
+    function getScripts() {
+        var v = sessionStorage.getItem("version");
+        $.ajax({
+            url: "js/global.js?ver=" + v,
+            dataType: "script",
+            success: function (data) {
+
+                if (sessionStorage.getItem("remember_me") != "1" && localStorage.chkbx && localStorage.chkbx != '') {
+                    Login();
+                }
+                init();
+                GetUserBiz();
+            }
+        });
+
+
+    }
+  
+    function init() {
+       
+
+        $.ajax({
+
+            url: "User/GetUserByGuid/" + guid,
+
+            type: 'GET',
+
+            contentType: "application/json;charset=utf-8",
+
+            success: function (data) {
+                if (data == null) {
+
+                    return;
+                }
+                fillData(data);
+                
+
+            },
+
+            error: function (request, status, error) {
+
+
+
+            }
+
+        });
+
+        
+    }
+
+    function GetUserBiz() {
+        $.ajax({
+
+            url: "User/GetUserBiz/" + userName,
+
+            type: 'GET',
+
+            contentType: "application/json;charset=utf-8",
+
+            success: function (data) {
+                if (data == null) {
+
+                    return;
+                }
+                sessionStorage.setItem("UserForCustomerDetails", JSON.stringify(data));
+                sessionStorage.setItem("version", data.version);
+                $('#spnBizName').text(" " + data.User);
+
+
+            },
+
+            error: function (request, status, error) {
+
+
+
+            }
+
+        });
+    }
+    function fillData(data) {
+        var ud = data;
+        $('#userCust').val(ud.Name);
+        $('#txtTelCust').val(ud.tel);
+        $('#emailLogin').val(ud.Email);
+        //$('#passwordLogin').val(ud.Password);
+    }
+
+    function GetBizTypeItem() {
+
+        return { EmployeeId: 0, ActiveDay: 0, EmployeeName: "", ActiveHourFrom: "", ActiveHourTo: "", ActiveHourFromNone: "", ActiveHourToNone: "" };
+
+    }
+
+    function checkValid(txtId, textMsg) {
+
+        $('#' + txtId).tooltip('hide');
+
+        var txt = $("#" + txtId).val();
+
+        if (txt.length <= 0) {
+
+            //showTooltip(txtId, textMsg);
+
+            $('#' + txtId).tooltip({
+
+                title: textMsg
+
+            });
+
+            $('#' + txtId).tooltip('show');
+
+            $('#' + txtId).focus();
+
+            return false;
+
+        }
+
+        return true;
+
+    }
+
+    function checkValidDDl(txtId, textMsg) {
+
+        $('#' + txtId).tooltip('hide');
+
+        var txt = $("#" + txtId).val();
+
+        if (txt == "0" || txt == "") {
+
+            //showTooltip(txtId, textMsg);
+
+            $('#' + txtId).tooltip({
+
+                title: textMsg
+
+            });
+
+            $('#' + txtId).tooltip('show');
+
+            $('#' + txtId).focus();
+
+            return false;
+
+        }
+
+        return true;
+
+    }
+
+    function checkHour(txtId, textMsg) {
+
+        $('#' + txtId).tooltip('hide');
+
+        if (!isHour($("#" + txtId).val())) {
+
+            $('#' + txtId).tooltip({
+
+                title: textMsg
+
+            });
+
+            $('#' + txtId).tooltip('show');
+
+            $('#' + txtId).focus();
+
+            return false;
+
+        }
+
+        return true;
+
+    }    
+
+    function isEmptyObject(obj) {
+
+        for (var name in obj) {
+
+            return false;
+
+        }
+
+        return true;
+
+    }
+
+    function SaveCustmer() {
+
+        var user = $("#userCust").val();
+
+        var password = $("#passwordLogin").val();
+
+        var email = $("#emailLogin").val();
+
+        var txtTelCust = $("#txtTelCust").val();
+        if (user.length <= 0) {
+
+            showTooltip("userCust", "נא להזין שם");
+
+            return false;
+
+        }
+
+        if (txtTelCust.length <= 0) {
+
+            showTooltip("txtTelCust", "נא להזין טלפון נייד");
+
+            return false;
+
+        }
+
+        if (email.length <= 0) {
+
+            showTooltip("emailLogin", "נא להזין מייל");
+
+            return false;
+
+        }
+
+
+
+
+        if (!IsvalidEmail(email)) {
+
+            showTooltip("emailLogin", "נא להזין מייל תקין");
+
+            $("#emailLogin").val("");
+
+            return false;
+
+        }
+
+        if (password.length <= 0) {
+
+            showTooltip("passwordLogin", "נא להזין סיסמה");
+
+            return false;
+
+        }
+
+
+
+        if (password.length < 8) {
+
+            showTooltip("passwordLogin", "נא להזין לפחות 8 תווים");
+
+            $("#passwordLogin").val("");
+
+            return false;
+
+        }
+
+        if (password && !testPassword(password)) {
+            showTooltip("passwordLogin", "נא להזין תווים ומספרים");
+
+            return false;
+        }
+
+        
+
+        var userObj = {
+
+            Name: user,
+
+            Password: password,
+
+            tel: txtTelCust,
+
+            Email: email,
+
+            guid: guid
+
+        }
+
+        $.ajax({
+
+            url: "User/SaveCustomer",
+
+            type: 'POST',
+
+            data: JSON.stringify(userObj),
+
+            contentType: "application/json;charset=utf-8",
+
+            success: function (data) {
+
+                if (data.ErrorMsg != "" && data.ErrorMsg != null)
+                    messageHandler.Show(data.ErrorMsg);
+                else {
+                    messageHandler.Show("נתונים נשמרו בהצלחה");
+                    $('#emailLogin').val(email);
+                    $('#passwordLogin').val(password);
+                    Login();
+                }
+
+            },
+
+            error: function (request, status, error) {
+
+
+
+            }
+
+        });
+
+    }
+
+
+
+    function goToCustomer(id) {        
+        scrollToSection(id);
+    }
+
+    function scrollToSection(id) {
+        setTimeout(function () {
+            $([document.documentElement, document.body]).animate({
+                scrollTop: $("#" + id).offset().top
+            }, 1400);
+        }, 100);
+    }
+
+    history.pushState(null, null, location.href);
+    window.onpopstate = function () {
+        history.go(1);
+    };
+</script>

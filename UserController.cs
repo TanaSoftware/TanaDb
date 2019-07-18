@@ -53,14 +53,14 @@ namespace Tor.Controllers
         [HttpGet]
         [ActionName("ConfirmAddedCustomer")]
 
-        public HttpResponseMessage ConfirmAddedCustomer(string id)
+        public HttpResponseMessage ConfirmAddedCustomer(string id, string id2)
 
         {
 
             var response = new HttpResponseMessage();           
 
             response = Request.CreateResponse(HttpStatusCode.Moved);
-            string fullyQualifiedUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority) + "/TorApp/CustomerBiz.html?v=" + ConfigManager.version + "&id=" + id;
+            string fullyQualifiedUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority) + "/TorApp/CustomerBiz.html?v=" + ConfigManager.version + "&id=" + id + "&user="+id2;
             response.Headers.Location = new Uri(fullyQualifiedUrl);
             return response;
 
