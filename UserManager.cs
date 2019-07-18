@@ -786,7 +786,7 @@ namespace Tor
 
             if(customer.mail!=null && customer.mail!="")
             {
-                if(IsMailExist(customer.mail) && IsCustomerMailExist(customer.mail))
+                if(IsMailExist(customer.mail) || IsCustomerMailExist(customer.mail))
                 {
                     return "מייל קיים במערכת";
                 }
@@ -817,21 +817,27 @@ namespace Tor
 
             if (customer.mail != null && customer.mail != "")
             {
-                string sql = "select [BizName],[Tel],[Email],[BizNameEng] from [Users] where UserId=@Id guid=@guid";
+                string sql = "select [BizName],[Tel],[Email],[BizNameEng] from [Users] where Id=@Id and guid=@guid";
                 DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
-
-                IEnumerable<UserDetailsData> userDetalis = db.QueryData<UserDetailsData>(sql, 1, customer);
-                if(userDetalis!=null)
+                try
                 {
-                    foreach(UserDetailsData u in userDetalis)
+                    IEnumerable<UserDetailsData> userDetalis = db.QueryData<UserDetailsData>(sql, 1, customer);
+                    if (userDetalis != null)
                     {
-                        string[] arr = new string[1];
-                        arr[0] = u.Email;
-                        string baseUerl = ConfigManager.BaseUrl;
-                        string content = " שלום "+ "<br><br>" + u.BizName + " : הוסיף אותך למערכת זימון תורים - להמשך רישום למערכת תורים נא ללחוץ על הקישור הבא" + " <a href='" + baseUerl + "/user/ConfirmAddedCustomer/" + user.guid + "/"+ u.BizNameEng + "'>לחץ כאן לאישור</a>";
-                        MailSender.sendMail("הרשמה למערכת תורים", content, arr, "tana@TanaSoftware.com");
-                        break;
+                        foreach (UserDetailsData u in userDetalis)
+                        {
+                            string[] arr = new string[1];
+                            arr[0] = u.Email;
+                            string baseUerl = ConfigManager.BaseUrl;
+                            string content = " שלום " + "<br><br>" + u.BizName + " : הוסיף אותך למערכת זימון תורים - להמשך רישום למערכת תורים נא ללחוץ על הקישור הבא" + " <a href='" + baseUerl + "/user/ConfirmAddedCustomer/" + user.guid + "/" + u.BizNameEng + "'>לחץ כאן לאישור</a>";
+                            MailSender.sendMail("הרשמה למערכת תורים", content, arr, "tana@TanaSoftware.com");
+                            break;
+                        }
                     }
+                }
+                catch(Exception ex)
+                {
+                    Logger.Write(ex);
                 }
                 
             }
