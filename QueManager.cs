@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Tor.Dal;
-
+using System.Threading.Tasks;
 
 namespace Tor
 
@@ -525,6 +525,23 @@ namespace Tor
 
         }
 
+        private void AddCusomersToUsers(int userId,int customerId)
+        {
+
+            string sql = "Select count(1) from UsersToCusomers Where [UserId]=@UserId And [CustomerId]=@CustomerId;";           
+
+            DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+
+            bool isExist = db.IsExist(sql, new { UserId = userId, CustomerId= customerId }, 1);
+            if (!isExist)
+            {
+                string sqlUserCustomerInsert = @"INSERT INTO UsersToCusomers ([UserId],[CustomerId]) Values
+
+                        (@UserId,@CustomerId);";
+                
+                var Rows = db.Execute(sqlUserCustomerInsert, 1, new { UserId = userId, CustomerId = customerId });
+            }
+        }
         private bool AddQueToDb(Que que)
 
         {
@@ -542,7 +559,10 @@ namespace Tor
                 DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
                 var affectedRows = db.Execute(sqlQueInsert, 1, que);
-
+                if (affectedRows > 0)
+                {
+                    Task.Factory.StartNew(() => AddCusomersToUsers(que.UserId,que.CustomerId));
+                }
             }
 
             catch (Exception ex)

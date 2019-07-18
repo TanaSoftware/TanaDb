@@ -1,0 +1,6 @@
+drop TABLE [UsersToCusomers]
+  CREATE TABLE [UsersToCusomers] (
+    UserId int NOT NULL,
+    CustomerId int NOT NULL
+    PRIMARY KEY (UserId,CustomerId)
+);
