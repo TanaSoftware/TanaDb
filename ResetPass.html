@@ -1,0 +1,261 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/main.css?v=7" rel="stylesheet">
+
+    <title>TanaSoftware</title>
+    <style>
+        .tooltip-inner {
+            background-color: #f00 !important;
+        }
+
+        .btn {
+            background: #33a6cc;
+            box-shadow: 1px;
+            color: #ffffff;
+        }
+
+        @media only screen and (max-width: 760px) {
+
+            input[type=checkbox] {
+                /* Double-sized Checkboxes */
+                -ms-transform: scale(1.5); /* IE */
+                -moz-transform: scale(1.5); /* FF */
+                -webkit-transform: scale(1.5); /* Safari and Chrome */
+                -o-transform: scale(1.5); /* Opera */
+                transform: scale(1.5);
+                padding-left: 20px !important;
+            }
+        }
+
+        .checkbox-inline {
+            padding-left: 5px !important;
+        }
+    </style>
+</head>
+<body dir="rtl" id="page-top" data-spy="scroll" data-target=".navbar-fixed-top" class="top">
+
+    
+    <section id="LoginSec" style="padding-top:130px;padding:10px;">
+
+        <div class="container">
+
+            <div class="row">
+
+                <div class="">
+
+                    <div style="text-align:right;font-weight:bold;">איפוס סיסמה: </div>
+
+                    <div class="form-group">
+
+                        <div class="form-group floating-label-form-group controls">
+
+                            <input id="passwordLogin1" type="password" placeholder="סיסמה" class="form-control input-lg" />
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <div class="form-group floating-label-form-group controls">
+
+                            <input id="passwordLogin2" type="password" placeholder="הקש סיסמה שנית" class="form-control input-lg" />
+
+                        </div>
+
+                    </div>
+                    
+
+                    <div style="float:left;padding-left:20px;">
+
+                        <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
+
+                        <button onClick="reLogin();" class="btn btn-blue btn-lg">כניסה</button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>  
+
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/jquery.countdown.min.js"></script>
+    <script src="js/device.min.js"></script>
+    <script src="js/form.min.js"></script>
+    <script src="js/jquery.placeholder.min.js"></script>
+    <script src="js/jquery.shuffle.min.js"></script>
+    <script src="js/jquery.parallax.min.js"></script>
+    <script src="js/jquery.circle-progress.min.js"></script>
+    <script src="js/jquery.swipebox.min.js"></script>
+    <script src="js/smoothscroll.min.js"></script>
+    <script src="js/wow.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/selectize.js"></script>
+    
+    <script src="https://www.negishim.com/accessibility/accessibility_pro.js" type="text/javascript"></script>
+</body>
+</html>
+<script>
+    accessibility_rtl = false;
+    pixel_from_side = 10;
+    pixel_from_start = 80;
+    is_set_for_mobile = 1;
+
+    getScripts();
+  
+    function showProgressBar(isShow) {
+        if (isShow)
+            $("#dvProgBar").show();
+        else
+            $("#dvProgBar").hide();
+    }
+
+    function getScripts() {
+        var v = sessionStorage.getItem("version");
+        $.ajax({
+            url: "js/global.js?ver=" + v,
+            dataType: "script",
+            success: function (data) {
+               
+
+            }
+        });
+
+
+    }
+  
+      
+
+    function checkValid(txtId, textMsg) {
+
+        $('#' + txtId).tooltip('hide');
+
+        var txt = $("#" + txtId).val();
+
+        if (txt.length <= 0) {
+
+            //showTooltip(txtId, textMsg);
+
+            $('#' + txtId).tooltip({
+
+                title: textMsg
+
+            });
+
+            $('#' + txtId).tooltip('show');
+
+            $('#' + txtId).focus();
+
+            return false;
+
+        }
+
+        return true;
+
+    }
+
+  
+    function goToCustomer(id) {        
+        scrollToSection(id);
+    }
+
+    function scrollToSection(id) {
+        setTimeout(function () {
+            $([document.documentElement, document.body]).animate({
+                scrollTop: $("#" + id).offset().top
+            }, 1400);
+        }, 100);
+    }
+
+    function reLogin() {
+        var p1 = $('#passwordLogin1').val();
+        var p2 = $('#passwordLogin2').val();
+
+        if (p1 == "") {
+            showTooltip("passwordLogin1", "נא להזין סיסמה");
+
+            return;
+        }
+
+        if (p1.length < 8) {
+
+            showTooltip("passwordLogin1", "נא להזין לפחות 8 תווים");
+
+            return;
+
+        }
+
+        if (p1 && !testPassword(p1)) {
+            showTooltip("passwordLogin1", "נא להזין תווים ומספרים");
+
+            return;
+        }
+
+        if (p2 == "") {
+            showTooltip("passwordLogin2", "נא להזין סיסמה");
+
+            return;
+        }
+
+        if (p2.length < 8) {
+
+            showTooltip("passwordLogin2", "נא להזין לפחות 8 תווים");
+
+            return;
+
+        }
+
+        if (p2 && !testPassword(p2)) {
+            showTooltip("passwordLogin2", "נא להזין תווים ומספרים");
+
+            return;
+        }
+
+        if (p1 != p2) {
+            showTooltip("passwordLogin2", "סיסמה לא זהה");
+            return;
+        }
+
+        var id = location.search;
+        id = id.split('=')[2];
+        var obj = {
+            guid: id,
+            pass1: p1,
+            pass2: p2
+        }
+
+        $.ajax({
+            url: "User/ConfirmResetPassword",
+            type: 'POST',
+            data: JSON.stringify(Obj),
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                if (data != null && data != "") {
+                    messageHandler.Show(data);
+                }
+                else
+                    messageHandler.Show("סיסמה שונתה בהצלחה");
+            },
+            error: function (request, status, error) {
+                
+            }
+        });
+    }
+
+    history.pushState(null, null, location.href);
+    window.onpopstate = function () {
+        history.go(1);
+    };
+</script>

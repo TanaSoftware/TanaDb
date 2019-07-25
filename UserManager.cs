@@ -101,7 +101,7 @@ namespace Tor
         [Required]
         public string guid { get; set; }
 
-
+        public int City { get; set; }
 
 
 
@@ -124,7 +124,7 @@ namespace Tor
 
         public string Active { get; set; }
 
-
+        public int City { get; set; }
 
     }
 
@@ -210,7 +210,7 @@ namespace Tor
 
         public bool isUser { get; set; }
 
-
+        public int City { get; set; }
 
         public int CustomerId { get; set; }
 
@@ -220,6 +220,8 @@ namespace Tor
         public IEnumerable<UserActivities> Activities { get; set; }
 
         public Dictionary<int, List<string>> dicEmployeeActivities { get; set; }
+
+        public IEnumerable<UserActivity> CustomersUsers { get; set; }
     }
 
     public class UserObj
@@ -282,7 +284,12 @@ namespace Tor
     }
 
 
-
+    public class ResetPasswordObj
+    {
+        public string guid { get; set; }
+        public string pass1 { get; set; }
+        public string pass2 { get; set; }
+    }
     public class UserSearch
 
     {
@@ -462,7 +469,7 @@ namespace Tor
                 userDetails.Activities = getUserActivities(user.Id);
                 userDetails.dicEmployeeActivities = getEmployeeActivities(user.Id);
                 userDetails.UserId = user.Id;
-
+                userDetails.City = string.IsNullOrEmpty(user.City) ? 0 : Convert.ToInt32(user.City);
                 return userDetails;
 
             }
@@ -479,7 +486,8 @@ namespace Tor
                 userDetails.UserName = cust.Name;
 
                 userDetails.isUser = false;
-
+                userDetails.City = cust.City;
+                userDetails.CustomersUsers = getUsersForCustomers(cust.Id);
                 return userDetails;
 
             }
@@ -490,6 +498,25 @@ namespace Tor
 
         }
 
+        private IEnumerable<UserActivity> getUsersForCustomers(int CustomerId)
+        {
+            try
+            {
+                DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+                string sqlCust = @"SELECT distinct q.UserId,u.BizName as Name
+                              FROM [Que] q INNER JOIN Users u on q.UserId = u.Id
+                              where q.customerId=@CustomerId;";
+                IEnumerable<UserActivity> userAct = db.QueryData<UserActivity>(sqlCust, 1, new { CustomerId = CustomerId });
+
+                return userAct;
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+            }
+
+            return null;
+        }
         private Dictionary<int, List<string>> getEmployeeActivities(int userId)
         {
             Dictionary<int, List<string>> dic = new Dictionary<int, List<string>>();
@@ -501,7 +528,7 @@ namespace Tor
             int empId = 0;
             foreach (EmployeeActivities u in userAct)
             {
-                lst.Add(u.ActivityId.ToString());
+
                 if (empId != u.EmployeeId)
                 {
                     lst = new List<string>();
@@ -512,7 +539,7 @@ namespace Tor
                 {
                     dic[empId] = lst;
                 }
-
+                lst.Add(u.ActivityId.ToString());
             }
             return dic;
         }
@@ -658,9 +685,9 @@ namespace Tor
 
             {
 
-                string sqlCustomerInsert = @"INSERT INTO Customer ([Name],[Email],[Password],[tel],[guid]) Values
+                string sqlCustomerInsert = @"INSERT INTO Customer ([Name],[Email],[Password],[tel],[guid],[City]) Values
 
-(@Name,@Email,@Password,@tel,@guid);";
+(@Name,@Email,@Password,@tel,@guid,@City);";
 
                 DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
@@ -722,7 +749,7 @@ namespace Tor
 
         public IEnumerable<CustomerObj> GetCustomerDetails(UserSearch search)
         {
-            string sql = "select [Name],[Password],[tel],[Email] from [Customer] where guid=@guid";
+            string sql = "select [Name],[Password],[tel],[Email],[City] from [Customer] where guid=@guid";
             DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
             IEnumerable<CustomerObj> cust = db.QueryData<CustomerObj>(sql, 1, search);
@@ -784,9 +811,9 @@ namespace Tor
 
             }
 
-            if(customer.mail!=null && customer.mail!="")
+            if (customer.mail != null && customer.mail != "")
             {
-                if(IsMailExist(customer.mail) || IsCustomerMailExist(customer.mail))
+                if (IsMailExist(customer.mail) || IsCustomerMailExist(customer.mail))
                 {
                     return "מייל קיים במערכת";
                 }
@@ -794,7 +821,7 @@ namespace Tor
 
             CustomerObj user = new CustomerObj();
 
-            user.Email = customer.mail!=null? customer.mail:"";
+            user.Email = customer.mail != null ? customer.mail : "";
 
             user.guid = Guid.NewGuid().ToString();
 
@@ -805,7 +832,7 @@ namespace Tor
             user.tel = customer.tel;
 
             user.Active = "";
-            
+            user.City = customer.City;
 
             if (!AddCustomerToDb(user, customer.Id))
 
@@ -835,11 +862,11 @@ namespace Tor
                         }
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Logger.Write(ex);
                 }
-                
+
             }
 
             return "";
@@ -872,7 +899,7 @@ namespace Tor
 
         public string SaveCustomer(CustomerObj cust)
         {
-            string sql = "Update [Customer] set [Name]=@Name, [Password]=@Password, [tel]=@tel, [Email]=@Email,[Active]=@guid where [guid]=@guid";
+            string sql = "Update [Customer] set [Name]=@Name, [Password]=@Password, [tel]=@tel, [Email]=@Email,[City]=@City,[Active]=@guid where [guid]=@guid";
             DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
             var affectedRows = db.Execute(sql, 1, cust);
             if (affectedRows == 0)
@@ -1281,7 +1308,7 @@ namespace Tor
 
         }
 
-        private bool IsCustomerGuidExists(string guid)
+        public bool IsCustomerGuidExists(string guid)
 
         {
 
@@ -1834,17 +1861,19 @@ namespace Tor
                 userSearch.Adrress = u.Adrress;
                 userSearch.Id = u.Id;
                 userSearch.tel = u.tel;
-                userSearch.User = u.User;
+                userSearch.User = u.BizName;
                 userSearch.version = ConfigManager.version;
-                DirectoryInfo d = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory + @"\\img\");
+                string PhisicalbasePath = "User_" + u.Id + "\\";
+                DirectoryInfo d = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory + @"\\img\" + PhisicalbasePath);
                 FileInfo[] Files = d.GetFiles("*.*");
+                string basePath = "User_" + u.Id + "/";
 
                 foreach (FileInfo file in Files)
                 {
-                    if (file.Name.Contains("LOGO"))
-                        userSearch.logo = file.FullName;
-                    else
-                        userSearch.img = file.FullName;
+                    if (file.Name.Contains("Logo_" + u.Id))
+                        userSearch.logo = basePath + file.Name;
+                    else if (file.Name.Contains("back_" + u.Id))
+                        userSearch.img = basePath + file.Name;
 
                 }
                 return userSearch;
@@ -1861,15 +1890,15 @@ namespace Tor
             if (UserX == null)
                 return null;
 
-            
+
             //string cityName = "";
             foreach (CustomerObj u in UserX)
-            {                
+            {
                 userSearch.Email = u.Email;
                 userSearch.Name = u.Name;
                 userSearch.Id = u.Id;
                 userSearch.tel = u.tel;
-                
+
                 return userSearch;
             }
             return null;
@@ -1896,6 +1925,90 @@ namespace Tor
                 Logger.Write(ex);
                 return "ארעה שגיאה";
             }
+            return "";
+        }
+
+        public string ResetPasswordPhase1(string mail)
+        {
+            string guid = "";
+            string sql = "SELECT * FROM Users WHERE [Email] = @Email And [Active] is not null ;";
+            mail = mail.Replace("!!", ".");
+            DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+
+            IEnumerable<UserObj> users = db.QueryData<UserObj>(sql, 1, new { Email = mail });
+
+
+
+            foreach (UserObj user in users)
+            {
+
+                guid = user.guid;
+
+                break;
+
+            }
+
+            if (guid == "")
+            {
+                string sqlCust = "SELECT * FROM Customer WHERE [Email] = @Email And [Active] is not null ;";
+
+                IEnumerable<CustomerObj> customers = db.QueryData<CustomerObj>(sqlCust, 1, new { Email = mail });
+
+
+                foreach (CustomerObj cust in customers)
+                {
+
+                    guid = cust.guid;
+
+                    break;
+
+                }
+            }
+
+            if (guid == "")
+            {
+                return "ארעה שגיאה";
+            }
+
+            string baseUerl = ConfigManager.BaseUrl;
+
+            string content = " : שלום - לאיפוס סיסמה נא ללחוץ על הקישור הבא" + " <a href='" + baseUerl + "/user/ResetPassword/" + guid + "'>לחץ כאן לאישור</a>";
+            string[] arr = new string[1];
+            arr[0] = mail;
+            bool isOk = MailSender.sendMail("איפוס סיסמה במערכת תורים", content, arr, "tana@TanaSoftware.com");
+            if(!isOk)
+                return "ארעה שגיאה";
+
+            return "";
+        }
+        public string ResetPasswordPhase2(string guid,string pass,string pass2)
+        {
+            bool isFaild = true;
+            string NewGuid = Guid.NewGuid().ToString();
+            if (IsCustomerGuidExists(guid))
+            {                
+                string sql = "Update [Customer] set [Password]=@Password, [Active]=@NewGuid,[guid]=@NewGuid where [guid]=@guid";
+                DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+                var affectedRows = db.Execute(sql, 1, new { Password =pass, guid = guid , NewGuid = NewGuid });
+                if (affectedRows <= 0)
+                    return "ארעה שגיאה";
+                isFaild = false;
+            }
+
+            if(IsUserGuidExists(guid))
+            {
+                string sql = "Update [Users] set [Password]=@Password, [Active]=@NewGuid,[guid]=@NewGuid where [guid]=@guid";
+                DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+                var affectedRows = db.Execute(sql, 1, new { Password = pass, guid = guid, NewGuid = NewGuid });
+                if (affectedRows <= 0)
+                    return "ארעה שגיאה";
+
+                isFaild = false;
+            }
+
+            if (isFaild)
+                return "ארעה שגיאה";
+
             return "";
         }
     }

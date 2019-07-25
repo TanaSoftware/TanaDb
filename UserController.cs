@@ -40,6 +40,39 @@ namespace Tor.Controllers
             return userManager.ActivateCustomer(id);
 
         }
+        [HttpGet]
+        [ActionName("ResetPasswordPhase1")]
+        public string ResetPasswordPhase1(string id)
+        {
+            UserManager userManager = new UserManager();
+
+            return userManager.ResetPasswordPhase1(id);
+        }
+
+        [HttpGet]
+
+        [ActionName("ResetPassword")]
+
+        public HttpResponseMessage ResetPassword(string id)
+
+        {
+            var response = new HttpResponseMessage();
+
+            UserManager userManager = new UserManager();
+            if(userManager.IsCustomerGuidExists(id) || userManager.IsUserGuidExists(id))
+            {
+                
+                response = Request.CreateResponse(HttpStatusCode.Moved);
+                string fullyQualifiedUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority) + "/TorApp/ResetPass.html?v=" + ConfigManager.version + "&id=" + id;
+                response.Headers.Location = new Uri(fullyQualifiedUrl);
+                return response;
+            }
+            else
+            {
+                response = Request.CreateResponse(HttpStatusCode.Forbidden);
+            }
+            return response;
+        }
 
         [HttpGet]
         [ActionName("GetUserByGuid")]
@@ -74,6 +107,31 @@ namespace Tor.Controllers
             UserManager userManager = new UserManager();
 
             return userManager.ContanctUs(id);
+        }
+
+        [HttpPost]
+
+        [ActionName("ConfirmResetPassword")]
+
+        public string ConfirmResetPassword(ResetPasswordObj id)
+        {
+            if(id.pass1.Length<8)
+            {
+                return "נא להזין לפחות 8 תווים";
+            }
+            if (id.pass2.Length < 8)
+            {
+                return "נא להזין לפחות 8 תווים";
+            }
+            if (id.pass1 != id.pass2)
+            {
+
+                return "סיסמה לא זהה";
+            }
+            UserManager userManager = new UserManager();
+
+            return userManager.ResetPasswordPhase2(id.guid,id.pass1,id.pass2);
+
         }
 
         [HttpPost]
