@@ -897,7 +897,13 @@
             return;
 
         }
+        if (!IsvalidPhone(tel)) {
 
+            showTooltip("txtTel", "נא להזין מספר טלפון נייד תקין");
+
+            return;
+
+        }
         if (!IsvalidEmail(email)) {
 
             showTooltip("email", "נא להזין מייל תקין");
@@ -1066,16 +1072,7 @@
         }
     SetHourToDddl();
 
-    function SetHourToDddl() {
-        document.querySelectorAll('.input-time').forEach(function (el) {
-            new Cleave(el,
-                {
-                    time: true,
-                    timePattern: ["h", "m"]
-                });
-        });
-
-    }
+    
 
 
     function upload() {

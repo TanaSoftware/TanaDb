@@ -47,7 +47,33 @@ namespace Tor
 
         }
 
+        [HttpPost]
 
+        [ActionName("DeleteGroup")]
+
+        public string DeleteGroup(DeleteGroupCustomer id)
+
+        {
+
+            QueManager userManager = new QueManager();
+
+            return userManager.DeleteGroup(id.guid,id.GroupId);
+
+        }
+
+        [HttpPost]
+
+        [ActionName("DeleteCustomerFromGroup")]
+
+        public string DeleteCustomerFromGroup(DeleteGroupCustomer id)
+
+        {
+
+            QueManager userManager = new QueManager();
+
+            return userManager.DeleteCustomerFromGroup(id.guid, id.GroupId,id.CustomerId);
+
+        }
 
         [HttpPost]
 
@@ -62,6 +88,7 @@ namespace Tor
             return userManager.GetQue(id);
 
         }
+
 
     }
 

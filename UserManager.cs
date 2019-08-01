@@ -70,11 +70,44 @@ namespace Tor
 
 
 
+        public string guid { get; set; }        
+
+    }
+
+    public class CustomerSearch
+
+    {      
+        public string searchText { get; set; }
+
+      
         public string guid { get; set; }
 
+    }
+    public class Groups
 
+    {
+        public Dictionary<int,string> friends { get; set; }
 
+        public int groupId { get; set; }
+        public string groupName { get; set; }
 
+        public string guid { get; set; }
+
+    }
+
+    public class Group
+
+    {
+        public int groupId { get; set; }
+        public string groupName { get; set; }       
+
+    }
+
+    public class CustomerGroup
+
+    {
+        public string customerName { get; set; }
+        public int customerId { get; set; }
 
     }
 
@@ -189,6 +222,8 @@ namespace Tor
         public string Adrress { get; set; }
         public string City { get; set; }
         public string Country { get; set; }
+
+        public bool IsGroup { get; set; }
     }
     public class UserDetailsWrapper
     {
@@ -215,7 +250,7 @@ namespace Tor
         public int CustomerId { get; set; }
 
         public int day { get; set; }
-
+        public bool isGroup { get; set; }
         public Dictionary<string, List<BizTypeObj>> dicBizType { get; set; }
         public IEnumerable<UserActivities> Activities { get; set; }
 
@@ -270,6 +305,7 @@ namespace Tor
 
         public string CreditCard { get; set; }
 
+        public bool IsGroup { get; set; }
         public string guid { get; set; }
 
         [Required]
@@ -1160,9 +1196,10 @@ namespace Tor
 
             {
 
-                string sqlUsersInsert = @"INSERT INTO Users ([User],[Email],[Password],[BizName],[tel],[BizNameEng],[Adrress],[City],[Country],[CreditCard],[guid]) Values
+                string sqlUsersInsert = @"INSERT INTO Users ([User],[Email],[Password],[BizName],[tel],
+[BizNameEng],[Adrress],[City],[Country],[CreditCard],[guid],[IsGroup]) Values
 
-(@User,@Email,@Password,@BizName,@tel,@BizNameEng,@Adrress,@City,@Country,@CreditCard,@guid);";
+(@User,@Email,@Password,@BizName,@tel,@BizNameEng,@Adrress,@City,@Country,@CreditCard,@guid,@IsGroup);";
 
 
 
@@ -1709,8 +1746,148 @@ namespace Tor
             userDetails.dicBizType = getBizTypeDictionary(user.Id);
             userDetails.Activities = getUserActivities(user.Id);
             userDetails.dicEmployeeActivities = getEmployeeActivities(user.Id);
+
+            string sql = "SELECT * FROM Users WHERE [Id] = @id;";
+
+            DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+            
+            IEnumerable<UserDetailsData> UserX = db.QueryData<UserDetailsData>(sql, 1, new { id = user.Id });           
+
+            foreach (UserDetailsData u in UserX)
+            {
+                userDetails.isGroup = u.IsGroup;
+            }
+                
+                
             return userDetails;
 
+        }
+
+        public List<Groups> GetGroupsPerCustomer(string guid, int CustomerId)
+        {
+            int isok = 0;
+            if (!IsCustomerGuidExists(guid))
+            {
+                isok++;
+            }
+            if (!IsUserExist(guid))
+            {
+                isok++;
+            }
+            if (isok == 0)
+                return null;
+            List<Groups> lstGroups = new List<Tor.Groups>();
+            string sql = @"SELECT G.Id as groupId,G.Name as groupName
+                          FROM [Groups] G Inner join GroupsCustomers GC On G.Id=Gc.GroupId
+                          where Gc.CustomerId=@CustomerId";
+
+            
+            DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+
+            IEnumerable<Group> Groups = db.QueryData<Group>(sql, 1, new { CustomerId = CustomerId });
+            foreach (Group u in Groups)
+            {
+                Groups gr = new Groups();
+                gr.groupName = u.groupName;
+                gr.groupId = u.groupId;
+                gr.friends = GetCustomersByGroup(u.groupId);
+                lstGroups.Add(gr);
+            }
+            
+            return lstGroups;
+        }
+
+        private Dictionary<int,string> GetCustomersByGroup(int groupId)
+        {
+            Dictionary<int, string> dic = new Dictionary<int, string>();
+              string sql = @"SELECT c.[Id] AS customerId,c.Name AS customerName FROM 
+                            [GroupsCustomers] GC Inner join Customer c On c.[Id]=Gc.[CustomerId]
+                            where GC.[GroupId]=@groupId";
+            DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+
+            IEnumerable<CustomerGroup> Groups = db.QueryData<CustomerGroup>(sql, 1, new { groupId = groupId });
+            foreach (CustomerGroup u in Groups)
+            {
+                if (!dic.ContainsKey(u.customerId))
+                    dic.Add(u.customerId, u.customerName);
+
+            }
+            return dic;
+        }
+        public string AddGropWithFriends(Groups group)
+        {
+            if(group.friends.Count<=1)
+            {
+                return "נא להזין לפחות 2 חברים";
+            }
+            if (!IsCustomerGuidExists(group.guid))
+            {
+                return "ארעה שגיאה";
+            }
+
+            try
+            {
+                string sqlCustomerInsert = @"INSERT INTO Groups ([Name]) Values (@Name);";
+
+                DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+
+                var affectedRows = db.Execute(sqlCustomerInsert, 1, new { Name = group.groupName });
+
+                if (affectedRows > 0)
+
+                {
+
+                    string sql = "select [Id] From Groups where [Name]=@Name";
+
+                    IEnumerable<int> GroupId = db.QueryData<int>(sql, 1, new { Name = group.groupName });
+
+                    int grpId = 0;
+
+                    foreach (int u in GroupId)
+                    {
+                        grpId = u;
+
+                    }
+
+                    if (grpId > 0)
+                    {
+                        string sqlInsert = "INSERT INTO GroupsCustomers ([GroupId],[CustomerId]) Values (@GroupId,@CustomerId);";
+                        foreach (var cust in group.friends)
+                        {
+                            var affectedRows2 = db.Execute(sqlInsert, 1, new { GroupId = grpId, CustomerId = cust.Key });
+                        }
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                Logger.Write(ex);
+                return "ארעה שגיאה";
+            }
+            return "";
+        }
+
+        public CustomerObjBase SearchCustomer(CustomerSearch cust)
+        {
+            if(!IsCustomerGuidExists(cust.guid))
+            {
+                return null;
+            }
+
+            CustomerObjBase customer = new CustomerObjBase();
+
+            string sql = "SELECT Id,Name FROM Customer WHERE [Active] is not null and ([tel]=@searchText or [Email]=@searchText);";
+
+            DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);           
+
+            IEnumerable<CustomerObjBase> custX = db.QueryData<CustomerObjBase>(sql, 1, new { searchText = cust.searchText});
+            foreach (CustomerObjBase u in custX)
+            {
+                customer.Id = u.Id;
+                customer.Name = u.Name;
+                break;
+            }
+            return customer;
         }
 
         public UserDetailsWrapper GetUserDetails(UserSearch user)
@@ -1806,9 +1983,9 @@ namespace Tor
 
             {
 
-                var sql = @"SELECT [Id],[User],[Tel],[Adrress],[City] FROM Users WHERE [Active] is not null And
+                var sql = @"SELECT [Id],[BizName] as [User],[Tel],[Adrress],[City] FROM Users WHERE [Active] is not null And
 
-                        [User] LIKE @user And City = @City; ";
+                        [BizName] LIKE @user And City = @City; ";
 
                 DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
@@ -1865,16 +2042,19 @@ namespace Tor
                 userSearch.version = ConfigManager.version;
                 string PhisicalbasePath = "User_" + u.Id + "\\";
                 DirectoryInfo d = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory + @"\\img\" + PhisicalbasePath);
-                FileInfo[] Files = d.GetFiles("*.*");
-                string basePath = "User_" + u.Id + "/";
-
-                foreach (FileInfo file in Files)
+                if (d.Exists)
                 {
-                    if (file.Name.Contains("Logo_" + u.Id))
-                        userSearch.logo = basePath + file.Name;
-                    else if (file.Name.Contains("back_" + u.Id))
-                        userSearch.img = basePath + file.Name;
+                    FileInfo[] Files = d.GetFiles("*.*");
+                    string basePath = "User_" + u.Id + "/";
 
+                    foreach (FileInfo file in Files)
+                    {
+                        if (file.Name.Contains("Logo_" + u.Id))
+                            userSearch.logo = basePath + file.Name;
+                        else if (file.Name.Contains("back_" + u.Id))
+                            userSearch.img = basePath + file.Name;
+
+                    }
                 }
                 return userSearch;
             }
@@ -1972,30 +2152,30 @@ namespace Tor
 
             string baseUerl = ConfigManager.BaseUrl;
 
-            string content = " : שלום - לאיפוס סיסמה נא ללחוץ על הקישור הבא" + " <a href='" + baseUerl + "/user/ResetPassword/" + guid + "'>לחץ כאן לאישור</a>";
+            string content = " : שלום - לאיפוס סיסמה נא ללחוץ על הקישור הבא" + " <a href='" + baseUerl + "/user/ResetPassword/" + guid + "'>לחץ כאן </a>";
             string[] arr = new string[1];
             arr[0] = mail;
-            bool isOk = MailSender.sendMail("איפוס סיסמה במערכת תורים", content, arr, "tana@TanaSoftware.com");
-            if(!isOk)
+            bool isOk = MailSender.sendMail("מערכת תורים", content, arr, "tana@TanaSoftware.com");
+            if (!isOk)
                 return "ארעה שגיאה";
 
             return "";
         }
-        public string ResetPasswordPhase2(string guid,string pass,string pass2)
+        public string ResetPasswordPhase2(string guid, string pass, string pass2)
         {
             bool isFaild = true;
             string NewGuid = Guid.NewGuid().ToString();
             if (IsCustomerGuidExists(guid))
-            {                
+            {
                 string sql = "Update [Customer] set [Password]=@Password, [Active]=@NewGuid,[guid]=@NewGuid where [guid]=@guid";
                 DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
-                var affectedRows = db.Execute(sql, 1, new { Password =pass, guid = guid , NewGuid = NewGuid });
+                var affectedRows = db.Execute(sql, 1, new { Password = pass, guid = guid, NewGuid = NewGuid });
                 if (affectedRows <= 0)
                     return "ארעה שגיאה";
                 isFaild = false;
             }
 
-            if(IsUserGuidExists(guid))
+            if (IsUserGuidExists(guid))
             {
                 string sql = "Update [Users] set [Password]=@Password, [Active]=@NewGuid,[guid]=@NewGuid where [guid]=@guid";
                 DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);

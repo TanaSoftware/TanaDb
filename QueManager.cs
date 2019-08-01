@@ -36,6 +36,8 @@ namespace Tor
         public int CustomerId { get; set; }
 
         public int EmployeeId { get; set; }
+
+        public int GroupId { get; set; }
     }
 
     public class Que : QueObj
@@ -51,7 +53,7 @@ namespace Tor
     {
 
         public int Id { get; set; }
-
+        public int CustomerId { get; set; }
         public string title { get; set; }
 
         public DateTime start { get; set; }
@@ -88,18 +90,20 @@ namespace Tor
 
         public string Message { get; set; }
 
+    }
 
+    public class DeleteGroupCustomer
+    {
+        public string guid { get; set; }
 
+        public int CustomerId { get; set; }
 
-
-
-
+        public int GroupId { get; set; }
     }
 
     public class QueManager
 
     {
-
 
         private bool IsDateInDateList(DateTime date, List<UserExtraActivity> extra)
         {
@@ -155,12 +159,17 @@ namespace Tor
 
                 DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
-                string select = que.isUser ? "U.Name + ' ' + B.Name" : "CASE When B.Id=@CustomerId THEN U.Name ELSE N'תפוס' END";
-                //string select = que.isUser ? "": "";
-                var sql = @"SELECT A.id," + select + @" As [title],A.FromDate As [start],A.ToDate As [end]
+                string select = "";
+                if (que.isUser)
+                    select = "Case when g.Name is not null then U.Name + ' ' +g.Name Else U.Name + ' ' + B.Name End ";
+                else
+                    select = "CASE When B.Id=@CustomerId THEN Case when U.Name + ' ' +g.Name is not null then g.Name Else U.Name End ELSE N'תפוס' END ";
+
+                var sql = @"SELECT A.[CustomerId],A.id," + select + @" As [title],A.FromDate As [start],A.ToDate As [end]
 
                         FROM Que A INNER JOIN Customer B on A.CustomerId = B.Id
                         JOIN UsersActivitiesTypes U ON U.Id = A.QueType
+                        Left join [Groups] g on A.GroupId = g.Id
                         WHERE A.UserId = @UserId And EmployeeId = @EmployeeId And FromDate>=@FromDate And ToDate<=@ToDate
 
                         ORDER BY start asc";
@@ -364,7 +373,24 @@ namespace Tor
                     return "ארעה שגיאה";
 
                 }
+                //if(que.CustomerId==0)
+                //{
+                //    int custId = IsCustomerHolidayExist("חופש");
+                //    if(custId==0)
+                //    {
+                //        string sqlCustomerInsert = @"INSERT INTO Customer ([Name],[Email],[Password],[tel],[guid],[City]) Values
 
+                //                ('חופש','','','','','');";
+
+                //        DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+
+                //        var affectedRows = db.Execute(sqlCustomerInsert, 1, null);
+                //        custId=IsCustomerHolidayExist("חופש");
+                //    }
+
+                //    que.CustomerId = custId;
+                    
+                //}
             }
 
             else
@@ -406,17 +432,19 @@ namespace Tor
 
         private bool IsCustomerQueExist(Que que)
         {
-
+            DateTime from = que.FromDate.AddMilliseconds(10);
+            DateTime to = que.ToDate.AddMilliseconds(-10);
             string sql = @"SELECT count(1) FROM Que 
                            WHERE [UserId] = @UserId And EmployeeId = @EmployeeId And 
-                             ([FromDate]<@FromDate And [ToDate]>@FromDate)
-                            Or ([FromDate]<@ToDate And [ToDate]>@ToDate)";
-                           //[FromDate]>@FromDate And [ToDate]<@ToDate";
+                             (([FromDate] between @FromDate 
+	                            And @ToDate) Or
+	                            ([ToDate] between @FromDate
+	                            And @ToDate ))";                           
 
 
             DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
-            return db.IsExist(sql, new { UserId = que.UserId, FromDate = que.FromDate, ToDate = que.ToDate, EmployeeId = que.EmployeeId }, 1);
+            return db.IsExist(sql, new { UserId = que.UserId, FromDate = from, ToDate = to, EmployeeId = que.EmployeeId }, 1);
             //IEnumerable<int> data =
             //     db.QueryData<int>(sql, 1, new { UserId = que.UserId, FromDate = que.FromDate, ToDate = que.ToDate, EmployeeId = que.EmployeeId });
 
@@ -452,6 +480,29 @@ namespace Tor
 
             return db.IsExist(sql, new { guid = guid }, 1);
 
+        }
+
+        private int IsCustomerHolidayExist(string name)
+
+        {
+            int CustId = 0;
+            string sql = "SELECT Id FROM Customer WHERE [Name] = @name;";
+            try
+            {
+                DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+
+                IEnumerable<int> customers = db.QueryData<int>(sql, 1, new { name = name });
+                foreach (int x in customers)
+                {
+                    CustId = x;
+                    break;
+                }
+            }
+            catch
+            {
+                CustId = 0;
+            }
+            return CustId;
         }
 
         private bool IsCustomerQueAvailable(Que que)
@@ -552,9 +603,9 @@ namespace Tor
 
             {
 
-                string sqlQueInsert = @"INSERT INTO Que ([UserId],[FromDate],[ToDate],[QueType],[EmployeeId],[CustomerId]) Values
+                string sqlQueInsert = @"INSERT INTO Que ([UserId],[FromDate],[ToDate],[QueType],[EmployeeId],[CustomerId],[GroupId]) Values
 
-(@UserId,@FromDate,@ToDate,@QueType,@EmployeeId,@CustomerId);";
+                (@UserId,@FromDate,@ToDate,@QueType,@EmployeeId,@CustomerId,@GroupId);";
 
                 DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
@@ -691,6 +742,52 @@ namespace Tor
             }
             return "";
         }
+
+        public string DeleteGroup(string guid, int groupId)
+        {
+            if (!IsCustomerExist(guid))
+            {
+                return "ארעה שגיאה";
+            }
+            try
+            {
+
+                string sqlUpdate = "Delete FROM GroupsCustomers where [GroupId]=@GroupId;";
+                DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+                var affectedRows = db.Execute(sqlUpdate, 1, new { GroupId = groupId });
+
+                string sqlUpdate2 = "Delete FROM Groups where [GroupId]=@GroupId;";
+                var affectedRows2 = db.Execute(sqlUpdate2, 1, new { GroupId = groupId });
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+                return "ארעה שגיאה";
+            }
+            return "";
+        }
+
+        public string DeleteCustomerFromGroup(string guid, int groupId,int customerId)
+        {
+            if(!IsCustomerExist(guid))
+            {
+                return "ארעה שגיאה";
+            }
+            try
+            {
+                
+                string sqlUpdate = "Delete FROM GroupsCustomers where [GroupId]=@GroupId And [CustomerId]=@CustomerId;";
+                DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+                var affectedRows = db.Execute(sqlUpdate, 1, new { GroupId = groupId, CustomerId= customerId });
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex);
+                return "ארעה שגיאה";
+            }
+            return "";
+        }
+
         private bool DeleteQueFromDb(Que que)
 
         {

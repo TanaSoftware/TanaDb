@@ -449,7 +449,13 @@
             return;
 
         }
+        if (!IsvalidPhone(txtTelCust)) {
 
+            showTooltip("txtTelCust", "נא להזין מספר טלפון נייד תקין");
+
+            return;
+
+        }
         if (!IsvalidEmail(email)) {
 
             showTooltip("emailCustomer", "נא להזין מייל תקין");

@@ -15,6 +15,7 @@
     <link href="css/general.css" rel="stylesheet" />
     <script src="js/cal.js"></script>
     <script src="js/moment.js"></script>
+    <script src="js/global.js"></script>
 
     <script src="js/jquery.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
@@ -22,7 +23,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.he.min.js"></script>
     <script src="js/selectize.js"></script>
-
+    <script src="js/cleave.js"></script>
 
     <style>
         .fc-widget-header {
@@ -79,15 +80,11 @@
         <div style="text-align:right; width:100%; position:absolute;background-color:#fff;z-index:1000" id="menuToggle">
             <ul style="display:none;list-style-type: none" id="menuItems">
                 <li class="nav-item active">
-                    <a class="nav-link" href="javascript:navigateTo('start.html')">דף הבית <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="javascript:navigateTo('start.html#LoginSec')">התחבר</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="javascript:navigateTo('start.html#RegisterCustomer')">הרשם</a>
-                </li>
+                    <a class="nav-link" href="javascript:navigateHome('start.html')">דף הבית <span class="sr-only">(current)</span></a>
+                </li>                
                 <li id="liUpdateBiz" style="display:none"><a href="javascript:navigateTo('BizUpdate.html')" class="nav-link">עדכון פרטי עסק</a></li>
+                <li><a href="javascript:AddGroup()" class="nav-link">הוסף קבוצה</a></li>
+                <li id="liUpdateGroup" style="display:none"><a href="javascript:UpdateGroup()" class="nav-link">עדכן קבוצה</a></li>
                 <li id="liUpdateCustomer" style="display:none"><a href="javascript:navigateTo('CustomerUpdate.html')" class="nav-link">עדכון פרטי משתמש</a></li>
             </ul>
         </div>
@@ -95,219 +92,360 @@
 
             <button type="button" style="float:right;margin-top:8px;height:30px;" class="btn btn-primary btn-sm prevNext" id="prev">&lt;</button>
 
-            <div style="float:right" class="p-2">
+            <div style="float:right;margin-top:8px;margin-right:3px;">
 
                 <div class="input-group date">
 
-                    <input type="text" id="datetimepicker1" onchange="CheckDatePicker(this)" class="form-control" placeholder="תאריך" style="height:30px;max-width:110px;"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                    <input type="text" id="datetimepicker1" onfocus="ChangeDatePickerPos()" onchange="CheckDatePicker(this)" class="form-control" placeholder="תאריך" style="height:30px;max-width:110px;"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
 
                 </div>
 
             </div>
 
-            <button type="button" id="next" class="btn btn-primary btn-sm prevNext" style="float:right;margin-top:8px;height:30px;">&gt;</button>
+            <button type="button" id="next" class="btn btn-primary btn-sm prevNext" style="float:right;margin-right:3px;margin-top:8px;height:30px;">&gt;</button>
 
+            <input id="txtGoHour" style="float:right;margin-right:20px;height:30px;margin-top:8px; width:63px;" type="text" class="form-control input-time" placeholder="שעה" />
+            <button onclick="gotoHour()" type="button" id="next" class="btn btn-primary btn-sm" style="float:right;margin-right:5px; margin-top:8px;height:30px;">...</button>
         </div>
 
     </nav>
 
-
-
     <div class="d-flex justify-content-center">
         <span class="floatR" style="margin-top:32px;margin-left:4px;color:#007bff">קבע תור ל:</span>
-        <div class="floatR">            
+        <div class="floatR">
             <select placeholder="בחר עובד" class="form-control" style="width:100px;margin-top:24px;margin-left:8px;" id="ddlActivity"></select>
         </div>
         <div class="btn-group-sm btn-group-primary" role="group" aria-label="...">
-            
+
             <div class="floatR" onclick="SetCal('timeGrid')" style="width:40px;"><input class="rdb" id="btnDaily" type="radio" name="rdbX"><div class="check"></div><span class="floatR">יומי</span></div>
             <div class="floatR" onclick="SetCal('timeGridWeek')" style="width:50px;"><input class="rdb" id="btnWeekly" type="radio" name="rdbX"><div class="check"></div><span class="floatR">שבועי</span></div>
             <div class="floatR" onclick="SetCal('dayGridMonth')" style="width:50px;"><input class="rdb" id="btnMonthly" type="radio" name="rdbX"><div class="check"></div><span class="floatR">חודשי</span></div>
         </div>
     </div>
-    
+
     <div style="float:right;text-align:left" class="p-2">
         <select style="width:110px;" id="ddlEvent" class="form-control" type="text"></select>
     </div>
-        <div id="dvCustomers">
-            <div class="d-flex justify-content-center">
+    <div id="dvCustomers" style="display:none;">
+        <div class="d-flex justify-content-center">
 
-                <div class="flex-row">
+            <div class="flex-row">
 
-                    <div id="dvddlCustomers" style="float:right" class="p-2">
-                        <select placeholder="בחר לקוח" style="width:110px;" id="ddlCustomers"></select>
-                    </div>
+                <div id="dvddlCustomers" style="float:right" class="p-2">
+                    <select placeholder="בחר לקוח" style="width:110px;" id="ddlCustomers"></select>
+                </div>
 
-                    <div style="float:right" class="p-2">
-                        <button type="button" onclick="AddModalCustomer()" class="btn btn-primary btn-sm" style="margin-right:10px;height:35px;">הוסף לקוח </button>
-                    </div>
+                <div style="float:right" class="p-2">
+                    <button type="button" onclick="AddModalCustomer()" class="btn btn-primary btn-sm" style="margin-right:10px;height:35px;">הוסף לקוח </button>
                 </div>
             </div>
         </div>
-        <div id="dvUsers">
-            <div class="d-flex justify-content-center">
+    </div>
+    <div id="dvUsers" style="display:none;">
+        <div class="d-flex justify-content-center">
 
-                <div class="flex-row">
+            <div class="flex-row">
 
-                    <div id="dvddlCity" style="float:right" class="p-2">
-                        <select style="width:100px;" id="ddlCity" placeholder="בחר עיר"></select>
-                    </div>
-                    <div id="dvddlUserers" style="float:right" class="p-2">
-                        <select style="width:110px;" id="ddlUsers" placeholder="בחר בעל עסק"></select>
-                    </div>
+                <div id="dvddlCity" style="float:right" class="p-2">
+                    <select style="width:100px;" id="ddlCity" placeholder="בחר עיר"></select>
+                </div>
+                <div id="dvddlUserers" style="float:right" class="p-2">
+                    <select style="width:110px;" id="ddlUsers" placeholder="בחר בעל עסק"></select>
                 </div>
             </div>
         </div>
-        <div id="calendar"></div>
+    </div>
+    <div id="calendar"></div>
 
-        <!--Add event modal-->
+    <!--Add event modal-->
 
-        <div id="createEventModal" class="modal fade">
+    <div id="createEventModal" class="modal fade">
 
-            <div class="modal-dialog vertical-align-center">
+        <div class="modal-dialog vertical-align-center">
 
-                <div class="modal-content" style="width:320px;">
+            <div class="modal-content" style="width:320px;">
 
-                    <div class="modal-header">
+                <div class="modal-header">
 
-                        <div style="float:right;color:#007bff;"><h4>זמן תור<span id="spnEventMsg"></span></h4></div>
-                        <div style="float:left">
+                    <div style="float:right;color:#007bff;"><h4>זמן תור<span id="spnEventMsg"></span></h4></div>
+                    <div style="float:left">
 
-                            <button type="button" class="close" data-dismiss="modal">
+                        <button type="button" class="close" data-dismiss="modal">
 
-                                <span aria-hidden="true">&times;</span> <span class="sr-only">close</span>
+                            <span aria-hidden="true">&times;</span> <span class="sr-only">close</span>
 
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                    <div id="modalBody" class="modal-body">
-
-                        <table style="border-collapse: separate;border-spacing: 10px;">
-
-                            <tr>
-
-                                <td style="float:right;">תור ל :</td>
-
-                                <td colspan="3">
-
-                                    <div style="text-align:right" id="dvEventName"></div>
-
-                                    <div id="ddlEventErr"></div>
-
-                                </td>
-
-                            </tr>
-
-
-
-                            <tr>
-
-                                <td>מ :</td>
-
-                                <td><input style="width:70px;" type="text" id="txtTimeFrom" class="form-control"></td>
-
-                                <td>עד :</td>
-
-                                <td><input style="width:70px;" type="text" id="txtTimeTo" class="form-control"></td>
-
-                            </tr>
-
-                        </table>
-
-                    </div>
-
-                    <div class="modal-footer">
-
-                        <button class="btn" data-dismiss="modal" aria-hidden="true">ביטול</button>
-
-                        <button type="submit" style="margin-right:5px;" class="btn btn-primary" onclick="DeleteQue()" id="btnDeleteQue">מחק</button>
-
-                        <button type="submit" style="margin-right:5px;" class="btn btn-primary" onclick="AddQue()" id="submitButton">שמור</button>
+                        </button>
 
                     </div>
 
                 </div>
 
+                <div id="modalBody" class="modal-body">
 
+                    <table style="border-collapse: separate;border-spacing: 10px;">
+                        <tr style="display:none" id="trGroupSec">
+                            <td colspan="4">                                
+                                <span class="floatR">לי</span><input class="floatR" id="btnMe" style="margin-right:3px;transform:scale(1.3)" type="radio" name="rdbXGroup">
+                                <span class="floatR" style="margin-right:15px;">קבוצה</span><input class="floatR" id="btnGroup" style="margin-right:3px;;transform:scale(1.3)" type="radio" name="rdbXGroup">                                    
+                                <div style="float:right;margin-right:10px;"><select style="width:130px;" id="ddlGroups"></select></div>
+                            </td>
+                        </tr>
+                        <tr>
+
+                            <td style="float:right;">תור ל :</td>
+
+                            <td colspan="3">
+
+                                <div style="text-align:right" id="dvEventName"></div>
+
+                                <div id="ddlEventErr"></div>
+
+                            </td>
+
+                        </tr>
+
+
+
+                        <tr>
+
+                            <td>מ :</td>
+
+                            <td><input style="width:70px;" type="text" id="txtTimeFrom" class="form-control input-time"></td>
+
+                            <td>עד :</td>
+
+                            <td><input style="width:70px;" type="text" id="txtTimeTo" class="form-control input-time"></td>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">ביטול</button>
+
+                    <button type="submit" style="margin-right:5px;" class="btn btn-primary" onclick="DeleteQue()" id="btnDeleteQue">מחק</button>
+
+                    <button type="submit" style="margin-right:5px;" class="btn btn-primary" onclick="AddQue()" id="submitButton">שמור</button>
+
+                </div>
 
             </div>
 
+
+
         </div>
 
-        <div id="AddCustomerModal" class="modal fade">
+    </div>
 
-            <div class="modal-dialog vertical-align-center">
+    <div id="AddCustomerModal" class="modal fade">
 
-                <div class="modal-content" style="width:320px;">
+        <div class="modal-dialog vertical-align-center">
 
-                    <div class="modal-header">
+            <div class="modal-content" style="width:320px;">
 
-                        <div style="float:right;color:#007bff;"><h4>הוסף לקוח</h4></div>
+                <div class="modal-header">
 
-                        <div style="float:left">
+                    <div style="float:right;color:#007bff;"><h4>הוסף לקוח</h4></div>
 
-                            <button type="button" class="close" data-dismiss="modal">
+                    <div style="float:left">
 
-                                <span aria-hidden="true">&times;</span> <span class="sr-only">close</span>
+                        <button type="button" class="close" data-dismiss="modal">
 
-                            </button>
+                            <span aria-hidden="true">&times;</span> <span class="sr-only">close</span>
 
-                        </div>
-
-                    </div>
-
-                    <div id="modalBody" class="modal-body">
-
-                        <div class="form-group">
-
-                            <div class="form-group floating-label-form-group controls">
-
-                                <input id="userCust" type="text" placeholder="שם משתמש" class="form-control input-lg" />
-
-                            </div>
-
-                        </div>
-
-                        <div class="form-group">
-
-                            <div class=& quot;form-group floating-label-form-group controls">
-
-                                <input id="txtTelCust" type="text" placeholder="טלפון נייד" class="form-control input-lg" />
-
-                            </div>
-
-                        </div>
-
-                        <div class="form-group">
-
-                            <div class="form-group floating-label-form-group controls">
-
-                                <input id="emailCustomer" type="email" placeholder="מייל" class="form-control input-lg" />
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div class="modal-footer">
-
-                        <button class="btn" data-dismiss="modal" aria-hidden="true">ביטול</button>
-
-                        <button type="submit" style="margin-right:5px;" class="btn btn-primary" onclick="AddCustomer()" id="btnAddCustomer">הוספה</button>
+                        </button>
 
                     </div>
 
                 </div>
 
+                <div id="modalBody" class="modal-body">
 
+                    <div class="form-group">
+
+                        <div class="form-group floating-label-form-group controls">
+
+                            <input id="userCust" type="text" placeholder="שם משתמש" class="form-control input-lg" />
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <div class=& quot;form-group floating-label-form-group controls">
+
+                            <input id="txtTelCust" type="text" placeholder="טלפון נייד" class="form-control input-lg" />
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <div class="form-group floating-label-form-group controls">
+
+                            <input id="emailCustomer" type="email" placeholder="מייל" class="form-control input-lg" />
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">ביטול</button>
+
+                    <button type="submit" style="margin-right:5px;" class="btn btn-primary" onclick="AddCustomer()" id="btnAddCustomer">הוספה</button>
+
+                </div>
 
             </div>
 
+
+
         </div>
+
+    </div>
+
+    <div id="createVacationModal" class="modal fade">
+
+        <div class="modal-dialog vertical-align-center">
+
+            <div class="modal-content" style="width:320px;">
+
+                <div class="modal-header">
+
+                    <div style="float:right;color:#007bff;"><h4>אני בחופש</h4></div>
+                    <div style="float:left">
+
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span> <span class="sr-only">close</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="modalBody" class="modal-body">
+                    <table style="border-collapse: separate;border-spacing: 10px;">
+                        <tr>
+                            <td>מ :</td>
+                            <td><input style="width:110px;" type="text" id="txtVacDateFrom" class="form-control"></td>
+                            <td><input style="width:70px;" type="text" id="txtVacTimeFrom" class="form-control input-time"></td>
+                        </tr>
+                        <tr>                            
+                            <td>עד :</td>
+                            <td><input style="width:110px;" type="text" id="txtVacDatTo" class="form-control"></td>
+                            <td><input style="width:70px;" type="text" id="txtVacTimeTo" class="form-control input-time"></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">ביטול</button>                    
+                    <button type="submit" style="margin-right:5px;" class="btn btn-primary" onclick="AddVacation()" id="submitButton">שמור</button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="createGroupModal" class="modal fade">
+
+        <div class="modal-dialog vertical-align-center">
+
+            <div class="modal-content" style="width:320px;">
+
+                <div class="modal-header">
+
+                    <div style="float:right;color:#007bff;"><h4>הוסף קבוצה</h4></div>
+                    <div style="float:left">
+
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span> <span class="sr-only">close</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="modalBody" class="modal-body">
+                    <table style="border-collapse: separate;border-spacing: 10px;">
+                        <tr>
+                            <td style="text-align:right">שם קבוצה:</td>
+                            <td colspan="2"><input style="width:110px;" type="text" id="txtGroupName" class="form-control"></td>                                                        
+                        </tr>
+                        <tr>
+                            <td style="text-align:right">הוסף חברים:</td>
+                            <td><input style="width:110px;" placeholder="מייל/טלפון" type="text" id="txtFriend" class="form-control"></td>
+                            <td><button class="btn btn-primary" onclick="AddFriend()" type="button">הוסף</button></td>                            
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td colspan="2"><div id="dvAddedFriends"></div></td>
+                        </tr>
+                        <tr><td colspan="3"><div style="color:red;text-align:right" id="dvAddedFriendsErr"></div></td></tr>
+                    </table>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">ביטול</button>
+                    <button type="submit" style="margin-right:5px;" class="btn btn-primary" onclick="AddGropWithFriends()" id="submitButton">שמור</button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="UpdateGroupModal" class="modal fade">
+
+        <div class="modal-dialog vertical-align-center">
+
+            <div class="modal-content" style="width:320px;">
+
+                <div class="modal-header">
+
+                    <div style="float:right;color:#007bff;"><h4>עדכן קבוצה</h4></div>
+                    <div style="float:left">
+
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span> <span class="sr-only">close</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="modalBody" class="modal-body">
+                    <table style="border-collapse: separate;border-spacing: 10px;">
+                        <tr>
+                            <td style="text-align:right">שם קבוצה:</td>
+                            <td><select style="width:150px;" id="ddlGroupName"></select></td>
+                            <td><button class="btn btn-primary" onclick="deleteGroup()" type="button">מחק</button></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:right">הוסף חברים:</td>
+                            <td><input style="width:150px;" placeholder="מייל/טלפון" type="text" id="txtFriendUpd" class="form-control"></td>
+                            <td><button class="btn btn-primary" onclick="AddFriendUpd()" type="button">הוסף</button></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td colspan="2"><div id="dvUpdatedFriends"></div></td>
+                        </tr>
+                        <tr><td colspan="3"><div style="color:red;text-align:right" id="dvUpdatedFriendsErr"></div></td></tr>
+                    </table>
+                </div>
+
+                <!--<div class="modal-footer">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">ביטול</button>
+                    <button type="submit" style="margin-right:5px;" class="btn btn-primary" onclick="AddGropWithFriends()" id="submitButton">שמור</button>
+                </div>-->
+            </div>
+
+        </div>
+
+    </div>
 
 </body>
 
@@ -327,10 +465,12 @@
     var customersList;
     var isPageLoad = true;
     var currentId = -1;
+    var currentCustomerId = -1;
     var currentDate = "";
     var currentCustomerName = "";
     var LastView = "";
     var calendar;
+    var IsGroup = false;
 
     getScripts();
 
@@ -347,6 +487,7 @@
             success: function (data) {
 
                 init();
+                SetHourToDddl();
             },
             error: function (request, status, error) {
 
@@ -361,10 +502,8 @@
         if (UserData == null) {
             location.href = "main.html";
         }
-        if (UserData.isUser) {
-
-            $('#dvUsers').addClass('forceDispNone');
-
+        if (UserData.isUser) {            
+            $('#dvCustomers').show();
             getMyCustomers();
 
             setUser(UserData);
@@ -374,31 +513,20 @@
         else {
 
             SetCustomer();
-
-            $('#dvCustomers').addClass('forceDispNone');
+            $('#dvUsers').show();            
 
             UserForCustomerDetails = JSON.parse(sessionStorage.getItem("UserForCustomerDetails"));
-            if (UserForCustomerDetails == null) {
-                setTimeout(showTooltip("ddlCity", "נא לבחור עיר"), 1000);
-            }
-            else {
-                setTimeout(function () {
-                    selectizeService.setValue('ddlCity', UserForCustomerDetails.City);
 
-                    var selectizeMe = $("#ddlUsers")
-                    var v = selectizeMe[0].selectize;
-                    v.addOption({ Id: UserForCustomerDetails.Id, User: UserForCustomerDetails.User }); //option can be created manually or loaded using Ajax
-                    v.addItem(UserForCustomerDetails.Id);
-                }, 100);
-            }
             $('#liUpdateCustomer').show();
-            
+            GetGroupsPerCustomer(UserData.CustomerId);
         }
 
     }
 
     function AddModalCustomer() {
-
+        $("#userCust").val("");
+        $("#txtTelCust").val("");
+        $("#emailCustomer").val("");
         $('#AddCustomerModal').modal('show');
 
     }
@@ -426,8 +554,15 @@
             return;
 
         }
+        if (!IsvalidPhone(Tel)) {
 
-        var CustomerObj = { Id: UserData.UserId, Name: name, tel: Tel, guid: UserData.guid, mail: mail };
+            showTooltip("txtTelCust", "נא להזין מספר טלפון נייד תקין");
+
+            return;
+
+        }
+
+        var CustomerObj = { Id: UserData.UserId, Name: name, tel: Tel, guid: UserData.guid, mail: mail, City: UserData.City };
 
         $.ajax({
 
@@ -589,8 +724,10 @@
     }
 
     function include(arr, obj) {
-        for (var i = 0; i < arr.length; i++) {
-            if (arr[i] == obj) return true;
+        if (arr != null) {
+            for (var i = 0; i < arr.length; i++) {
+                if (arr[i] == obj) return true;
+            }
         }
     }
     function setUserActivities(BizTypeList) {
@@ -633,6 +770,7 @@
 
         $('#datetimepicker1').datepicker('hide');
 
+
     }
     function setDatePicker(DaysOfWeekDisabled) {
 
@@ -644,7 +782,7 @@
 
             daysOfWeekDisabled: DaysOfWeekDisabled,
 
-            orientation: "auto",
+            orientation: "right",
 
             todayHighlight: true
 
@@ -717,7 +855,7 @@
         var fromDate, toDate;
 
         var duration = getSmallestDuration();
-                
+
 
         if (view == null || view == 'timeGrid') {
             view = 'timeGrid';
@@ -817,9 +955,8 @@
             dir: 'rtl',
             titleFormat: { year: 'numeric', month: 'numeric', day: 'numeric' },
             //hiddenDays: hiddenDaysArr,
-            themeSystem: 'bootstrap',
-
-            allDaySlot: false,
+            themeSystem: 'bootstrap',            
+            allDaySlot: false,            
             eventSources: [{
                 url: 'Que/GetQue',
                 method: 'POST',
@@ -831,15 +968,143 @@
 
         });
 
-
-
         calendar.render();
 
-        //return calendar;
+        if (LastView == 'timeGridWeek') {
+            setTimeout(function () {
+                $("th.fc-day-header.fc-widget-header").each(function (index) {
+                    var date = moment($(this).data('date'))
+                    $(this).html('<div>' + getDayWeek(date.day()) + '</div><span style="font-size:12px">' + date.format('DD/MM') + '</span>')
+                });
+            }, 10);
+        }
 
     }
+    //$(this).html('<div onclick="SetVacation(\'' + date.format('DD/MM/YYYY') + '\')">' + getDayWeek(date.day()) + '</div><span style="font-size:12px">' + date.format('DD/MM') + '</span>')
+    function SetVacation(d) {
+        if (UserData.isUser) {
+            $('#txtVacDateFrom').val(d);
+            $('#txtVacTimeFrom').val('08:00');
+            $('#txtVacDatTo').val(d);
+            $('#txtVacTimeTo').val('17:00');
+            $('#createVacationModal').modal('show');
+        }
+    }
+
+    function AddVacation() {
+        var dateFrom = $('#txtVacDateFrom').val();
+        var txtFrom = $('#txtVacTimeFrom').val();
+        var dateTo = $('#txtVacDatTo').val();
+        var txtTo = $('#txtVacTimeTo').val();
+        var employeeId = $('#ddlActivity').val();
+        var eventId = $('#ddlEvent').val();
+
+        if (dateFrom.length<=0) {
+            showTooltip('txtVacDateFrom', "נא להזין תאריך");
+            return;
+        }
+        if (!isValidDate(dateFrom)) {
+            showTooltip('txtVacDateFrom', "נא להזין תאריך חוקי");
+            return;
+        }
+        if (txtFrom.length <= 0) {
+            showTooltip('txtVacTimeFrom', "נא להזין שעה");
+            return;
+        }
+        if (!checkHour('txtVacTimeFrom', "נא להזין שעה חוקית")) {            
+            return;
+        }
+        if (dateTo.length<=0) {
+            showTooltip('txtVacDatTo', "נא להזין תאריך");
+            return;
+        }
+        if (!isValidDate(dateTo)) {
+            showTooltip('txtVacDatTo', "נא להזין תאריך חוקי");
+            return;
+        }
+        if (txtTo.length <= 0) {
+            showTooltip('txtVacTimeTo', "נא להזין שעה");
+            return;
+        }
+        if (!checkHour('txtVacTimeTo', "נא להזין שעה חוקית")) {
+            
+            return;
+        }
+
+        var dFrom = moment(dateFrom, 'DD/MM/YYYY').format('YYYY-MM-DD') + "T";
+        var dTo = moment(dateTo, 'DD/MM/YYYY').format('YYYY-MM-DD') + "T";
+
+        var QueObj = {
+
+            UserId:  UserData.UserId,
+
+            guid: UserData.guid,
+
+            FromDate: dFrom + txtFrom + ":00",
+
+            ToDate: dFrom + txtTo + ":00",
+
+            isUser: UserData.isUser,
+
+            CustomerId: 0,
+
+            QueType: eventId,
+            EmployeeId: employeeId
+
+        };
 
 
+
+        $.ajax({
+
+            url: "Que/AddCustomerQue",
+
+            type: 'POST',
+
+            data: JSON.stringify(QueObj),
+
+            contentType: "application/json;charset=utf-8",
+
+            success: function (data) {
+
+                if (data == "") {
+                    
+                    GetQue(UserData, currentUserDetails, LastView);
+                    calendar.gotoDate(todayX);
+                    $('#createVacationModal').modal('hide');
+
+                }
+
+                else
+
+                    showTooltip('ddlEventErr', data);
+
+            },
+
+            error: function (request, status, error) {
+
+            }
+
+        });
+        
+    }
+
+    function getDayWeek(d){
+        if (d == 0)
+            return "א";
+        if (d == 1)
+            return "ב";
+        if (d == 2)
+            return "ג";
+        if (d == 3)
+            return "ד";
+        if (d == 4)
+            return "ה";
+        if (d == 5)
+            return "ו";
+        if (d == 6)
+            return "ש";
+    }
     function deleteDayNoneWork(d) {
 
         if (d) {
@@ -905,6 +1170,10 @@
 
             return;
         }
+        try{
+            currentCustomerId = info.event.extendedProps.CustomerId;
+        }
+        catch(e){}
 
         currentId = info.event ? info.event.id : 0;
         var InfoObj = info.event ? info.event : info;
@@ -922,7 +1191,7 @@
         $('#txtTimeFrom').val(s.format("HH:mm"));
 
         var e = s.add(parseInt(duration), 'minutes');// moment(InfoObj.end);//.add(-3, 'hours');
-               
+
 
         $('#txtTimeTo').val(e.format("HH:mm"));
 
@@ -956,11 +1225,13 @@
                     $('#ddlEvent').val(qTypeId.Id);
 
                 currentCustomerName = qCustomer;
-                $("#spnEventMsg").text(" ל" + currentCustomerName);                
+                $("#spnEventMsg").text(" ל" + currentCustomerName);
             }
             else {
-                var qTypeId = findEventByName(currentUserForCustomer.Activities, InfoObj.title);
-                $('#ddlEvent').val(qTypeId.Id);
+                if (currentUserForCustomer != null) {
+                    var qTypeId = findEventByName(currentUserForCustomer.Activities, InfoObj.title);
+                    $('#ddlEvent').val(qTypeId.Id);
+                }
             }
 
             btnDeleteQue.style.display = "";
@@ -977,7 +1248,7 @@
 
         $("#dvEventName").html($("#ddlEvent :selected").text());
         $('#createEventModal').modal('show');
-        
+
 
     }
 
@@ -1057,7 +1328,14 @@
             return;
 
         }
-
+        var groupId = 0;
+        if (IsGroup){
+            if ($('#btnGroup').is(":checked") && $('#ddlGroups').val() == '0') {
+                showTooltip('btnGroup', "נא לבחור קבוצה");
+                return;
+            }
+            groupId = $('#ddlGroups').val();
+        }
         var QueObj = {
 
             UserId: UserData.isUser ? UserData.UserId : $('#ddlUsers').val(),
@@ -1071,7 +1349,7 @@
             isUser: UserData.isUser,
 
             CustomerId: UserData.isUser ? $('#ddlCustomers').val() : UserData.CustomerId,
-
+            GroupId: groupId,
             QueType: eventId,
             EmployeeId: employeeId
 
@@ -1147,7 +1425,7 @@
 
         var txtTo = $("#txtTimeTo").val();
 
-        var custId = UserData.isUser ? findCustomerId() : UserData.CustomerId;
+        var custId = currentCustomerId;//UserData.isUser ? findCustomerId() : UserData.CustomerId;
 
         var empId = $('#ddlActivity').val();
 
@@ -1278,6 +1556,27 @@
 
 
             });
+
+
+            if (UserForCustomerDetails != null) {//come from biz.html
+                setTimeout(function () {
+                    selectizeService.setValue('ddlCity', UserForCustomerDetails.City);
+
+                    var selectizeMe = $("#ddlUsers")
+                    var v = selectizeMe[0].selectize;
+                    v.addOption({ Id: UserForCustomerDetails.Id, User: UserForCustomerDetails.User });
+                    v.addItem(UserForCustomerDetails.Id);
+                }, 300);
+            }
+            else if (UserData.City) {//default customer city
+                setTimeout(selectizeService.setValue('ddlCity', "" + UserData.City + ""), 300);
+            }
+            else if (UserForCustomerDetails == null) {
+                setTimeout(showTooltip("ddlCity", "נא לבחור עיר"), 300);
+            }
+            if (UserData.CustomersUsers && UserData.CustomersUsers.length>0) {
+                AddCustomersUsers(UserData.CustomersUsers);
+            }
         });
 
 
@@ -1295,6 +1594,7 @@
             onChange: function (value) {
                 // get user default activities
                 var UserSearch = { Id: value, guid: UserData.guid }
+                IsGroup = false;
 
                 $.ajax({
 
@@ -1311,6 +1611,11 @@
                         if (data != null && data.dicBizType != null) {
                             currentUserForCustomer = data;
                             setUser(data);
+                            IsGroup = data.isGroup;
+                            if (IsGroup) {
+                                $('#trGroupSec').show();
+                                SetGroup('btnMe');
+                            }
                             //CheckTodayAvailable(data.dicBizType, data.day);
                             $('#ddlActivity').trigger('change');
                         }
@@ -1399,9 +1704,272 @@
         });
 
     }
+    function AddGroup() {
+        $('#txtGroupName').val("");
+        $('#txtFriend').val("");
+        $('#dvAddedFriends').html("");
+        $('#dvAddedFriendsErr').html("");
+        $('#createGroupModal').modal('show');
+    }
+    var freindsDictionary = {};
+
+    function AddFriend() {
+        $('#dvAddedFriendsErr').html("");
+        var fr = $('#txtFriend').val();
+        if (fr.length <= 0) {
+            showTooltip('txtFriend', 'נא להזין טלפון או אימייל');
+            return;
+        }
+
+        var CustomerSearch = {
+            searchText: fr,
+            guid:UserData.guid
+        };
+
+        $.ajax({
+
+            url: "User/SearchCustomer",
+
+            type: 'POST',
+
+            data: JSON.stringify(CustomerSearch),
+
+            contentType: "application/json;charset=utf-8",
+
+            success: function (data) {
+
+                if (data != null && data.Name!=null) {
+                    if (freindsDictionary[data.Id] == null) {
+                        freindsDictionary[data.Id] = data.Name;
+                        var htm = $('#dvAddedFriends').html();
+                        var CustData = "<div style='text-align:right' id='dvCustomerGroup" + data.Id + "'><div style='float:right;width:120px;padding-right:20px;'>" + data.Name + "</div><button style='float:right;marging-right:4px;' onclick=deleteCustomer('" + data.Id + "')>מחק</button></div>";
+                        htm += CustData;
+                        $('#dvAddedFriends').html(htm);
+                        $('#txtFriend').val("");
+                    }
+                }
+                else {
+
+                    $('#dvAddedFriendsErr').html("חבר לא קיים במערכת");
+                }
+
+            },
+
+            error: function (request, status, error) {
+
+            }
+
+        });
+
+        
+    }
+
+    function AddGropWithFriends() {
+        var grp = $('#txtGroupName').val();
+        if (grp.length <= 0) {
+            showTooltip('txtGroupName', 'נא להזין שם קבוצה')
+            return;
+        }
+        if (grp.length <= 2) {
+            showTooltip('txtGroupName', 'נא להזין לפחות 3 אותיות')
+            return;
+        }
+        var groupObj = {
+            friends :freindsDictionary,
+            groupName: grp,
+            guid:UserData.guid
+        }
+
+        $.ajax({
+
+            url: "User/AddGropWithFriends",
+
+            type: 'POST',
+
+            data: JSON.stringify(groupObj),
+
+            contentType: "application/json;charset=utf-8",
+
+            success: function (data) {
+                if (data == "") {
+                    $('#createGroupModal').modal('hide');
+                    selectizeService.ClearAll('ddlGroups');
+                    GetGroupsPerCustomer(UserData.CustomerId);
+                }
+                else
+                    $('#dvAddedFriendsErr').html(data);
+
+            },
+
+            error: function (request, status, error) {
+
+            }
+
+        });
+    }
+
+    var MyGroups = null;
+
+    function UpdateGroup() {
+        selectizeService.ClearAll('ddlGroupName');               
+        $('#dvUpdatedFriendsErr').html("");
+
+        $('#ddlGroupName').selectize({
+
+            valueField: 'groupId',
+
+            labelField: 'groupName',
+
+            searchField: 'groupName',
+
+            options: MyGroups,
+
+            create: false,
+            onChange: function (value) {
+                
+                var dataObj = MyGroups[value];
+                var htm = "";
+                if (dataObj) {
+                    for (var data in dataObj.friends) {
+                        var obj = dataObj.friends[data];
+                        htm += "<div style='text-align:right' id='dvUpdCustomerGroup" + data + "'><div style='float:right;width:120px;padding-right:20px;'>" + obj + "</div><button style='float:right;marging-right:4px;' onclick=deleteExistCustomer(" +value +"," + data + ")>מחק</button></div>";
+                    }
+
+                    $('#dvUpdatedFriends').html(htm);
+                }
+            }
 
 
+        });
+        selectizeService.setValue('ddlGroupName', '0');
+        $('#UpdateGroupModal').modal('show');
+    }
+    function deleteExistCustomer(groupId, custId) {
 
+        var groupObj = {
+            guid: UserData.guid,
+            GroupId: groupId,
+            CustomerId: custId
+        }
+
+        $.ajax({
+
+            url: "Que/DeleteCustomerFromGroup",
+
+            type: 'POST',
+
+            data: JSON.stringify(groupObj),
+
+            contentType: "application/json;charset=utf-8",
+
+            success: function (data) {
+                if (data == "") {
+                    $('#dvUpdCustomerGroup' + custId).remove();
+                    var d = MyGroups[groupId];
+                    delete d.friends[custId];
+                    MyGroups[groupId] = d.friends;
+                }
+                else
+                    $('#dvUpdatedFriendsErr').html(data);
+            },
+
+            error: function (request, status, error) {
+
+            }
+
+        });
+    }
+
+    function deleteGroup(groupId) {
+
+        var groupObj = {
+            guid: UserData.guid,
+            GroupId: groupId            
+        }
+
+        $.ajax({
+
+            url: "Que/DeleteGroup",
+
+            type: 'POST',
+
+            data: JSON.stringify(groupObj),
+
+            contentType: "application/json;charset=utf-8",
+
+            success: function (data) {
+                if (data == "") {
+                    delete MyGroups[groupId];
+                    $('#UpdateGroupModal').modal('hide');
+                }
+                else
+                    $('#dvUpdatedFriendsErr').html(data);
+            },
+
+            error: function (request, status, error) {
+
+            }
+
+        });
+    }
+
+    function GetGroupsPerCustomer(custId) {
+        var groupObj = {            
+            groupId: custId,
+            guid: UserData.guid
+        }
+
+        $.ajax({
+
+            url: "User/GetGroupsPerCustomer",
+
+            type: 'POST',
+
+            data: JSON.stringify(groupObj),
+
+            contentType: "application/json;charset=utf-8",
+
+            success: function (data) {
+                if (data != null) {
+                    MyGroups = data;
+                    if (MyGroups != null)
+                        $('#liUpdateGroup').show();
+
+                    data.splice(0, 0,{ groupId: 0, groupName:'בחר'})
+                    selectizeService.InitSelectize("ddlGroups", 'groupId', 'groupName', 38, data, null);
+                    selectizeService.setValue('ddlGroups', '0');
+                }
+            },
+
+            error: function (request, status, error) {
+
+            }
+
+        });
+    }
+
+    function deleteCustomer(id) {
+        delete freindsDictionary[id];
+        $('#dvCustomerGroup' + id).remove();
+    }
+    function AddCustomersUsers(arr) {
+        try{
+            var selectizeMe = $("#ddlUsers")
+            var v = selectizeMe[0].selectize;
+
+            for (var i = 0; i < arr.length; i++) {
+                v.addOption({ Id: arr[i].UserId, User: arr[i].Name });
+                v.addItem(arr[i].UserId);
+            }
+            if (arr.length > 0) {
+                selectizeService.setValue('ddlUsers', arr[0].UserId);
+            }
+        }
+        catch(e){}
+    }
+    function SetGroup(t) {
+        $("#" + t).prop('checked', true);
+    }
     function CheckAvailability() {
 
         var user = $('#ddlUsers').val();
@@ -1420,14 +1988,40 @@
 
     }
     function navigateTo(url) {
-        
+
         var v = sessionStorage.getItem("version");
         location.href = url + "?ver=" + v;
     }
+
+    function navigateHome(url) {
+        sessionStorage.setItem("remember_me", "1");
+        navigateTo(url);
+    }
+
+    setInterval(function () {
+        if(calendar) calendar.refetchEvents();
+    }, 60000);
+
+
+    function ChangeDatePickerPos() {
+        setTimeout(function () {
+            $(".datepicker").css({
+                'right': '30px',
+
+            });
+        }, 600);
+    }
+
+    function gotoHour() {
+        calendar.scrollToTime($("#txtGoHour").val());
+    }
+
 
     //prevent go back
     history.pushState(null, null, location.href);
     window.onpopstate = function () {
         history.go(1);
     }
+
+
 </script>

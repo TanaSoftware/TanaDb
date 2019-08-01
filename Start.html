@@ -41,6 +41,10 @@
                 margin-top: 10px;
             }
 
+            .btn-lg {
+                padding: 2px;
+            }
+
             input[type=checkbox] {
                 /* Double-sized Checkboxes */
                 -ms-transform: scale(1.5); /* IE */
@@ -74,7 +78,9 @@
 
             <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="#page-top" class="page-scroll">דף הבית</a></li>                    
+                    <li><a href="#page-top" class="page-scroll">דף הבית</a></li>
+                    <li><a href="#" onclick="javascript:goToCustomer('LoginSec')" class="page-scroll">כניסת משתמש</a></li>
+                    <li><a href="#" onclick="javascript:goToRegisterBiz('LoginSec')" class="page-scroll">כניסת בעל עסק</a></li>
                     <li><a href="#" onclick="javascript: goToUrl('Contact.html')" class="page-scroll">צור קשר</a></li>
                     <li><a href="#" onclick="javascript: goToUrl('About.html')" class="page-scroll">אודות</a></li>
                 </ul>
@@ -98,10 +104,10 @@
                         <div class="container">
                             <div class="row">
                                 <div class="toriImg"></div>
-                                <div class="clock"></div>
+                                <div style="right:5px;" class="clock"></div>
                                 <div class="col-lg-10 col-lg-offset-1" style="padding-top:140px;">
 
-                                    <h5>התור שלך בקליק</h5>                                    
+                                    <h5>התור שלך בקליק</h5>
                                     <button class="btn btn-blue btn-lg page-scroll wow fadeInLeft" onclick="goToCustomer('LoginSec')">&nbsp;&nbsp;כניסת לקוחות&nbsp;&nbsp;</button>
                                 </div>
 
@@ -118,7 +124,7 @@
                         <div class="container">
                             <div class="row">
                                 <div class="toriImg"></div>
-                                <div class="clock"></div>
+                                <div style="right:5px;" class="clock"></div>
                                 <div class="col-lg-10 col-lg-offset-1" style="padding-top:140px;">
                                     <h5>התור אצלך בקליק</h5>
 
@@ -154,67 +160,67 @@
 
 
     <section class="fullHeight" id="LoginSec" style="padding:10px;">
+        <form action="javascript:LoginMe()">
+            <div class="container" style="margin-top:100px;overflow-y: auto;">
 
-        <div class="container" style="margin-top:140px;">
+                <div class="row">
 
-            <div class="row">
+                    <div class="">
 
-                <div class="">
+                        <div style="text-align:right;margin-top:10px;margin-bottom:10px; font-weight:bold;">כניסה: </div>
 
-                    <div style="text-align:right;margin-top:10px;margin-bottom:10px; font-weight:bold;">כניסה: </div>
+                        <div class="form-group">
 
-                    <div class="form-group">
+                            <div class="form-group floating-label-form-group controls">
 
-                        <div class="form-group floating-label-form-group controls">
+                                <input id="emailLogin" tabindex="2" type="email" placeholder="מייל" class="form-control input-lg" />
 
-                            <input id="emailLogin" type="email" placeholder="מייל" class="form-control input-lg" />
-
-                        </div>
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <div class="form-group floating-label-form-group controls">
-
-                            <input id="passwordLogin" type="password" placeholder="סיסמה" class="form-control input-lg" />
+                            </div>
 
                         </div>
 
-                    </div>
+                        <div class="form-group">
 
-                    <div class="form-group" style="text-align:right">
+                            <div class="form-group floating-label-form-group controls">
 
-                        <label>זכור אותי</label>
+                                <input id="passwordLogin" tabindex="3" type="password" placeholder="סיסמה (לפחות 8 ספרות ואותיות)" class="form-control input-lg" />
 
-                        <label>
+                            </div>
 
-                            <input id="remember_me" type="checkbox">
+                        </div>
 
-                        </label>
-                        <div style="float:left;color:#33a6cc;cursor:pointer" onClick="forgetPassword()">שכחתי סיסמה</a></div>
-                    </div>
+                        <div class="form-group" style="text-align:right">
 
-                    <div style="float:left;padding-left:5px;">
+                            <label>זכור אותי</label>
 
-                        <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
+                            <label>
 
-                        <button style="width:160px;" onClick="LoginMe();" class="btn btn-blue btn-lg">כניסה</button>
+                                <input tabindex="4" id="remember_me" type="checkbox">
 
-                    </div>
-                    <div id="dvNewClient" style="float:left; padding-left:20px;">
+                            </label>
+                            <div style="float:left;color:#33a6cc;cursor:pointer" onClick="forgetPassword()">שכחתי סיסמה</a></div>
+                        </div>
 
-                        <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
-                        <a href="javascript:goToCustomer('RegisterCustomerX')"><button style="width:150px;" id="btnRegisterCustomer" class="btn btn-blue btn-lg page-scroll wow fadeInLeft">משתמש חדש</button></a>
-                        <a href="javascript:goToRegisterBiz('Register')"><button style="width:150px;" id="btnRegister" class="btn btn-blue btn-lg page-scroll wow fadeInLeft">בעל עסק חדש</button></a>
+                        <div style="float:left;padding-left:5px;">
+
+                            <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
+
+                            <button style="width:160px;" tabindex="5" onclick="LoginMe();" class="btn btn-blue btn-lg">כניסה</button>
+
+                        </div>
+                        <div id="dvNewClient" style="float:left; padding-left:20px;">
+
+                            <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
+                            <a href="javascript:goToCustomer('RegisterCustomerX')"><button type="button" tabindex="6" style="width:150px;" id="btnRegisterCustomer" class="btn btn-blue btn-lg page-scroll wow fadeInLeft">משתמש חדש</button></a>
+                            <a href="javascript:goToRegisterBiz('Register')"><button type="button" tabindex="7" style="width:150px;" id="btnRegister" class="btn btn-blue btn-lg page-scroll wow fadeInLeft">בעל עסק חדש</button></a>
+                        </div>
+
                     </div>
 
                 </div>
 
             </div>
-
-        </div>
-
+        </form>
     </section>
 
     <section class="fullHeight" id="RegisterCustomerX" style="padding:10px;">
@@ -261,7 +267,7 @@
 
                         <div class="form-group floating-label-form-group controls">
 
-                            <input id="passwordCustomer" type="password" placeholder="סיסמה" class="form-control input-lg" />
+                            <input id="passwordCustomer" type="password" placeholder="סיסמה (לפחות 8 ספרות ואותיות)" class="form-control input-lg" />
 
                         </div>
 
@@ -283,7 +289,7 @@
 
                         <div id="dvErrRegister"></div>
 
-                        <button onClick="return RegisterToCustmer();" class="btn btn-blue btn-lg">הרשמה</button>
+                        <button style="width:160px;" onClick="return RegisterToCustmer();" class="btn btn-blue btn-lg">הרשמה</button>
 
                     </div>
 
@@ -299,7 +305,7 @@
 
         <div class="container">
 
-            <div class="row">
+            <div style="margin-top:50px;" class="row">
 
                 <div>
                     <div>
@@ -319,7 +325,7 @@
 
                             <div class="form-group floating-label-form-group controls">
 
-                                <input id="password" type="password" placeholder="סיסמה" class="form-control input-lg" />
+                                <input id="password" type="password" placeholder="סיסמה (לפחות 8 ספרות ואותיות)" class="form-control input-lg" />
 
                             </div>
 
@@ -394,8 +400,14 @@
                             </div>
 
                         </div>
+
+                        <div class="form-group">
+                            <div class="form-group floating-label-form-group controls">
+                                <input style="float:right;" type="checkbox" id="chkIsGroup"> <span style="float:right;margin-right:5px;">האם לאפשר לקבוצה לזמן תור</span>
+                            </div>
+                        </div>
                     </div>
-                    <div style="text-align:right">
+                    <div style="clear:both;padding-top:15px; text-align:right">
                         <label>סוגי פעילויות</label><span style="color:red" id="spnActiveDays"></span>
 
                         <div class="row" style="width:100%" id="UserActivities"></div>
@@ -403,7 +415,7 @@
                         <div class="form-group" style="width:100%;padding-bottom:10px;padding-top:10px;">
 
                             <input style="float:right;width:140px;margin-bottom:10px;margin-right:3px;" maxlength="50" id="BizType" type="text" placeholder="הזן סוג פעילות" class="form-control input-lg" />
-                            <input style="float:right;width:80px;margin-right:4px;" id="txtDuration" type="number" placeholder="משך פעילות" maxlength="3" class="form-control input-lg" />
+                            <input style="float:right;width:133px;margin-right:4px;" id="txtDuration" type="number" placeholder="משך פעילות" maxlength="3" class="form-control input-lg" />
                             <!--<input id="inputColor" style="float:right;width:30px;height:45px;margin-right:2px; " type="color" />-->
                             <button onclick="AddUserActivity();" class="btn btn-blue btn-lg" style="float:right;margin-right:5px;">הוסף</button>
 
@@ -416,7 +428,7 @@
 
                         <div style="width:100%;padding-bottom:10px;padding-top:10px;">
 
-                            <input style="float:right;width:180px;margin-bottom:10px;margin-right:3px;" maxlength="50" id="EmployeeName" type="text" placeholder="הזן שם עובד" class="form-control input-lg" />
+                            <input style="float:right;width:273px;margin-bottom:10px;margin-right:3px;" maxlength="50" id="EmployeeName" type="text" placeholder="הזן שם עובד" class="form-control input-lg" />
 
                             <button onclick="AddActivity();" class="btn btn-blue btn-lg" style="float:right;margin-right:5px;">הוסף</button>
 
@@ -577,7 +589,7 @@
 
                             <div id="dvErrRegister"></div>
 
-                            <button onClick="Register();" class="btn btn-blue btn-lg">הרשמה</button>
+                            <button style="width:160px;" onClick="Register();" class="btn btn-blue btn-lg">הרשמה</button>
 
                         </div>
 
@@ -591,11 +603,11 @@
 
     </section>
 
-    
+
 
     <script src="js/jquery.js"></script>
     <script src="js/cleave.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap.min.js?v=2"></script>
     <script src="js/jquery.easing.min.js"></script>
     <script src="js/jquery.countdown.min.js"></script>
     <script src="js/device.min.js"></script>
@@ -627,7 +639,7 @@
             success: function (data) {
                 var url = new URL(location.href);
                 var bizType = url.searchParams.get("p");
-                
+
                 SetHourToDddl();
                 if (sessionStorage.getItem("remember_me") != "1" && localStorage.chkbx && localStorage.chkbx != '') {
                     Login();
@@ -642,14 +654,14 @@
                     goToRegisterBiz('LoginSec');
                 }
                 if (bizType == 'cust') {
-                     goToCustomer('LoginSec');
+                    goToCustomer('LoginSec');
                 }
                 //document.getElementById("inputColor").value = '#3788D8';
-                
+                $('.carousel').bcSwipe({ threshold: 50 });
             }
         });
 
-        
+
     }
 
     function goto(hashTag) {
@@ -728,6 +740,7 @@
         var city = $("#city").val();
 
         var tel = $("#txtTel").val();
+        var chkGrp = $('#chkIsGroup').is(":checked");
 
         $("#spnActiveDays").text("");
 
@@ -777,6 +790,14 @@
         if (tel.length <= 0) {
 
             showTooltip("txtTel", "נא להזין מספר טלפון נייד");
+
+            return;
+
+        }
+
+        if (!IsvalidPhone(tel)) {
+
+            showTooltip("txtTel", "נא להזין מספר טלפון נייד תקין");
 
             return;
 
@@ -876,7 +897,7 @@
             Country: "Israel",
 
             CreditCard: creditCard,
-
+            IsGroup : chkGrp,
             dicBizType: ActivitiesData,
             UserActivities: ActivitiesUserData,
             dicEmployeeActivities: ActivitiesEmployeeData
@@ -1130,7 +1151,13 @@
             return false;
 
         }
+        if (!IsvalidPhone(txtTelCust)) {
 
+            showTooltip("txtTelCust", "נא להזין מספר טלפון נייד תקין");
+
+            return;
+
+        }
         if (email.length <= 0) {
 
             showTooltip("emailCustomer", "נא להזין מייל");
@@ -1298,6 +1325,7 @@
 
         InitCust();
         scrollToSection(id);
+        window.location.hash = id;
     }
     function InitCust() {
         $('#Register').hide();
@@ -1313,6 +1341,7 @@
         $('#btnRegister').show();
         $('#btnRegisterCustomer').hide();
         scrollToSection(id);
+        window.location.hash = id;
     }
     function goToUrl(url) {
         var v = sessionStorage.getItem("version");
@@ -1344,7 +1373,7 @@
 
             return;
 
-        }       
+        }
 
         if (!IsvalidEmail(mail)) {
 
@@ -1353,10 +1382,10 @@
             return;
 
         }
-        
+
         mail = mail.replace(".", '!!');
         mail = mail.replace(".", '!!');
-        
+
 
         $.ajax({
 
@@ -1383,5 +1412,7 @@
 
         });
     }
-    
+
+
+
 </script>

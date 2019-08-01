@@ -63,7 +63,7 @@ namespace Tor.Controllers
             {
                 
                 response = Request.CreateResponse(HttpStatusCode.Moved);
-                string fullyQualifiedUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority) + "/TorApp/ResetPass.html?v=" + ConfigManager.version + "&id=" + id;
+                string fullyQualifiedUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority) + "/ResetPass.html?v=" + ConfigManager.version + "&id=" + id;
                 response.Headers.Location = new Uri(fullyQualifiedUrl);
                 return response;
             }
@@ -236,6 +236,47 @@ namespace Tor.Controllers
             UserManager userManager = new UserManager();
 
             return userManager.GetUserById(id);
+
+        }
+
+        [HttpPost]
+
+        [ActionName("SearchCustomer")]
+
+        public CustomerObjBase SearchCustomer(CustomerSearch id)
+
+        {
+
+            UserManager userManager = new UserManager();
+
+            return userManager.SearchCustomer(id);
+
+        }
+
+        [HttpPost]
+
+        [ActionName("AddGropWithFriends")]
+
+        public string AddGropWithFriends(Groups id)
+
+        {
+
+            UserManager userManager = new UserManager();
+
+            return userManager.AddGropWithFriends(id);
+
+        }
+
+        [HttpPost]
+
+        [ActionName("GetGroupsPerCustomer")]
+
+        public List<Groups> GetGroupsPerCustomer(Groups id)
+        {
+
+            UserManager userManager = new UserManager();
+
+            return userManager.GetGroupsPerCustomer(id.guid,id.groupId);
 
         }
 

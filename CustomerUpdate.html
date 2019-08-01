@@ -97,9 +97,17 @@
 
                             </div>
 
+                            <div class="form-group">
 
+                                <div class="form-group floating-label-form-group controls">
 
-                            <div style="float:left;padding-left:20px;">
+                                    <select id="cityCust" type="text" placeholder="עיר"></select>
+
+                                </div>
+
+                            </div>
+
+                            <div style="float:left">
 
                                 <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
 
@@ -152,8 +160,12 @@
         $.ajax({
             url: "js/global.js?ver=" + v,
             dataType: "script",
-            success: function (data) {                
-                 GetCustomerDetails();                
+            success: function (data) {
+                getCities(function (data) {                    
+                    selectizeService.InitSelectize("cityCust", 'Id', 'Name', 46, data, null);
+                    GetCustomerDetails();
+                });
+                                
             }
         });
 
@@ -173,7 +185,7 @@
             contentType: "application/json;charset=utf-8",
             success: function (data) {
                     fillData(data[0]);
-                
+                    selectizeService.setValue('cityCust', "" + data[0].City + "");
             },
             error: function (request, status, error) {
 
@@ -197,8 +209,9 @@
         var password = $("#passwordCustomer").val();
 
         var email = $("#emailCustomer").val();
-
+        var city = $("#cityCust").val();
         var txtTelCust = $("#txtTelCust").val();
+
         if (user.length <= 0) {
 
             showTooltip("userCust", "נא להזין שם");
@@ -214,7 +227,13 @@
             return false;
 
         }
+        if (!IsvalidPhone(txtTelCust)) {
 
+            showTooltip("txtTelCust", "נא להזין מספר טלפון נייד תקין");
+
+            return false;
+
+        }
         if (email.length <= 0) {
 
             showTooltip("emailCustomer", "נא להזין מייל");
@@ -262,6 +281,14 @@
             return false;
         }
 
+        if (city == "0") {
+
+            showTooltip("city", "נא להזין עיר");
+
+            return;
+
+        }
+
         var userObj = {
 
             Name: user,
@@ -272,7 +299,8 @@
 
             Email: email,
 
-            guid:UserData.guid
+            guid: UserData.guid,
+            City:city
 
         }
 
@@ -292,6 +320,9 @@
                     messageHandler.Show(data.ErrorMsg);
                 else {
                     messageHandler.Show("נתונים נשמרו בהצלחה");
+                    var userData = JSON.parse(sessionStorage.getItem("UserData"));
+                    userData.City = city;
+                    sessionStorage.setItem("UserData", JSON.stringify(userData));
                     
                 }
 

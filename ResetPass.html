@@ -230,7 +230,7 @@
 
         var id = location.search;
         id = id.split('=')[2];
-        var obj = {
+        var Obj = {
             guid: id,
             pass1: p1,
             pass2: p2
@@ -245,8 +245,13 @@
                 if (data != null && data != "") {
                     messageHandler.Show(data);
                 }
-                else
+                else {
                     messageHandler.Show("סיסמה שונתה בהצלחה");
+                    localStorage.chkbx = null;
+                    localStorage.usrname = null;
+                    localStorage.pass = null;
+                    goToStart();
+                }
             },
             error: function (request, status, error) {
                 

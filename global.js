@@ -127,8 +127,10 @@ var selectizeService = {
 
         //selectize.refreshOptions();
 
+    },
+    ClearAll: function (Id) {
+        $('#' + Id).selectize()[0].selectize.destroy();
     }
-
 }
 
 function SetHour() {
@@ -287,6 +289,18 @@ function IsvalidEmail(mail) {
 
 }
 
+function IsvalidPhone(num) {
+
+    if (num.length < 10 || num.length>10) {
+
+        return false;
+
+    }
+
+    return true;
+
+}
+
 
 
 function getCities(handleData) {
@@ -364,12 +378,18 @@ function goToCal(data) {
     }
 
 }
+function goToStart() {
+        
+    var v = sessionStorage.getItem("version");
+    location.href = "Start.html?v=" + v;
+
+}
 
 function Login() {
     var userObj = { Mail: "", Password: "" };
 
     if (localStorage.chkbx && localStorage.chkbx != '') {
-        userObj.Mail = localStorage.usrname;
+        userObj.Mail = localStorage.usrname.toLowerCase();
 
         userObj.Password = localStorage.pass;
     }
@@ -392,7 +412,7 @@ function Login() {
         }
 
 
-        userObj.Mail = mail;
+        userObj.Mail = mail.toLowerCase();
 
         userObj.Password = pass;
     }
@@ -413,7 +433,7 @@ function Login() {
             if (data != null) {
 
                 if ($('#remember_me').is(':checked')) {                    
-                    localStorage.usrname = $('#emailLogin').val();
+                    localStorage.usrname = $('#emailLogin').val().toLowerCase();
                     localStorage.pass = $('#passwordLogin').val();
                     localStorage.chkbx = $('#remember_me').val();
                     
@@ -532,6 +552,60 @@ function testPassword(pwString) {
 
     if (strengthLang+strength < 2)
         return false;
+
+    return true;
+}
+
+function SetHourToDddl() {
+    document.querySelectorAll('.input-time').forEach(function (el) {
+        new Cleave(el,
+            {
+                time: true,
+                timePattern: ["h", "m"]
+            });
+    });
+
+}
+
+function isValidDate(dtStr) {
+    var dtCh = "/";
+    var minYear = 1900;
+    var maxYear = 2100;
+    var fstr = dtStr;
+    if (fstr.length < 1) {
+        return true;
+    }
+    var daysInMonth = [0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    var pos1 = dtStr.indexOf(dtCh);
+    var pos2 = dtStr.indexOf(dtCh, pos1 + 1);
+    var strDay = dtStr.substring(0, pos1);
+    var strMonth = dtStr.substring(pos1 + 1, pos2);
+    var strYear = dtStr.substring(pos2 + 1);
+    var strYr = strYear;
+    if (strDay.charAt(0) == "0" && strDay.length > 1) { strDay = strDay.substring(1); }
+    if (strMonth.charAt(0) == "0" && strMonth.length > 1) { strMonth = strMonth.substring(1); }
+    for (var i = 1; i <= 3; i++) {
+        if (strYr.charAt(0) == "0" && strYr.length > 1) { strYr = strYr.substring(1); }
+    }
+    var month = parseInt(strMonth);
+    if (isNaN(month))
+        return false;
+    var day = parseInt(strDay);
+    if (isNaN(day))
+        return false;
+    var year = parseInt(strYr);
+    if (isNaN(year))
+        return false;
+
+    if (strMonth.length < 1 || month < 1 || month > 12) {
+        return false;
+    }
+    if (strDay.length < 1 || day < 1 || day > 31 || (month == 2 && day > this.daysInFebruary(year)) || day > daysInMonth[month]) {
+        return false;
+    }
+    if (strYear.length != 4 || year == 0 || year < minYear || year > maxYear) {
+        return false;
+    }
 
     return true;
 }

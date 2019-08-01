@@ -372,6 +372,13 @@
             return false;
 
         }
+        if (!IsvalidPhone(txtTelCust)) {
+
+            showTooltip("txtTelCust", "נא להזין מספר טלפון נייד תקין");
+
+            return false;
+
+        }
 
         if (email.length <= 0) {
 

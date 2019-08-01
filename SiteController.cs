@@ -24,18 +24,9 @@ namespace Tor
         [ActionName("Biz")]
         public HttpResponseMessage GetBiz(string id)
         {
+            
 
-            //UserManager u = new UserManager();
-            //string res = u.GetUserByBizName(id);
-            //if (res == "")
-            //    return new HttpResponseMessage(HttpStatusCode.NotFound);
-
-            var response = new HttpResponseMessage();
-            //var cookie = new CookieHeaderValue("BizData", res);
-            //cookie.Expires = DateTimeOffset.Now.AddDays(1);
-            //cookie.Domain = Request.RequestUri.Host;
-            //cookie.Path = "/";
-            //response.Headers.AddCookies(new CookieHeaderValue[] { cookie });
+            var response = new HttpResponseMessage();            
             
             response = Request.CreateResponse(HttpStatusCode.Moved);
             string fullyQualifiedUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority) + "/TorApp/Biz.html?v="+ConfigManager.version  +"&id="+id;
