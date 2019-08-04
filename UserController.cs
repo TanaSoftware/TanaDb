@@ -280,6 +280,19 @@ namespace Tor.Controllers
 
         }
 
+        [HttpPost]
+
+        [ActionName("AddCustomerToGroup")]
+
+        public string AddCustomerToGroup(AddCustomerGroup id)
+        {
+
+            UserManager userManager = new UserManager();
+
+            return userManager.AddCustomerToGroup(id.guid, id.GroupId,id.CustomerId);
+
+        }
+
         [HttpGet]
 
         [ActionName("GetUserBiz")]

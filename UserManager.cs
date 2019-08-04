@@ -94,6 +94,16 @@ namespace Tor
         public string guid { get; set; }
 
     }
+    public class AddCustomerGroup
+
+    {
+      
+        public int GroupId { get; set; }
+        public int CustomerId { get; set; }
+
+        public string guid { get; set; }
+
+    }
 
     public class Group
 
@@ -1813,6 +1823,28 @@ namespace Tor
 
             }
             return dic;
+        }
+
+        public string AddCustomerToGroup(string guid,int groupId,int customerId)
+        {
+            if (!IsCustomerGuidExists(guid))
+            {
+                return "ארעה שגיאה";
+            }
+            try
+            {
+                DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+
+                string sqlInsert = "INSERT INTO GroupsCustomers ([GroupId],[CustomerId]) Values (@GroupId,@CustomerId);";
+
+                var affectedRows2 = db.Execute(sqlInsert, 1, new { GroupId = groupId, CustomerId = customerId });
+            }
+            catch(Exception ex)
+            {
+                Logger.Write(ex);
+                return "ארעה שגיאה";
+            }
+            return "";
         }
         public string AddGropWithFriends(Groups group)
         {

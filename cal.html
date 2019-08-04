@@ -421,7 +421,7 @@
                     <table style="border-collapse: separate;border-spacing: 10px;">
                         <tr>
                             <td style="text-align:right">שם קבוצה:</td>
-                            <td><select style="width:150px;" id="ddlGroupName"></select></td>
+                            <td><select style="width:150px;" id="ddlGroupName"></select><div id="dvGrpName"></div></td>
                             <td><button class="btn btn-primary" onclick="deleteGroup()" type="button">מחק</button></td>
                         </tr>
                         <tr>
@@ -1742,7 +1742,7 @@
                     if (freindsDictionary[data.Id] == null) {
                         freindsDictionary[data.Id] = data.Name;
                         var htm = $('#dvAddedFriends').html();
-                        var CustData = "<div style='text-align:right' id='dvCustomerGroup" + data.Id + "'><div style='float:right;width:120px;padding-right:20px;'>" + data.Name + "</div><button style='float:right;marging-right:4px;' onclick=deleteCustomer('" + data.Id + "')>מחק</button></div>";
+                        var CustData = "<div style='text-align:right' id='dvCustomerGroup" + data.Id + "'><div style='float:right;width:120px;padding-right:20px;'>" + data.Name + "</div><a href='#' style='float:right;marging-right:4px;' onclick=deleteCustomer('" + data.Id + "')>מחק</a></div>";
                         htm += CustData;
                         $('#dvAddedFriends').html(htm);
                         $('#txtFriend').val("");
@@ -1827,12 +1827,19 @@
             create: false,
             onChange: function (value) {
                 
-                var dataObj = MyGroups[value];
+                var dataObj = null;
+
+                for (var i = 0; i < MyGroups.length; i++) {
+                    if (MyGroups[i].groupId == value) {
+                        dataObj = MyGroups[i];
+                        break;
+                    }
+                }
                 var htm = "";
                 if (dataObj) {
                     for (var data in dataObj.friends) {
                         var obj = dataObj.friends[data];
-                        htm += "<div style='text-align:right' id='dvUpdCustomerGroup" + data + "'><div style='float:right;width:120px;padding-right:20px;'>" + obj + "</div><button style='float:right;marging-right:4px;' onclick=deleteExistCustomer(" +value +"," + data + ")>מחק</button></div>";
+                        htm += "<div style='text-align:right;' id='dvUpdCustomerGroup" + data + "'><div style='float:right;width:120px;padding-right:20px;'>" + obj + "</div><a href='#' style='float:right;marging-right:4px;' onclick=deleteExistCustomer(" +value +"," + data + ")>מחק</a></div>";
                     }
 
                     $('#dvUpdatedFriends').html(htm);
@@ -1865,9 +1872,130 @@
             success: function (data) {
                 if (data == "") {
                     $('#dvUpdCustomerGroup' + custId).remove();
-                    var d = MyGroups[groupId];
-                    delete d.friends[custId];
-                    MyGroups[groupId] = d.friends;
+                    var dataObj = null;
+                    for (var i = 0; i < MyGroups.length; i++) {
+                        if (MyGroups[i].groupId == groupId) {
+                            dataObj = MyGroups[i];
+                            break;
+                        }
+                    }
+                    var d = dataObj;
+                    var friends = d.friends;
+                    var newFriends = {};
+                    for (var x in friends) {
+                        if (x != custId)
+                            newFriends[x] = friends[x];
+                    }
+                    for (var i = 0; i < MyGroups.length; i++) {
+                        if (MyGroups[i].groupId == groupId) {
+                            MyGroups[i].friends = newFriends;
+                            break;
+                        }
+                    }
+                   
+                }
+                else
+                    $('#dvUpdatedFriendsErr').html(data);
+            },
+
+            error: function (request, status, error) {
+
+            }
+
+        });
+    }
+
+    function AddFriendUpd() {
+        var GroupId = $('#ddlGroupName').val();
+        var FriendUpd = $('#txtFriendUpd').val();
+        $('#dvGrpName').tooltip('hide');
+        if (GroupId == "0") {
+            showTooltip('dvGrpName', 'נא לבחור קבוצה');
+            return;
+        }
+        if (FriendUpd.length <= 0) {
+            showTooltip('txtFriendUpd', 'נא להזין שם מייל או טלפון');
+            return;
+        }
+
+        var CustomerSearch = {
+            searchText: FriendUpd,
+            guid: UserData.guid
+        };
+
+        $.ajax({
+
+            url: "User/SearchCustomer",
+
+            type: 'POST',
+
+            data: JSON.stringify(CustomerSearch),
+
+            contentType: "application/json;charset=utf-8",
+
+            success: function (data) {
+                var newFriends = null;
+                if (data != null && data.Name != null) {
+                    for (var i = 0; i < MyGroups.length; i++) {
+                        if (MyGroups[i].groupId == GroupId) {
+                            newFriends = MyGroups[i].friends;                            
+                            break;
+                        }
+                    }
+                    if (newFriends[data.Id] == null) {                        
+                        var htm = $('#dvUpdatedFriends').html();
+                        var CustData = "<div style='text-align:right' id='dvUpdCustomerGroup" + data.Id + "'><div style='float:right;width:120px;padding-right:20px;'>" + data.Name + "</div><a href='#' style='float:right;marging-right:4px;' onclick=deleteExistCustomer(" + GroupId + "," + data.Id + ")>מחק</a></div>";
+                        htm += CustData;
+                        $('#dvUpdatedFriends').html(htm);
+                        $('#txtFriendUpd').val("");
+                        AddSingleCustomerToGroup(GroupId, data.Id, data.Name);
+                    }
+                    else {
+                        $('#dvUpdatedFriendsErr').html("חבר לא קיים במערכת");
+                    }
+                }
+                else {
+
+                    $('#dvUpdatedFriendsErr').html("חבר לא קיים במערכת");
+                }
+
+            },
+
+            error: function (request, status, error) {
+
+            }
+
+        });
+        
+    }
+
+    function AddSingleCustomerToGroup(groupId, customerId, customerName) {
+        var groupObj = {
+            guid: UserData.guid,
+            GroupId: groupId,
+            CustomerId: customerId
+        };
+
+        $.ajax({
+
+            url: "User/AddCustomerToGroup",
+
+            type: 'POST',
+
+            data: JSON.stringify(groupObj),
+
+            contentType: "application/json;charset=utf-8",
+
+            success: function (data) {
+                if (data == "") {
+                    for (var i = 0; i < MyGroups.length; i++) {
+                        if (MyGroups[i].groupId == groupId) {
+                            var newFriends = MyGroups[i].friends;
+                            newFriends[customerId] = customerName;
+                            MyGroups[i].friends = newFriends;
+                            break;
+                        }
+                    }
                 }
                 else
                     $('#dvUpdatedFriendsErr').html(data);
