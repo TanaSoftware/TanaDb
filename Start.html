@@ -1,17 +1,14 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/main.css?v=7" rel="stylesheet">
+    <link href="css/main.css?v=24" rel="stylesheet">
     <link href="css/selectize.css" rel="stylesheet" />
     <title>TanaSoftware</title>
     <style>
-
-       
         .footer {
             position: absolute;
             bottom: 0;
@@ -46,16 +43,6 @@
             .btn-lg {
                 padding: 2px;
             }
-
-            input[type=checkbox] {
-                /* Double-sized Checkboxes */
-                -ms-transform: scale(1.5); /* IE */
-                -moz-transform: scale(1.5); /* FF */
-                -webkit-transform: scale(1.5); /* Safari and Chrome */
-                -o-transform: scale(1.5); /* Opera */
-                transform: scale(1.5);
-                padding-left: 20px !important;
-            }
         }
 
         .checkbox-inline {
@@ -74,7 +61,8 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button><a id="dvUserLoggedIn"></a><a href="#page-top" class="navbar-brand page-scroll">
-                    <img src="img/Tana1.png" style="width:100px;margin-top:12px;" alt="Logo" class="logo"><img src="img/Tana2.png" style="width:100px;margin-top:12px;" alt="Logo" class="logodark">
+                    <img id="logo1" src="img/Tana1.png" style="width:90px;height:22px; margin-top:12px;margin-left:30px;" alt="Logo" class="logo">
+                    <img id="logo2" src="img/Tana2.png" style="width:100px;margin-top:12px;margin-left:30px;" alt="Logo" class="logodark">
                 </a>
             </div>
 
@@ -82,7 +70,8 @@
                 <ul class="nav navbar-nav">
                     <li><a href="#page-top" class="page-scroll">דף הבית</a></li>
                     <li><a href="#" onclick="javascript:goToCustomer('LoginSec')" class="page-scroll">כניסת משתמש</a></li>
-                    <li><a href="#" onclick="javascript:goToRegisterBiz('LoginSec')" class="page-scroll">כניסת בעל עסק</a></li>
+                    <li><a href="#" onclick="javascript:goToCustomer('RegisterCustomerX')" class="page-scroll">משתמש חדש</a></li>
+                    <li><a href="#" onclick="javascript:goToRegisterBiz('Register')" class="page-scroll">בעל עסק חדש</a></li>
                     <li><a href="#" onclick="javascript: goToUrl('Contact.html')" class="page-scroll">צור קשר</a></li>
                     <li><a href="#" onclick="javascript: goToUrl('About.html')" class="page-scroll">אודות</a></li>
                 </ul>
@@ -93,24 +82,71 @@
 
     <header id="Carousel-intro" data-ride="carousel" class="intro carousel carousel-big slide carousel-fade">
 
-        <ol style="padding-left:40px;" class="carousel-indicators">
-            <li data-target="#Carousel-intro" data-slide-to="0" class="active"></li>
-            <li data-target="#Carousel-intro" data-slide-to="1"></li>
-            <!-- <li data-target="#Carousel-intro" data-slide-to="2"></li>-->
-        </ol>
-
-        <div class="carousel-inner">
+        <div id="LoginSec" class="carousel-inner">
             <div class="item active">
-                <div style="background-image:url(img/f.png)" class="fill">
+                <div id="dvBackImage" style="background-image:url(img/f3.jpg);" class="fill">
+                    <div class="toriImg2"></div>
+                    <div class="MainLabel2"> התור שלך בקליק</div>
                     <div class="intro-body">
                         <div class="container">
                             <div class="row">
                                 <div class="toriImg"></div>
+                                <div class="MainLabel"> התור שלך בקליק</div>
                                 <div style="right:5px;" class="clock"></div>
-                                <div class="col-lg-10 col-lg-offset-1" style="padding-top:140px;">
+                                <div id="dvLogin" class="col-lg-10 col-lg-offset-1" style="padding-top:30px;">
+                                    <form action="javascript:return LoginMe();">
+                                        <div class="container" style="margin-top:20px;overflow-y: auto;">
+                                            <div class="row" style="padding-right:45px;padding-left:45px;">
+                                                <div class="form-group">
 
-                                    <h5>התור שלך בקליק</h5>
-                                    <button class="btn btn-blue btn-lg page-scroll wow fadeInLeft" onclick="goToCustomer('LoginSec')">&nbsp;&nbsp;כניסת לקוחות&nbsp;&nbsp;</button>
+                                                    <div class="form-group floating-label-form-group controls">
+
+                                                        <input style="width:100%" id="emailLogin" tabindex="2" type="email" placeholder="מייל" class="text-line" />
+
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="form-group">
+
+                                                    <div class="form-group floating-label-form-group controls">
+
+                                                        <input style="width:100%" id="passwordLogin" tabindex="3" type="password" placeholder="סיסמה" class="text-line" />
+
+                                                    </div>
+
+                                                </div>
+                                                <div id="dvForgutPass">
+                                                    <div style="font-size:11px;width:100%;">
+
+                                                        <span id="dvRememberMe1" style="margin-top:2px;float:right">זכור אותי</span>
+
+                                                        <span id="dvRememberMe2" style="margin-right:4px;float:right">
+
+                                                            <input tabindex="4" id="remember_me" class="chk" type="checkbox">
+
+                                                        </span>
+                                                        <span id="spnForgutPass" style="color:#ffffff;cursor:pointer;text-align:left" onclick="forgetPassword()">שכחתי סיסמה</span>
+                                                    </div>
+                                                </div>
+                                                <div style="clear:both">
+
+                                                    <button id="btnLogin" style="width:100%;margin-top:30px;font-size:14px;font-weight:bold;" tabindex="5" onclick="LoginMe();" class="btn round btn-w btn-lg">כניסה</button>
+
+                                                </div>
+                                                <div id="dvNewClient">
+                                                    <div style="padding-top:20px;">
+                                                        <a style="text-decoration: underline;" href="javascript:goToCustomer('RegisterCustomerX')">משתמש חדש</a>
+                                                    </div>
+                                                    <div style="padding-top:10px;">
+                                                        <a style="text-decoration: underline;" href="javascript:goToRegisterBiz('Register')">בעל עסק חדש</a>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </form>
                                 </div>
 
                             </div>
@@ -119,115 +155,15 @@
                     </div>
                 </div>
             </div>
-
-            <div class="item">
-                <div style="background-image:url(img/f.png)" class="fill">
-                    <div class="intro-body">
-                        <div class="container">
-                            <div class="row">
-                                <div class="toriImg"></div>
-                                <div style="right:5px;" class="clock"></div>
-                                <div class="col-lg-10 col-lg-offset-1" style="padding-top:140px;">
-                                    <h5>התור אצלך בקליק</h5>
-
-                                    <button class="btn btn-blue btn-lg page-scroll wow fadeInLeft" onclick="goToRegisterBiz('LoginSec')">&nbsp;&nbsp;כניסת בעל עסק&nbsp;&nbsp;</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <!--<div class="item">
-                <div style="background-image:url(img/f.png)" class="fill">
-                    <div class="intro-body">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-lg-10 col-lg-offset-1">
-                                    <h2>מערכת לזימון תורים</h2>
-                                    <h2>לכל עסק</h2>
-                                    <a class="btn btn-blue btn-lg page-scroll wow fadeInLeft" href="#Register">לחץ כאן להרשמה</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>-->
 
         </div>
-        <a href="#Carousel-intro" data-slide="prev" class="left carousel-control"><span class="icon-prev"></span></a>
-        <a href="#Carousel-intro" data-slide="next" class="right carousel-control"><span class="icon-next"></span></a>
+
     </header>
 
 
-    <section class="fullHeight" id="LoginSec" style="padding:10px;">
-        <form action="javascript:LoginMe()">
-            <div class="container" style="margin-top:100px;overflow-y: auto;">
-
-                <div class="row">
-
-                    <div class="">
-
-                        <div style="text-align:right;margin-top:10px;margin-bottom:10px; font-weight:bold;">כניסה: </div>
-
-                        <div class="form-group">
-
-                            <div class="form-group floating-label-form-group controls">
-
-                                <input id="emailLogin" tabindex="2" type="email" placeholder="מייל" class="form-control input-lg" />
-
-                            </div>
-
-                        </div>
-
-                        <div class="form-group">
-
-                            <div class="form-group floating-label-form-group controls">
-
-                                <input id="passwordLogin" tabindex="3" type="password" placeholder="סיסמה (לפחות 8 ספרות ואותיות)" class="form-control input-lg" />
-
-                            </div>
-
-                        </div>
-
-                        <div class="form-group" style="text-align:right">
-
-                            <label>זכור אותי</label>
-
-                            <label>
-
-                                <input tabindex="4" id="remember_me" type="checkbox">
-
-                            </label>
-                            <div style="float:left;color:#33a6cc;cursor:pointer" onClick="forgetPassword()">שכחתי סיסמה</a></div>
-                        </div>
-
-                        <div style="float:left;padding-left:5px;">
-
-                            <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
-
-                            <button style="width:160px;" tabindex="5" onclick="LoginMe();" class="btn btn-blue btn-lg">כניסה</button>
-
-                        </div>
-                        <div id="dvNewClient" style="float:left; padding-left:20px;">
-
-                            <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
-                            <a href="javascript:goToCustomer('RegisterCustomerX')"><button type="button" tabindex="6" style="width:150px;" id="btnRegisterCustomer" class="btn btn-blue btn-lg page-scroll wow fadeInLeft">משתמש חדש</button></a>
-                            <a href="javascript:goToRegisterBiz('Register')"><button type="button" tabindex="7" style="width:150px;" id="btnRegister" class="btn btn-blue btn-lg page-scroll wow fadeInLeft">בעל עסק חדש</button></a>
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-        </form>
-    </section>
-
     <section class="fullHeight" id="RegisterCustomerX" style="padding:10px;">
 
-        <div class="container" style="margin-top:80px;padding-bottom:100px;">
+        <div id="dvRegisterCustomerX" class="container" style="margin-top:80px;padding-bottom:100px;">
 
             <div class="row">
 
@@ -247,9 +183,9 @@
 
                     <div class="form-group">
 
-                        <div class=& quot;form-group floating-label-form-group controls">
+                        <div class="form-group floating-label-form-group controls">
 
-                            <input id="txtTelCust" type="text" placeholder="טלפון נייד" class="form-control input-lg" />
+                            <input id="txtTelCust" type="number" maxlength="10" placeholder="טלפון נייד" class="form-control input-lg" />
 
                         </div>
 
@@ -274,24 +210,24 @@
                         </div>
 
                     </div>
-
+                    <div id="DvcityCust"></div>
                     <div class="form-group">
 
                         <div class="form-group floating-label-form-group controls">
 
                             <select id="cityCust" type="text" placeholder="עיר"></select>
-
+                            
                         </div>
 
                     </div>
 
-                    <div style="float:left;padding-left:20px;">
+                    <div style="float:left;padding-left:0px;">
 
                         <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
 
                         <div id="dvErrRegister"></div>
 
-                        <button style="width:160px;" onClick="return RegisterToCustmer();" class="btn btn-blue btn-lg">הרשמה</button>
+                        <button style="width:110px;" onclick="return RegisterToCustmer();" class="btn btn-blue">הרשמה</button>
 
                     </div>
 
@@ -305,7 +241,7 @@
 
     <section id="Register" style="margin-top:200px;padding:10px;">
 
-        <div class="container">
+        <div id="dvRegister" class="container">
 
             <div style="margin-top:50px;" class="row">
 
@@ -347,7 +283,7 @@
 
                             <div class="form-group floating-label-form-group controls">
 
-                                <input id="txtTel" type="text" placeholder="טלפון" class="form-control input-lg" />
+                                <input id="txtTel" type="number" maxlength="10" placeholder="טלפון" class="form-control input-lg" />
 
                             </div>
 
@@ -373,7 +309,7 @@
 
                         </div>
 
-                        <div class="form-group">
+                        <!--<div class="form-group">
 
                             <div class="form-group floating-label-form-group controls">
 
@@ -381,7 +317,7 @@
 
                             </div>
 
-                        </div>
+                        </div>-->
 
                         <div class="form-group">
 
@@ -392,13 +328,13 @@
                             </div>
 
                         </div>
-
+                        <div id="dvCity"></div>
                         <div class="form-group">
 
                             <div class="form-group floating-label-form-group controls">
 
                                 <select id="city" type="text" placeholder="עיר"></select>
-
+                                
                             </div>
 
                         </div>
@@ -585,13 +521,13 @@
 
 
 
-                        <div style="float:left;padding-left:20px;">
+                        <div style="float:left;padding-left:0px;">
 
                             <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
 
                             <div id="dvErrRegister"></div>
 
-                            <button style="width:160px;" onClick="Register();" class="btn btn-blue btn-lg">הרשמה</button>
+                            <button style="width:110px;" onClick="Register();" class="btn btn-blue">הרשמה</button>
 
                         </div>
 
@@ -604,8 +540,6 @@
         </div>
 
     </section>
-
-
 
     <script src="js/jquery.js"></script>
     <script src="js/cleave.js"></script>
@@ -628,8 +562,8 @@
 </html>
 <script>
     accessibility_rtl = false;
-    pixel_from_side = 10;
-    pixel_from_start = 80;
+    pixel_from_side = 5;
+    pixel_from_start = 10;
     is_set_for_mobile = 1;
     getScripts();
 
@@ -670,50 +604,7 @@
         location.href = '#' + hashTag;;
     }
 
-    function SendMail() {
-        var sName = $("#iname").val();
-        var sMsg = $("#message").val();
-        var sEmail = $("#iemail").val();
-        var sPhone = $("#phone").val();
-        $("#dvErrMail").html("");
-        if (sName.length <= 0) {
-            showTooltip("iname", "נא להזין שם");
-            return;
-        }
-        if (sEmail.length <= 0) {
-            showTooltip("iemail", "נא להזין מייל");
-            return;
-        }
-        if (!IsvalidEmail(sEmail)) {
-            showTooltip("iemail", " נא להזין מייל תקין");
-            return;
-        }
-        if (sMsg.length <= 0) {
-            showTooltip("message", "נא להזין מלל");
-            return;
-        }
-        showProgressBar(true);
-        var Obj = {
-            name: sName,
-            Msg: sMsg,
-            email: sEmail,
-            phone: sPhone
-        }
-        $.ajax({
-            url: "Mail/PostEmail",
-            type: 'POST',
-            data: JSON.stringify(Obj),
-            contentType: "application/json;charset=utf-8",
-            success: function (data) {
-                $("#dvErrMail").html("Email succesfuley sent.");
-                showProgressBar(false);
-            },
-            error: function (request, status, error) {
-                $("#dvErrMail").html("Email failed sent.");
-                showProgressBar(false);
-            }
-        });
-    }
+    
 
     function showProgressBar(isShow) {
         if (isShow)
@@ -735,7 +626,7 @@
 
         var bizNameEng = $("#bizNameEng").val();
 
-        var creditCard = $("#creditCard").val();
+        //var creditCard = $("#creditCard").val();
 
         var address = $("#address").val();
 
@@ -750,6 +641,14 @@
         if (user.length <= 0) {
 
             showTooltip("name", "נא להזין שם");
+
+            return;
+
+        }
+
+        if (!IsValidText(user)) {
+
+            showTooltip("name", "נא להזין שם חוקי");
 
             return;
 
@@ -823,6 +722,14 @@
 
         }
 
+        if (!IsValidText(bizName)) {
+
+            showTooltip("bizName", "נא להזין שם חוקי");
+
+            return;
+
+        }
+
 
 
         if (bizNameEng.length <= 0) {
@@ -833,15 +740,21 @@
 
         }
 
+        if (!IsValidEngText(bizNameEng)) {
 
-
-        if (creditCard.length <= 0) {
-
-            showTooltip("creditCard", "נא להזין כרטיס אשראי ");
+            showTooltip("bizNameEng", "נא להזין שם עסק באנגלית");
 
             return;
 
         }
+
+        //if (creditCard.length <= 0) {
+
+        //    showTooltip("creditCard", "נא להזין כרטיס אשראי ");
+
+        //    return;
+
+        //}
 
 
 
@@ -853,12 +766,20 @@
 
         }
 
+        if (!IsValidAddress(address)) {
+
+            showTooltip("address", "נא להזין כתובת חוקית");
+
+            return;
+
+        }
 
 
-        if (city == "0") {
 
-            showTooltip("city", "נא להזין עיר");
+        if (city == "" || city == "0") {
 
+            showTooltip("dvCity", "נא להזין עיר");
+            $("#address").focus();
             return;
 
         }
@@ -898,8 +819,8 @@
 
             Country: "Israel",
 
-            CreditCard: creditCard,
-            IsGroup : chkGrp,
+            CreditCard: "1",
+            IsGroup: chkGrp,
             dicBizType: ActivitiesData,
             UserActivities: ActivitiesUserData,
             dicEmployeeActivities: ActivitiesEmployeeData
@@ -946,7 +867,7 @@
     var ActivitiesData = {};
     var ActivitiesEmployeeData = {};
     var ActivitiesUserData = {};
-
+    var ActivitiesUserDataHelper = {};
 
     function GetBizTypeItem() {
 
@@ -994,9 +915,12 @@
         var ActivitiesTempData = new Array();
 
         if (!checkValid("EmployeeName", "נא להזין שם עובד")) {
-
             return;
-
+        }
+        var emp = $('#EmployeeName').val();
+        if (!IsValidTextAndNumbers(emp)) {
+            showTooltip("EmployeeName", "נא להזין טקסט חוקי");
+            return;
         }
         if ($('#dvActivitiesSelection').html() == "") {
             showTooltip('BizType', "נא להזין פעילות");
@@ -1004,15 +928,17 @@
         }
         var z = 0;
         var activity = "";
+        var ind = 0;
         for (var x in ActivitiesUserData) {
             activity = x;
-            if ($('#chk_' + x).is(":checked")) {
+            ind = ActivitiesUserDataHelper[x];
+            if ($('#chk_' + ind).is(":checked")) {
                 z++;
             }
         }
 
         if (z == 0) {
-            showTooltip('chk_' + activity, "נא לבחור לפחות פעילות אחת לעובד");
+            showTooltip('chk_' + ind, "נא לבחור לפחות פעילות אחת לעובד");
             return;
         }
         for (var i = 1; i <= 7; i++) {
@@ -1081,15 +1007,15 @@
             var activities = " ";
             var arrActs = [];
             for (var x in ActivitiesUserData) {
-
-                if ($('#chk_' + x).is(":checked")) {
+                ind = ActivitiesUserDataHelper[x];
+                if ($('#chk_' + ind).is(":checked")) {
                     activities += x + ", ";
                     arrActs.push(x);
                 }
             }
             ActivitiesEmployeeData[ActivityCounter] = arrActs;
             activities = activities.substring(0, activities.length - 2);
-            data = "<div style='width:100%;' id='dvBizType" + item.EmployeeName + "'><div style='float:right;width:120px;padding-right:20px;'>" + item.EmployeeName + "</div><div style='float:right;width:120px;padding-right:10px;'>(" + activities + ")</div><button style='float:right;marging-right:4px;' onclick=deleteBizType('" + item.EmployeeName + "')>מחק</button></div>";
+            data = "<div style='width:100%;' id='dvBizType" + ActivityCounter + "'><div id='dvBizTypeName" + ActivityCounter + "' style='float:right;width:120px;padding-right:20px;'>" + item.EmployeeName + "</div><div style='float:right;width:120px;padding-right:10px;'>(" + activities + ")</div><button style='float:right;marging-right:4px;' onclick=deleteBizType('" + ActivityCounter + "')>מחק</button></div>";
 
 
             var newDiv = $("#Activities").html();
@@ -1107,8 +1033,8 @@
 
 
     function deleteBizType(i) {
-
-        delete ActivitiesData[i];
+        var name = $('#dvBizTypeName' + i).html();
+        delete ActivitiesData[name];
         delete ActivitiesEmployeeData[i];
         $('#dvBizType' + i).remove();
 
@@ -1145,7 +1071,11 @@
             return false;
 
         }
+        if (!IsValidText(user)) {
+            showTooltip("userCust", "נא להזין שם חוקי");
+            return false;
 
+        }
         if (txtTelCust.length <= 0) {
 
             showTooltip("txtTelCust", "נא להזין טלפון נייד");
@@ -1167,8 +1097,6 @@
             return false;
 
         }
-
-
 
 
         if (!IsvalidEmail(email)) {
@@ -1207,10 +1135,10 @@
             return false;
         }
 
-        if (city == "0") {
+        if (city == "" || city == "0") {
 
-            showTooltip("city", "נא להזין עיר");
-
+            showTooltip("DvcityCust", "נא להזין עיר");
+            $("#passwordCustomer").focus();
             return;
 
         }
@@ -1263,7 +1191,14 @@
 
     }
 
-
+    function getObjectIndex(dic, objKey) {
+        var index = 0;
+        for (var key in dic) {
+            if (key == objKey)
+                return index;
+            index++;
+        }
+    }
     function AddUserActivity() {
 
         var data = "";
@@ -1271,11 +1206,20 @@
 
         var ActivitiesTempData = new Array();
         var bizType = $('#BizType').val();
+       
         if (bizType.length == 0) {
             showTooltip("BizType", "נא להזין שם פעילות");
             return;
         }
 
+        if (bizType.length < 2) {
+            showTooltip("BizType", "נא להזין לפחות 2 אותיות");
+            return;
+        }
+        if (!IsValidTextAndNumbers(bizType)) {
+            showTooltip("BizType", "נא להזין טקסט חוקי");
+            return;
+        }
         if (!checkValid("txtDuration", "נא להזין משך פעילות בדקות")) {
             return;
         }
@@ -1297,11 +1241,13 @@
                 return;
             }
         }
+        var ind = 0;
         if (ActivitiesUserData[bizType] == null) {
 
             ActivitiesUserData[bizType] = Duration;
-
-            data = "<div style='width:100%;' id='dvBizTypeAct" + bizType + "'><div style='float:right;width:260px;padding-right:20px;'>" + bizType + " למשך  " + ActivitiesUserData[bizType] + " דקות</div><button style='float:right;marging-right:4px;' onclick=deleteBizTypeActivity('" + bizType + "')>מחק</button></div>";
+            ind = getObjectIndex(ActivitiesUserData, bizType);
+            ActivitiesUserDataHelper[bizType] = ind;
+            data = "<div style='width:100%;' id='dvBizTypeAct" + ind + "'><div style='float:right;width:260px;padding-right:20px;'>" + bizType + " למשך  " + ActivitiesUserData[bizType] + " דקות</div><button style='float:right;marging-right:4px;' onclick=deleteBizTypeActivity('" + ind + "')>מחק</button></div>";
 
             var newDiv = $("#UserActivities").html();
 
@@ -1309,12 +1255,20 @@
             $('#BizType').val("");
             $('#txtDuration').val("");
         }
-        var s1 = "<div id='dvAddedAct" + bizType + "' style='text-align:right;color:#007bff'><label style='width:120px;' for='chk_" + bizType + "'>" + bizType + "</label><input id='chk_" + bizType + "' type='checkbox' value='" + bizType + "' /></div>";
+        var s1 = "<div id='dvAddedAct" + ind + "' style='text-align:right;color:#007bff'><label style='width:120px;' for='chk_" + ind + "'>" + bizType + "</label><input id='chk_" + ind + "' type='checkbox' value='" + bizType + "' /></div>";
 
         $("#dvActivitiesSelection").append(s1);
     }
     function deleteBizTypeActivity(i) {
-        delete ActivitiesUserData[i];
+        var keyDel = "";
+        for (var key in ActivitiesUserDataHelper) {
+            if (ActivitiesUserDataHelper[key] == i) {
+                keyDel = key;
+                break
+            }
+        }
+        delete ActivitiesUserData[keyDel];
+        delete ActivitiesUserDataHelper[keyDel];
 
         $('#dvBizTypeAct' + i).remove();
         $('#dvAddedAct' + i).remove();
@@ -1366,55 +1320,36 @@
         Login();
     }
 
-    function forgetPassword() {
-        var mail = $('#emailLogin').val();
-
-        if (mail.length <= 0) {
-
-            showTooltip("emailLogin", "נא להזין מייל");
-
-            return;
-
-        }
-
-        if (!IsvalidEmail(mail)) {
-
-            showTooltip("emailLogin", "נא להזין מייל תקין");
-
-            return;
-
-        }
-
-        mail = mail.replace(".", '!!');
-        mail = mail.replace(".", '!!');
 
 
-        $.ajax({
+    var sWidth = screen.width;
+    if (sWidth > 500) {
+        document.getElementById("dvBackImage").style.backgroundImage = 'url(img/toriBigX3.jpg)';
+        document.getElementById("dvBackImage").style.backgroundPosition = "50% 50%";
+        document.getElementById("dvBackImage").style.backgroundSize = "100% cover!important";
+        document.getElementById("dvBackImage").style.overflow = "hidden";
+        document.getElementById("dvBackImage").style.display = "block";
+        document.getElementById("dvBackImage").style.margin = "auto 0";
+        var divideBy = sWidth > 1200 ? 3 : 2;
+        var MinusBy = sWidth > 1200 ? 230 : 320;
+        var sw = sWidth / divideBy;
 
-            url: "User/ResetPasswordPhase1/" + mail,
-
-            type: 'GET',
-
-            contentType: "application/json;charset=utf-8",
-
-            success: function (data) {
-                if (data != "") {
-                    messageHandler.Show(data);
-                    return;
-                }
-                messageHandler.Show("נשלח אליך מייל לאיפוס הסיסמה");
-
-            },
-
-            error: function (request, status, error) {
-
-
-
-            }
-
-        });
+        document.getElementById("emailLogin").style.width = sw + "px";
+        document.getElementById("passwordLogin").style.width = sw + "px";
+        document.getElementById("btnLogin").style.width = sw + "px";
+        var pos = $('#passwordLogin').offset();
+        document.getElementById("dvForgutPass").style.marginRight = (sw - MinusBy) + "px";
+        var w = $('#passwordLogin').innerWidth();
+        document.getElementById("spnForgutPass").style.marginRight = (sw - (w - 100)) + "px";
+        document.getElementById("dvLogin").style.marginTop = "60px";
+        pixel_from_start = 40;
+        document.getElementById("logo1").style.marginLeft = "10px";
+        document.getElementById("logo2").style.marginLeft = "10px";
+        document.getElementById("dvRegisterCustomerX").style.width = "50%";
+        document.getElementById("dvRegister").style.width = "50%";
     }
-
-
+    else {
+        document.getElementById("spnForgutPass").style.float = "left";
+    }
 
 </script>

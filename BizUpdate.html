@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/main.css" rel="stylesheet">
+    <link href="css/main.css?v=9" rel="stylesheet">
     <link href="css/selectize.css" rel="stylesheet" />
     <style>
         .hour {
@@ -32,6 +32,9 @@
                 -o-transform: scale(1.5); /* Opera */
                 transform: scale(1.5);
                 padding-left: 20px !important;
+            }
+         .btn-lg {
+                padding: 2px;
             }
         }
 
@@ -154,7 +157,7 @@
 
                                 <div id="dvErrRegister"></div>
 
-                                <button onClick="Save();" class="btn btn-blue btn-lg">שמירה</button>
+                                <button style="width: 100px;" onClick="Save();" class="btn btn-blue btn-lg">שמירה</button>
 
                             </div>
                         </div>
@@ -466,8 +469,8 @@
         return false;
     }
     function getEmployeeTemplate(EmployeeId, EmployeeName, EmployeeActivities) {
-
-        var ret = "<div class='row' style='width:100%;' id='dvBizType" + EmployeeId + "'><div style='float:right;padding-right:20px;'><input style='width:140px;' onclick=SetEmployeeData(\'" + escape(EmployeeName) + "\'); id='txtBizType" + EmployeeId + "' type='text' value='" + EmployeeName + "' /><input type='hidden' id='hdnBizType" + EmployeeId + "' value='" + EmployeeName + "'/></div><button style='float:right;margin-right:4px;' onclick=deleteBizType('" + EmployeeId + "')>מחק</button><button style='float:right;margin-right:4px;' onclick=UpdateBizType('" + EmployeeId + "')>עדכן</button>";
+        
+        var ret = "<div class='row' style='width:100%;' id='dvBizType" + EmployeeId + "'><div style='float:right;padding-right:20px;'><input style='width:140px;' onclick=SetEmployeeData(\'" + EmployeeId + "\'); id='txtBizType" + EmployeeId + "' type='text' /><input type='hidden' id='hdnBizType" + EmployeeId + "' value='" + EmployeeName + "'/></div><button style='float:right;margin-right:4px;' onclick=deleteBizType('" + EmployeeId + "')>מחק</button><button style='float:right;margin-right:4px;' onclick=UpdateBizType('" + EmployeeId + "')>עדכן</button>";
         for (var i = 0; i < UserData.Activities.length; i++) {
             var bizType = UserData.Activities[i].Name;
             var checked = "";
@@ -505,18 +508,33 @@
             BizTypeData += getBizTypeTemplate(UserData.Activities[i].Id, UserData.Activities[i].Name, UserData.Activities[i].ActiveDuration);
         }
         $("#UserActivities").html(BizTypeData);
-
+        
         for (var key in UserData.dicBizType) {
             var arr = UserData.dicBizType[key];
             empData += getEmployeeTemplate(arr[0].EmployeeId, arr[0].EmployeeName, UserData.dicEmployeeActivities[arr[0].EmployeeId]);
+            
         }
         $("#Activities").html(empData);
-
+        fillEmployees();
     }
-
-    function SetEmployeeData(keyEs) {
-        var key = unescape(keyEs);
-        var arr = UserData.dicBizType[key];
+    function fillEmployees() {
+        for (var key in UserData.dicBizType) {
+            var arr = UserData.dicBizType[key];
+            $("#txtBizType" + arr[0].EmployeeId).val(arr[0].EmployeeName);
+        }
+    }
+    function SetEmployeeData(EmployeeId) {
+        var keySet = "";
+        for (var key in UserData.dicBizType) {
+            for (var j = 0; j < UserData.dicBizType[key].length; j++) {
+                if (UserData.dicBizType[key][j].EmployeeId == EmployeeId) {
+                    keySet = key;
+                    break
+                }
+            }
+        }
+        
+        var arr = UserData.dicBizType[keySet];
         for (var i = 1; i <=7; i++) {
             document.getElementById('Day' + i).checked = false;
             $('#txtfromHour' + i).val("");
@@ -625,13 +643,15 @@
                     var empData = getEmployeeTemplate(data.EmployeeId, empName);
                     var newDiv = $("#Activities").html();
                     $("#Activities").html(newDiv + empData);
+                    ActivitiesTempData = getEmployeeHours(data.EmployeeId);
                     $('#EmployeeName').val("");
-
+                    
                     var dicBizType = UserData.dicBizType;
                     dicBizType[empName] = ActivitiesTempData;
                     UserData.dicBizType = dicBizType;
                     sessionStorage.setItem("UserData", JSON.stringify(UserData));
                     messageHandler.Show(" עובד חדש התווסף בהצלחה");
+                    fillEmployees();
                 }
             },
             error: function (request, status, error) {

@@ -609,3 +609,106 @@ function isValidDate(dtStr) {
 
     return true;
 }
+
+function goToUrl(url) {
+    var v = sessionStorage.getItem("version");
+    location.href = url + '?v=' + v;
+}
+
+
+
+function forgetPassword() {
+    var mail = $('#emailLogin').val();
+
+    if (mail.length <= 0) {
+
+        showTooltip("emailLogin", "נא להזין מייל");
+
+        return;
+
+    }
+
+    if (!IsvalidEmail(mail)) {
+
+        showTooltip("emailLogin", "נא להזין מייל תקין");
+
+        return;
+
+    }
+
+    mail = mail.replace(".", '!!');
+    mail = mail.replace(".", '!!');
+
+
+    $.ajax({
+
+        url: "User/ResetPasswordPhase1/" + mail,
+
+        type: 'GET',
+
+        contentType: "application/json;charset=utf-8",
+
+        success: function (data) {
+            if (data != "") {
+                messageHandler.Show(data);
+                return;
+            }
+            messageHandler.Show("נשלח אליך מייל לאיפוס הסיסמה");
+
+        },
+
+        error: function (request, status, error) {
+
+
+
+        }
+
+    });
+}
+
+function replaceAll(target, search, replacement) {
+    return target.split(search).join(replacement);
+}
+
+function IsValidText(inputtxt) {
+    var letters = /^[א-תA-Za-z ']+$/;
+    if (inputtxt.match(letters)) {
+        
+        return true;
+    }
+    else {        
+        return false;
+    }
+}
+function IsValidEngText(inputtxt) {
+    var letters = /^[A-Za-z]+$/;
+    if (inputtxt.match(letters)) {
+
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+function IsValidTextAndNumbers(inputtxt) {
+    var letters = /^[א-תA-Za-z0-9 ']+$/;
+    if (inputtxt.match(letters)) {
+
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+function IsValidAddress(inputtxt) {
+    var letters = /^[א-תA-Za-z0-9 /\-']+$/;
+    if (inputtxt.match(letters)) {
+
+        return true;
+    }
+    else {
+        return false;
+    }
+}
