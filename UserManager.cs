@@ -171,7 +171,16 @@ namespace Tor
 
     }
 
+    public class SearchUser
+    {
+        public string Id { get; set; }
+        public string guid { get; set; }
+        public string City { get; set; }
+        public string BizName { get; set; }
+        public string Adrress { get; set; }
 
+
+    }
 
     public class CustomerObjWrapper
 
@@ -533,7 +542,7 @@ namespace Tor
 
                 userDetails.isUser = false;
                 userDetails.City = cust.City;
-                userDetails.CustomersUsers = getUsersForCustomers(cust.Id);
+                userDetails.CustomersUsers = getUsersForCustomers(cust.Id, userDetails.City);
                 return userDetails;
 
             }
@@ -544,17 +553,29 @@ namespace Tor
 
         }
 
-        private IEnumerable<UserActivity> getUsersForCustomers(int CustomerId)
+        private IEnumerable<UserActivity> getUsersForCustomers(int CustomerId,int cityId)
         {
             try
             {
+                List<UserActivity> lst = new List<UserActivity>();
                 DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
                 string sqlCust = @"SELECT distinct q.UserId,u.BizName as Name
                               FROM [Que] q INNER JOIN Users u on q.UserId = u.Id
                               where q.customerId=@CustomerId;";
                 IEnumerable<UserActivity> userAct = db.QueryData<UserActivity>(sqlCust, 1, new { CustomerId = CustomerId });
 
-                return userAct;
+                string sqlCust2 = @"SELECT [Id] as UserId,BizName as Name
+                              FROM Users
+                              where [City]=@cityId;";
+                IEnumerable<UserActivity> userAct2 = db.QueryData<UserActivity>(sqlCust2, 1, new { cityId = cityId });
+
+                foreach (UserActivity u in userAct)
+                    lst.Add(u);
+
+                foreach (UserActivity u in userAct2)
+                    lst.Add(u);
+                
+                return lst;
             }
             catch (Exception ex)
             {
@@ -2222,6 +2243,49 @@ namespace Tor
                 return "ארעה שגיאה";
 
             return "";
+        }
+
+
+        public IEnumerable<SearchUser> SearchBiz(SearchUser search)
+        {
+            string sWhere = "";
+            bool isAddress = string.IsNullOrEmpty(search.Adrress);
+            bool isName = string.IsNullOrEmpty(search.BizName);
+            bool isCity = string.IsNullOrEmpty(search.City);
+
+            if (!isAddress && !isName && !isCity)
+                sWhere = "u.[BizName] like @name  And u.[Adrress] like @Adrress And u.[City]=@city";
+
+            else if (!isAddress && !isName && isCity)
+                sWhere = "u.[BizName] like @name  And u.[Adrress] like @Adrress";
+
+            else if(!isAddress && isName && !isCity)
+                sWhere = "u.[Adrress] like @Adrress And u.[City]=@city";
+
+            else if (isAddress && !isName && !isCity)
+                sWhere = "u.[BizName] like @name And u.[City]=@city";
+
+
+            else if (!isAddress && isName && isCity)
+                sWhere = "u.[Adrress] like @Adrress";
+
+            else if (isAddress && !isName && isCity)
+                sWhere = "u.[BizName] like @name";
+
+            else if (isAddress && isName && !isCity)
+                sWhere = "u.[City]=@city";
+
+            string sqlCust = @"SELECT u.[Id], u.BizName,u.Adrress,c.Name as City
+                               FROM [Users] u INNER JOIN City c on u.City = c.Id
+                               WHERE  " + sWhere + " And u.[Active] is not null ;";
+
+            DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
+            IEnumerable<SearchUser> users = db.QueryData<SearchUser>(sqlCust, 1,
+                new { name = "%" + search.BizName + "%" , Adrress = "%" + search.Adrress + "%", city= search .City});
+
+
+            return users;
+
         }
     }
 

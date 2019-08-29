@@ -31,7 +31,18 @@ namespace Tor
 
         }
 
+        [HttpPost]
 
+        [ActionName("IsQueUpdated")]
+        public bool IsQueUpdated(Que id)
+
+        {
+
+            QueManager userManager = new QueManager();
+
+            return userManager.IsQueUpdated(id.UserId,id.EmployeeId,id.CustomerId);
+
+        }
 
         [HttpPost]
 

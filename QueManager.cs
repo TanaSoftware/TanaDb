@@ -4,7 +4,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 
 using System.Collections.Generic;
-
+using System.Collections.Concurrent;
 using System.Linq;
 
 using Tor.Dal;
@@ -52,7 +52,7 @@ namespace Tor
 
     {
 
-        public int Id { get; set; }
+        public int id { get; set; }
         public int CustomerId { get; set; }
         public string title { get; set; }
 
@@ -61,6 +61,8 @@ namespace Tor
         public DateTime end { get; set; }
 
         public string backgroundColor { get; set; }
+
+        public int QueType { get; set; }
 
     }
 
@@ -104,6 +106,7 @@ namespace Tor
     public class QueManager
 
     {
+        static ConcurrentDictionary<string, bool> QueDic = new ConcurrentDictionary<string, bool>();
 
         private bool IsDateInDateList(DateTime date, List<UserExtraActivity> extra)
         {
@@ -165,7 +168,7 @@ namespace Tor
                 else
                     select = "CASE When B.Id=@CustomerId THEN Case when U.Name + ' ' +g.Name is not null then g.Name Else U.Name End ELSE N'תפוס' END ";
 
-                var sql = @"SELECT A.[CustomerId],A.id," + select + @" As [title],A.FromDate As [start],A.ToDate As [end]
+                var sql = @"SELECT A.[CustomerId],A.id,A.[QueType], " + select + @" As [title],A.FromDate As [start],A.ToDate As [end]
 
                         FROM Que A INNER JOIN Customer B on A.CustomerId = B.Id
                         JOIN UsersActivitiesTypes U ON U.Id = A.QueType
@@ -326,6 +329,8 @@ namespace Tor
                 List<QueData> hebList = HebrewCalendarManager.GetHeb(que.FromDate, que.ToDate);
                 if (hebList.Count > 0)
                     lst.AddRange(hebList);
+
+                Task.Factory.StartNew(() => UpdateDictionery(que.UserId,que.EmployeeId,que.CustomerId, false));
             }
 
             catch (Exception ex)
@@ -338,7 +343,7 @@ namespace Tor
 
             }
 
-
+            
 
             return lst;
 
@@ -593,6 +598,27 @@ namespace Tor
                 var Rows = db.Execute(sqlUserCustomerInsert, 1, new { UserId = userId, CustomerId = customerId });
             }
         }
+
+        private void UpdateDictionery(int UserId, int EmployeeId, int CustomerId,bool IsUpdated)
+        {
+            string key = UserId + "_" + EmployeeId + "_" + CustomerId;
+            if (QueDic.ContainsKey(key))
+            {
+                QueDic[key] = IsUpdated;
+            }
+            else
+                QueDic.TryAdd(key, IsUpdated);
+        }
+
+        public bool IsQueUpdated(int UserId, int EmployeeId, int CustomerId)
+        {
+            string key = UserId + "_" + EmployeeId + "_" + CustomerId;
+            if (QueDic.ContainsKey(key))
+            {
+                return QueDic[key];
+            }
+            return true;
+        }
         private bool AddQueToDb(Que que)
 
         {
@@ -614,6 +640,8 @@ namespace Tor
                 {
                     Task.Factory.StartNew(() => AddCusomersToUsers(que.UserId,que.CustomerId));
                 }
+
+                Task.Factory.StartNew(() => UpdateDictionery(que.UserId,que.EmployeeId,que.CustomerId,true));
             }
 
             catch (Exception ex)

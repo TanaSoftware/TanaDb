@@ -86,6 +86,9 @@
                 <li><a href="javascript:AddGroup()" class="nav-link">הוסף קבוצה</a></li>
                 <li id="liUpdateGroup" style="display:none"><a href="javascript:UpdateGroup()" class="nav-link">עדכן קבוצה</a></li>
                 <li id="liUpdateCustomer" style="display:none"><a href="javascript:navigateTo('CustomerUpdate.html')" class="nav-link">עדכון פרטי משתמש</a></li>
+                <li><a href="javascript:SetCal('timeGrid')" class="nav-link">תצוגה יומית</a></li>
+                <li><a href="javascript:SetCal('timeGridWeek')" class="nav-link">תצוגה שבועית</a></li>
+                <li><a href="javascript:SetCal('dayGridMonth')" class="nav-link">תצוגה חודשית</a></li>                
             </ul>
         </div>
         <div style="float:right;padding-right: 10px;">
@@ -110,19 +113,27 @@
 
     </nav>
 
-    <div class="d-flex justify-content-center">
-        <span class="floatR" style="margin-top:32px;margin-left:4px;color:#007bff">קבע תור ל:</span>
+    <div id="dvCustomersX" class="d-flex justify-content-center" style="display:none !important;margin-top:10px;">
+        <span class="floatR" style="margin-left:4px;color:#007bff">קבע תור ל:</span>        
         <div class="floatR">
-            <select placeholder="בחר עובד" class="form-control" style="width:100px;margin-top:24px;margin-left:8px;" id="ddlActivity"></select>
+            <select placeholder="בחר עובד" class="form-control" style="margin-left:8px;" id="ddlActivity"></select>
         </div>
-        <div class="btn-group-sm btn-group-primary" role="group" aria-label="...">
-
-            <div class="floatR" onclick="SetCal('timeGrid')" style="width:40px;"><input class="rdb" id="btnDaily" type="radio" name="rdbX"><div class="check"></div><span class="floatR">יומי</span></div>
-            <div class="floatR" onclick="SetCal('timeGridWeek')" style="width:50px;"><input class="rdb" id="btnWeekly" type="radio" name="rdbX"><div class="check"></div><span class="floatR">שבועי</span></div>
-            <div class="floatR" onclick="SetCal('dayGridMonth')" style="width:50px;"><input class="rdb" id="btnMonthly" type="radio" name="rdbX"><div class="check"></div><span class="floatR">חודשי</span></div>
-        </div>
+        
     </div>
-
+   
+    <div id="dvUsersX" class="container">
+        <div class="row">
+            <div class="col-xs-3">
+                <span class="floatR" style="margin-top:3px; margin-left:4px;color:#007bff">קבע תור ל:</span>
+            </div>
+            <div class="col-xs-8">
+                <select id="ddlUsers" placeholder="בחר בעל עסק"></select>
+            </div>
+            <div class="col-xs-1">
+                <button onclick="SearchUser()" type="button" id="next" class="btn btn-primary btn-sm" style="float:right;margin-right:5px; margin-top:2px;height:30px;">...</button>
+            </div>
+         </div>
+    </div>
     <div style="float:right;text-align:left" class="p-2">
         <select style="width:110px;" id="ddlEvent" class="form-control" type="text"></select>
     </div>
@@ -147,18 +158,85 @@
             <div class="flex-row">
 
                 <div id="dvddlCity" style="float:right" class="p-2">
-                    <select style="width:100px;" id="ddlCity" placeholder="בחר עיר"></select>
+                   <select style="width:250px;" id="ddlCity" placeholder="בחר עיר"></select>
                 </div>
-                <div id="dvddlUserers" style="float:right" class="p-2">
-                    <select style="width:110px;" id="ddlUsers" placeholder="בחר בעל עסק"></select>
-                </div>
+                
             </div>
         </div>
     </div>
     <div id="calendar"></div>
 
     <!--Add event modal-->
+    <div id="SearchBizModal" class="modal fade">
 
+        <div class="modal-dialog vertical-align-center">
+
+            <div class="modal-content" style="width:320px;">
+
+                <div class="modal-header">
+
+                    <div style="float:right;color:#007bff;"><h4>חפש בעל עסק</h4></div>
+
+                    <div style="float:left">
+
+                        <button type="button" class="close" data-dismiss="modal">
+
+                            <span aria-hidden="true">&times;</span> <span class="sr-only">close</span>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div id="modalBody" class="modal-body">
+                    <div class="form-group">
+
+                        <div class="form-group floating-label-form-group controls">
+
+                            <select id="bizCity" type="text" placeholder="עיר"></select>
+
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+
+                        <div class="form-group floating-label-form-group controls">
+
+                            <input id="BizName" type="text" placeholder="שם עסק" class="form-control input-lg" />
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <div class=& quot;form-group floating-label-form-group controls">
+
+                            <input id="bizAddress" type="text" placeholder="כתובת" class="form-control input-lg" />
+
+                        </div>
+
+                    </div>
+                   
+                </div>
+
+                <div class="modal-footer">
+
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">ביטול</button>
+
+                    <button type="submit" style="margin-right:5px;" class="btn btn-primary" onclick="SearchBiz()" id="btnAddCustomer">חיפוש</button>
+
+                </div>
+                <div id="dvResults" style="text-align:right;"></div>
+
+            </div>
+
+
+
+        </div>
+
+    </div>
     <div id="createEventModal" class="modal fade">
 
         <div class="modal-dialog vertical-align-center">
@@ -363,7 +441,7 @@
                 <div class="modal-header">
 
                     <div style="float:right;color:#007bff;"><h4>הוסף קבוצה</h4></div>
-                    <div style="float:left">
+                    <div style="float:left;">
 
                         <button type="button" class="close" data-dismiss="modal">
                             <span aria-hidden="true">&times;</span> <span class="sr-only">close</span>
@@ -504,6 +582,7 @@
         }
         if (UserData.isUser) {            
             $('#dvCustomers').show();
+            $('#dvCustomersX').show();
             getMyCustomers();
 
             setUser(UserData);
@@ -514,7 +593,7 @@
 
             SetCustomer();
             $('#dvUsers').show();            
-
+            $('#dvUsersX').show();
             UserForCustomerDetails = JSON.parse(sessionStorage.getItem("UserForCustomerDetails"));
 
             $('#liUpdateCustomer').show();
@@ -896,8 +975,7 @@
         $("#calendar").html("");
         CreateCal(QueObj, ActiveHourFrom, ActiveHourTo, duration, view);
 
-    }
-
+    }   
 
     function CreateCal(data, minimumTime, maximumTime, duration, view) {
 
@@ -938,7 +1016,7 @@
             },
             textColor: '#FFF',
             slotLabelInterval: parseInt(duration),
-            editable: true,
+            //editable: true,
             eventLimit: true,
             selectable: true,
             longPressDelay: 130,
@@ -951,6 +1029,7 @@
             eventClick: function (info) {
                 SetCalData(info);
             },
+           
             locale: 'he',
             dir: 'rtl',
             titleFormat: { year: 'numeric', month: 'numeric', day: 'numeric' },
@@ -980,7 +1059,7 @@
         }
 
     }
-    //$(this).html('<div onclick="SetVacation(\'' + date.format('DD/MM/YYYY') + '\')">' + getDayWeek(date.day()) + '</div><span style="font-size:12px">' + date.format('DD/MM') + '</span>')
+   
     function SetVacation(d) {
         if (UserData.isUser) {
             $('#txtVacDateFrom').val(d);
@@ -1152,6 +1231,11 @@
 
 
     function SetCalData(info) {
+        try {
+            SetGroup('btnMe');            
+            selectizeService.setValue('ddlGroups', '0');
+        }
+        catch (e) { }
 
         var SelectedCustomer = $('#ddlCustomers').val();
 
@@ -1220,19 +1304,22 @@
 
                 qCustomer = qCustomer.trim();
 
-                var qTypeId = findEventByName(UserData.Activities, qType);
-                if (qTypeId != null)
-                    $('#ddlEvent').val(qTypeId.Id);
+                //var qTypeId = info.event.extendedProps.QueType;// findEventByName(UserData.Activities, qType);
+                //if (qTypeId != null)
+                //    $('#ddlEvent').val(qTypeId.Id);
 
                 currentCustomerName = qCustomer;
                 $("#spnEventMsg").text(" ל" + currentCustomerName);
             }
-            else {
-                if (currentUserForCustomer != null) {
-                    var qTypeId = findEventByName(currentUserForCustomer.Activities, InfoObj.title);
-                    $('#ddlEvent').val(qTypeId.Id);
-                }
-            }
+            //else {
+            //    if (currentUserForCustomer != null) {
+            //        var qTypeId = findEventByName(currentUserForCustomer.Activities, InfoObj.title);
+            //        $('#ddlEvent').val(qTypeId.Id);
+            //    }
+            //}
+
+            if (info.event.extendedProps.QueType != null && info.event.extendedProps.QueType!=0)
+                $('#ddlEvent').val(info.event.extendedProps.QueType);
 
             btnDeleteQue.style.display = "";
 
@@ -2063,7 +2150,7 @@
                     if (MyGroups != null)
                         $('#liUpdateGroup').show();
 
-                    data.splice(0, 0,{ groupId: 0, groupName:'בחר'})
+                    data.splice(0, 0,{ groupId:'0', groupName:'בחר'})
                     selectizeService.InitSelectize("ddlGroups", 'groupId', 'groupName', 38, data, null);
                     selectizeService.setValue('ddlGroups', '0');
                 }
@@ -2127,7 +2214,36 @@
     }
 
     setInterval(function () {
-        if(calendar) calendar.refetchEvents();
+        var uId = UserData.isUser ? UserData.UserId : $('#ddlUsers').val();
+
+        var obj = {
+            UserId: uId,
+            EmployeeId: $('#ddlActivity').val(),
+            CustomerId: UserData.CustomerId
+        };
+
+        $.ajax({
+
+            url: "Que/IsQueUpdated",
+
+            type: 'POST',
+
+            data: JSON.stringify(obj),
+
+            contentType: "application/json;charset=utf-8",
+
+            success: function (data) {
+                if (data) {
+                    if (calendar) calendar.refetchEvents();
+                }
+            },
+
+            error: function (request, status, error) {
+
+            }
+
+        });
+        
     }, 60000);
 
 
@@ -2143,7 +2259,67 @@
     function gotoHour() {
         calendar.scrollToTime($("#txtGoHour").val());
     }
+    function SearchUser() {
+        selectizeService.setValue('bizCity', '0');        
+        $("#BizName").val("");
+        $("#bizAddress").val("");
+        $("#dvResults").html("");
+        $('#SearchBizModal').modal('show');        
+    }
 
+
+
+    getCities(function (data) {
+        selectizeService.InitSelectize("bizCity", 'Id', 'Name', 46, data, null);
+        
+    });
+
+    function SearchBiz() {
+        var search = {
+            guid:UserData.guid,
+            City: $("#bizCity").val(),
+            BizName:$("#BizName").val(),
+            Adrress: $("#bizAddress").val()
+        }
+
+        $.ajax({
+
+            url: "User/SearchBiz",
+
+            type: 'POST',
+
+            data: JSON.stringify(search),
+
+            contentType: "application/json;charset=utf-8",
+
+            success: function (data) {
+                if (data) {
+
+                    var htmlData = "<table class='table'>";
+                    htmlData+="<tr><th>שם</th><th>כתובת</th><th>עיר</th></tr>";
+                    for(var i=0;i<data.length;i++){
+                        htmlData += "<tr onclick='SetUserBiz(" + data[i].Id + ");'><td id='tdBizID" + data[i].Id + "'>" + data[i].BizName + "</td><td>" + data[i].Adrress + "</td><td>" + data[i].City + "</td></tr>";
+                    }
+                    htmlData+"</table>";
+                    $("#dvResults").html(htmlData);
+                }
+            },
+
+            error: function (request, status, error) {
+
+            }
+
+        });
+
+    }
+
+    function SetUserBiz(UserId) {
+        var selectizeMe = $("#ddlUsers")
+        var v = selectizeMe[0].selectize;
+        v.addOption({ Id: UserId, User: $("#tdBizID" + UserId).html() });
+        selectizeService.setValue('ddlUsers', UserId);
+        $('#SearchBizModal').modal('hide');
+    }
 
     //prevent go back
     history.pushState(null, null, location.href);
@@ -2151,5 +2327,13 @@
         history.go(1);
     }
 
-
+    var sWidth = screen.width;
+    if (sWidth > 500) {
+        document.getElementById("ddlUsers").style.width = "300px";
+        document.getElementById("ddlCity").style.marginLeft = "150px;"
+    }
+    else {
+        document.getElementById("ddlUsers").style.width = "220px";
+        document.getElementById("ddlCity").style.width = "145px";
+    }
 </script>

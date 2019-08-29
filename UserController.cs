@@ -424,6 +424,17 @@ namespace Tor.Controllers
             return userManager.GetCities();
 
         }
+
+        [HttpPost]
+
+        [ActionName("SearchBiz")]
+
+        public IEnumerable<SearchUser> SearchBiz(SearchUser search)
+        {
+            UserManager userManager = new UserManager();
+
+            return userManager.SearchBiz(search);
+        }
     }
 
 }
