@@ -168,7 +168,7 @@ namespace Tor
                 else
                     select = "CASE When B.Id=@CustomerId THEN Case when U.Name + ' ' +g.Name is not null then g.Name Else U.Name End ELSE N'תפוס' END ";
 
-                var sql = @"SELECT A.[CustomerId],A.id,A.[QueType], " + select + @" As [title],A.FromDate As [start],A.ToDate As [end]
+                var sql = @"SELECT A.[CustomerId],A.id,A.[QueType], " + select + @" As [title],A.FromDate As [start],A.ToDate As [end],U.[color] as backgroundColor
 
                         FROM Que A INNER JOIN Customer B on A.CustomerId = B.Id
                         JOIN UsersActivitiesTypes U ON U.Id = A.QueType

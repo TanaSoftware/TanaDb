@@ -354,7 +354,18 @@
 
                             <input style="float:right;width:140px;margin-bottom:10px;margin-right:3px;" maxlength="50" id="BizType" type="text" placeholder="הזן סוג פעילות" class="form-control input-lg" />
                             <input style="float:right;width:133px;margin-right:4px;" id="txtDuration" type="number" placeholder="משך פעילות" maxlength="3" class="form-control input-lg" />
-                            <!--<input id="inputColor" style="float:right;width:30px;height:45px;margin-right:2px; " type="color" />-->
+                            
+                            <select id="inputColor" style="float:right;width:55px;" class="form-control input-lg" onchange="changeColor(this)">
+                                <option selected="selected" value="#3788d8" style="background:#3788d8">כחול</option>                                       
+                                <option value="#7FDBFF" style="background:#7FDBFF">תכלת</option>
+                                <option value="#B10DC9" style="background:#B10DC9">סגול</option>                            
+                                <option value="#FF69B4" style="background:#FF69B4">ורוד</option>                            
+                                <option value="#f37735" style="background:#f37735">כתום</option>                                
+                                <option value="#2ECC40" style="background:#2ECC40">ירוק</option>                                
+                                <option value="#aaaaaa" style="background:#aaaaaa">אפור</option>
+                                <option value="#bdeaee" style="background:#bdeaee">טורקיז</option>
+                                <option value="#A0522D" style="background:#A0522D">חום</option> 
+                            </select>
                             <button onclick="AddUserActivity();" class="btn btn-blue btn-lg" style="float:right;margin-right:5px;">הוסף</button>
 
                         </div>
@@ -592,7 +603,7 @@
                 if (bizType == 'cust') {
                     goToCustomer('LoginSec');
                 }
-                //document.getElementById("inputColor").value = '#3788D8';
+                
                 $('.carousel').bcSwipe({ threshold: 50 });
             }
         });
@@ -823,6 +834,7 @@
             IsGroup: chkGrp,
             dicBizType: ActivitiesData,
             UserActivities: ActivitiesUserData,
+            UserActivitiesColor:ActivitiesUserColor,
             dicEmployeeActivities: ActivitiesEmployeeData
         }
 
@@ -868,6 +880,7 @@
     var ActivitiesEmployeeData = {};
     var ActivitiesUserData = {};
     var ActivitiesUserDataHelper = {};
+    var ActivitiesUserColor = {};
 
     function GetBizTypeItem() {
 
@@ -1202,7 +1215,7 @@
     function AddUserActivity() {
 
         var data = "";
-        //var color = document.getElementById("inputColor").value;
+        var color = document.getElementById("inputColor").value;
 
         var ActivitiesTempData = new Array();
         var bizType = $('#BizType').val();
@@ -1247,7 +1260,8 @@
             ActivitiesUserData[bizType] = Duration;
             ind = getObjectIndex(ActivitiesUserData, bizType);
             ActivitiesUserDataHelper[bizType] = ind;
-            data = "<div style='width:100%;' id='dvBizTypeAct" + ind + "'><div style='float:right;width:260px;padding-right:20px;'>" + bizType + " למשך  " + ActivitiesUserData[bizType] + " דקות</div><button style='float:right;marging-right:4px;' onclick=deleteBizTypeActivity('" + ind + "')>מחק</button></div>";
+            ActivitiesUserColor[bizType] = color;            
+            data = "<div style='width:100%;' id='dvBizTypeAct" + ind + "'><div style='float:right;width:260px;padding-right:20px;color:" + color + "'>" + bizType + " למשך  " + ActivitiesUserData[bizType] + " דקות</div><button style='float:right;marging-right:4px;' onclick=deleteBizTypeActivity('" + ind + "')>מחק</button></div>";
 
             var newDiv = $("#UserActivities").html();
 
@@ -1269,6 +1283,7 @@
         }
         delete ActivitiesUserData[keyDel];
         delete ActivitiesUserDataHelper[keyDel];
+        delete ActivitiesUserColor[keyDel];
 
         $('#dvBizTypeAct' + i).remove();
         $('#dvAddedAct' + i).remove();
@@ -1320,7 +1335,10 @@
         Login();
     }
 
-
+    document.getElementById("inputColor").style.background = "#3788d8";
+    function changeColor(obj) {
+        obj.style.background = obj.value;
+    }
 
     var sWidth = screen.width;
     if (sWidth > 500) {

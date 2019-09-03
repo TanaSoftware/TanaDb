@@ -178,23 +178,17 @@
 
                                     <input style="float:right;width:120px;margin-bottom:10px;margin-right:3px;" maxlength="50" id="BizType" type="text" placeholder="הזן סוג פעילות" class="form-control input-lg" />
                                     <input style="float:right;width:80px;margin-right:4px;" id="txtDuration" type="number" placeholder="משך פעילות" maxlength="3" class="form-control input-lg" />
-                                    <!--<select id="ddlDuration" style="float:right;min-width:80px;max-width:140px; margin-right:3px;" placeholder="משך פעילות" class="form-control input-lg">
-
-                                        <option value="0">משך פעילות</option>
-
-                                        <option>10</option>
-
-                                        <option>20</option>
-
-                                        <option>30</option>
-
-                                        <option>40</option>
-
-                                        <option>50</option>
-
-                                        <option>60</option>
-
-                                    </select>-->
+                                    <select id="inputColor" style="float:right;width:55px;" class="form-control input-lg" onchange="changeColor(this)">
+                                        <option selected="selected" value="#3788d8" style="background:#3788d8">כחול</option>
+                                        <option value="#7FDBFF" style="background:#7FDBFF">תכלת</option>
+                                        <option value="#B10DC9" style="background:#B10DC9">סגול</option>
+                                        <option value="#FF69B4" style="background:#FF69B4">ורוד</option>
+                                        <option value="#f37735" style="background:#f37735">כתום</option>
+                                        <option value="#2ECC40" style="background:#2ECC40">ירוק</option>
+                                        <option value="#aaaaaa" style="background:#aaaaaa">אפור</option>
+                                        <option value="#bdeaee" style="background:#bdeaee">טורקיז</option>
+                                        <option value="#A0522D" style="background:#A0522D">חום</option>
+                                    </select>
                                     <button onclick="AddUserActivity();" class="btn btn-blue btn-lg" style="float:right; margin-right:5px;">הוסף</button>
 
                                 </div>
@@ -486,8 +480,8 @@
         return "<div id='dvActEmp" + EmployeeId + "Act" + Id + "' style='padding-right:20px;clear:both;'><label style='width:120px;' for='chk_" + EmployeeId + "Act" + Id + "'>" + bizType + "</label><input " + checked + " id='chk_" + EmployeeId + "Act" + Id + "' type='checkbox' value='" + bizType + "' /></div>";
     }
 
-    function getBizTypeTemplate(Id, Name, ActiveDuration) {
-        return "<div class='row' style='width:100%;' id='dvBizTypeAct" + Id + "'><div style='float:right;width:200px;padding-right:20px;'>" + Name + " למשך  " + ActiveDuration + " דקות</div><button style='float:right;margin-right:4px;' onclick=deleteBizTypeActivity('" + Id + "')>מחק</button></div>";
+    function getBizTypeTemplate(Id, Name, ActiveDuration,color) {
+        return "<div class='row' style='width:100%;' id='dvBizTypeAct" + Id + "'><div style='float:right;width:200px;padding-right:20px;color:" + color + "'>" + Name + " למשך  " + ActiveDuration + " דקות</div><button style='float:right;margin-right:4px;' onclick=deleteBizTypeActivity('" + Id + "')>מחק</button></div>";
     }
 
     function fillData(data) {
@@ -505,7 +499,7 @@
         var BizTypeData = "";
 
         for (var i = 0; i < UserData.Activities.length; i++) {
-            BizTypeData += getBizTypeTemplate(UserData.Activities[i].Id, UserData.Activities[i].Name, UserData.Activities[i].ActiveDuration);
+            BizTypeData += getBizTypeTemplate(UserData.Activities[i].Id, UserData.Activities[i].Name, UserData.Activities[i].ActiveDuration, UserData.Activities[i].color);
         }
         $("#UserActivities").html(BizTypeData);
         
@@ -643,7 +637,7 @@
                     var empData = getEmployeeTemplate(data.EmployeeId, empName);
                     var newDiv = $("#Activities").html();
                     $("#Activities").html(newDiv + empData);
-                    ActivitiesTempData = getEmployeeHours(data.EmployeeId);
+                    a = getEmployeeHours(data.EmployeeId);
                     $('#EmployeeName').val("");
                     
                     var dicBizType = UserData.dicBizType;
@@ -1048,10 +1042,13 @@
             showTooltip("txtDuration", "נא להזין מקסימום 720 דקות");
             return;
         }
+        var color = document.getElementById("inputColor").value;
+
         var Obj = {
             UserId: UserData.UserId,
             Name: bizType,
             ActiveDuration: duration,
+            color:color,
             guid:UserData.guid
         };
         $.ajax({
@@ -1064,7 +1061,7 @@
                     messageHandler.Show("ארעה שגיאה בהוספת פעילות");
                 }
                 else {
-                    var newBizDiv = getBizTypeTemplate(data, bizType, duration);
+                    var newBizDiv = getBizTypeTemplate(data, bizType, duration, color);
                     var newDiv = $("#UserActivities").html();
 
                     $("#UserActivities").html(newDiv + newBizDiv);
@@ -1090,9 +1087,13 @@
 
 
         }
-    SetHourToDddl();
+    
 
     
+    document.getElementById("inputColor").style.background = "#3788d8";
+    function changeColor(obj) {
+        obj.style.background = obj.value;
+    }
 
 
     function upload() {
@@ -1121,4 +1122,8 @@
 
 
     }
+    try {
+        SetHourToDddl();
+    }
+    catch (e) { }
 </script>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Text.RegularExpressions;
 using Tor.Dal;
 
 
@@ -13,6 +14,8 @@ namespace Tor
         public int UserId { get; set; }
         public string Name { get; set; }
         public int ActiveDuration { get; set; }
+
+        public string color { get; set; }
         public string guid { get; set; }
     }
     public class UserExtraActivity
@@ -284,8 +287,7 @@ namespace Tor
 
         public int Id { get; set; }
 
-        [Required]
-
+        [Required]        
         public string User { get; set; }
 
 
@@ -329,6 +331,8 @@ namespace Tor
 
         [Required]
         public Dictionary<string, string> UserActivities { get; set; }
+
+        public Dictionary<string, string> UserActivitiesColor { get; set; }
 
         [Required]
         public Dictionary<string, List<BizTypeObj>> dicBizType { get; set; }
@@ -434,6 +438,8 @@ namespace Tor
         public string Name { get; set; }
 
         public int ActiveDuration { get; set; }
+
+        public string color { get; set; }
     }
 
     public class EmployeeActivities
@@ -461,25 +467,21 @@ namespace Tor
 
             UserDetails userObjWrapper = new UserDetails();
 
-            //if (user.ActiveDays == "")
+            var regexUser = new Regex(@"^[א-תA-Za-z\ \']+$");
+            var regexEngText = new Regex(@"^[א-תA-Za-z]+$");
+            var regexTextAndNums = new Regex(@"^[א-תA-Za-z0-9\ ]+$");
+            bool isMatch = regexUser.IsMatch(user.User);
+            bool isMatchBizName = regexUser.IsMatch(user.BizName);
+            bool isMatchEng = regexEngText.IsMatch(user.BizNameEng);
 
-            //{
+            //bool isMatchTextNum = regexTextAndNums.IsMatch(user.e);
 
-            // userObjWrapper.ErrorMsg = "נא לבחור לפחות יום אחד בשבוע";
-
-            //}
-
-            //string[] arrActiveDays = user.ActiveDays.Split(',');
-
-            //if (arrActiveDays.Length <= 0)
-
-            //{
-
-            // userObjWrapper.ErrorMsg = "נא לבחור לפחות יום אחד בשבוע";
-
-            //}
-
-
+            if (!isMatch || !isMatchBizName || !isMatchEng)
+            {
+                userObjWrapper.ErrorMsg = "ארעה שגיאה";
+                return userObjWrapper;
+            }
+           
 
 
 
@@ -612,7 +614,7 @@ namespace Tor
         }
         private IEnumerable<UserActivities> getUserActivities(int userId)
         {
-            string sqlCust = "SELECT [Id],[Name],[ActiveDuration] FROM UsersActivitiesTypes WHERE [UserId] = @UserId;";
+            string sqlCust = "SELECT [Id],[Name],[ActiveDuration],[color] FROM UsersActivitiesTypes WHERE [UserId] = @UserId;";
 
             DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
 
@@ -1006,8 +1008,12 @@ namespace Tor
 
             UserDetails userObjWrapper = CheckIsValidUserRegister(user);
 
-            if (userObjWrapper.ErrorMsg != "")
 
+            if (String.IsNullOrEmpty(userObjWrapper.guid))
+            {
+                return userObjWrapper;
+            }
+            else
             {
 
                 //if (IsUserExist(user.User))
@@ -1260,11 +1266,11 @@ namespace Tor
 
                 {
 
-                    string sqlAct = "INSERT INTO UsersActivitiesTypes ([UserId],[Name],[ActiveDuration]) Values(@UserId,@Name,@ActiveDuration)";
+                    string sqlAct = "INSERT INTO UsersActivitiesTypes ([UserId],[Name],[ActiveDuration],[color]) Values(@UserId,@Name,@ActiveDuration,@color)";
                     foreach (var item in user.UserActivities)
                     {
 
-                        var affectedA = db.Execute(sqlAct, 1, new { UserId = userId, Name = item.Key, ActiveDuration = item.Value });
+                        var affectedA = db.Execute(sqlAct, 1, new { UserId = userId, Name = item.Key, ActiveDuration = item.Value,color = user.UserActivitiesColor[item.Key] });
                     }
 
 
@@ -1702,7 +1708,7 @@ namespace Tor
                 return 0;
             }
 
-            string sqlAct = "INSERT INTO UsersActivitiesTypes ([UserId],[Name],[ActiveDuration]) Values(@UserId,@Name,@ActiveDuration)";
+            string sqlAct = "INSERT INTO UsersActivitiesTypes ([UserId],[Name],[ActiveDuration],[color]) Values(@UserId,@Name,@ActiveDuration,@color)";
             DataBaseRetriever db = new DataBaseRetriever(ConfigManager.ConnectionString);
             var affectedRows = db.Execute(sqlAct, 1, userActivity);
             string sql = "select max(Id) as id From UsersActivitiesTypes where UserId=@UserId";
