@@ -21,7 +21,9 @@
             box-shadow: 1px;
             color: #ffffff;
         }
-
+        .btn-s{
+            height:32px;
+        }
         @media only screen and (max-width: 760px) {
 
             input[type=checkbox] {
@@ -480,8 +482,13 @@
         return "<div id='dvActEmp" + EmployeeId + "Act" + Id + "' style='padding-right:20px;clear:both;'><label style='width:120px;' for='chk_" + EmployeeId + "Act" + Id + "'>" + bizType + "</label><input " + checked + " id='chk_" + EmployeeId + "Act" + Id + "' type='checkbox' value='" + bizType + "' /></div>";
     }
 
-    function getBizTypeTemplate(Id, Name, ActiveDuration,color) {
-        return "<div class='row' style='width:100%;' id='dvBizTypeAct" + Id + "'><div style='float:right;width:200px;padding-right:20px;color:" + color + "'>" + Name + " למשך  " + ActiveDuration + " דקות</div><button style='float:right;margin-right:4px;' onclick=deleteBizTypeActivity('" + Id + "')>מחק</button></div>";
+    function getBizTypeTemplate(Id, Name, ActiveDuration, color) {
+        var dvColor = document.getElementById('inputColor').outerHTML;
+        dvColor = dvColor.replace("inputColor", "inputColor" + Id);
+        dvColor = dvColor.replace("form-control input-lg", "btn-s");
+        dvColor = dvColor.replace("background: rgb(55, 136, 216)", "background:" + color);
+        dvColor = dvColor.replace("changeColor(this", "changeColorDb(this,"+Id);
+        return "<div class='row' style='width:100%;' id='dvBizTypeAct" + Id + "'><div style='float:right;width:200px;padding-right:20px;color:" + color + "'>" + Name + " למשך  " + ActiveDuration + " דקות</div><div style='float:right'>" + dvColor + "</div><button style='float:right;margin-right:4px;' onclick=deleteBizTypeActivity('" + Id + "')>מחק</button></div>";
     }
 
     function fillData(data) {
@@ -510,6 +517,10 @@
         }
         $("#Activities").html(empData);
         fillEmployees();
+
+        for (var i = 0; i < UserData.Activities.length; i++) {
+            document.getElementById("inputColor" + UserData.Activities[i].Id).value = UserData.Activities[i].color;
+        }
     }
     function fillEmployees() {
         for (var key in UserData.dicBizType) {
@@ -1073,7 +1084,7 @@
 
                         $(d).insertAfter("#dvActEmp" + arr[0].EmployeeId + "Act" + lastActivityId );
                     }
-                    UserData.Activities[UserData.Activities.length] = { Id: data, Name: bizType, ActiveDuration: parseInt(duration) };
+                    UserData.Activities[UserData.Activities.length] = { Id: data, Name: bizType, ActiveDuration: parseInt(duration), color: color };
 
                     $('#BizType').val("");
                     $('#txtDuration').val("");
@@ -1094,7 +1105,41 @@
     function changeColor(obj) {
         obj.style.background = obj.value;
     }
+    function changeColorDb(obj,id) {
+        var color = obj.value;
+        obj.style.background = color;
+        //send to db
+        var obj = { Name: UserData.guid, Id: id, color: color }
+        $.ajax({
+            url: "User/UpdateUserColor",
+            type: 'POST',
+            data: JSON.stringify(obj),
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                if (data != "") {
+                    messageHandler.Show(data);
+                }
+                else {
+                    messageHandler.Show("צבע פעילות עודכן בהצלחה");
+                    for(var i=0;i<UserData.Activities.length;i++) {
+                        if (UserData.Activities[i].Id == id) {
+                            UserData.Activities[i].color = color;
 
+                            var Activities = UserData.Activities;
+                            UserData.Activities = Activities;                           
+                            sessionStorage.setItem("UserData", JSON.stringify(UserData));
+
+                            break;
+                        }
+                    }
+
+                }
+            },
+            error: function (request, status, error) {
+
+            }
+        });
+    }
 
     function upload() {
         var formData = new FormData();
