@@ -1,4 +1,4 @@
-﻿var messageHandler = {
+var messageHandler = {
 
     Confirm: function (msg, Ok, Cancel) {
         var v = sessionStorage.getItem("version");
@@ -11,17 +11,16 @@
             if (obj == null)
                 $(html).appendTo('body').modal();
 
-            
-            $("#btnModalContinue").unbind().click(function ()
-            {
-                
+
+            $("#btnModalContinue").unbind().click(function () {
+
             });
             $("#btnModalClose").unbind().click(function () {
 
             });
             $("#btnModalContinue").click(Ok);
             $("#btnModalClose").click(Cancel);
-            
+
             $('#dvConfirmMsg').html(msg);
             $('#dvConfirmModal').modal('show');
 
@@ -51,7 +50,7 @@
 
         $("#msgHandlerDiv").modal('hide');
 
-        $('.modal-backdrop,fade.show').remove();     
+        $('.modal-backdrop,fade.show').remove();
 
     }
 
@@ -291,7 +290,7 @@ function IsvalidEmail(mail) {
 
 function IsvalidPhone(num) {
 
-    if (num.length < 10 || num.length>10) {
+    if (num.length < 10 || num.length > 10) {
 
         return false;
 
@@ -379,7 +378,7 @@ function goToCal(data) {
 
 }
 function goToStart() {
-        
+
     var v = sessionStorage.getItem("version");
     location.href = "Start.html?v=" + v;
 
@@ -394,7 +393,7 @@ function Login() {
         userObj.Password = localStorage.pass;
     }
     else {
-        
+
 
         var mail = $('#emailLogin').val();
         var pass = $('#passwordLogin').val();
@@ -432,11 +431,11 @@ function Login() {
 
             if (data != null) {
 
-                if ($('#remember_me').is(':checked')) {                    
+                if ($('#remember_me').is(':checked')) {
                     localStorage.usrname = $('#emailLogin').val().toLowerCase();
                     localStorage.pass = $('#passwordLogin').val();
                     localStorage.chkbx = $('#remember_me').val();
-                    
+
                 }
 
                 goToCal(data);
@@ -548,9 +547,9 @@ function testPassword(pwString) {
     strengthLang += /[A-Z]+/.test(pwString) ? 1 : 0;
     strengthLang += /[a-z]+/.test(pwString) ? 1 : 0;
     strength += /[0-9]+/.test(pwString) ? 1 : 0;
-    
 
-    if (strengthLang+strength < 2)
+
+    if (strengthLang + strength < 2)
         return false;
 
     return true;
@@ -667,16 +666,18 @@ function forgetPassword() {
 }
 
 function replaceAll(target, search, replacement) {
+
     return target.split(search).join(replacement);
+
 }
 
 function IsValidText(inputtxt) {
-    var letters = /^[א-תA-Za-z ']+$/;
+    var letters = /^[א-תA-Za-z '-]+$/;
     if (inputtxt.match(letters)) {
-        
+
         return true;
     }
-    else {        
+    else {
         return false;
     }
 }
@@ -692,7 +693,7 @@ function IsValidEngText(inputtxt) {
 }
 
 function IsValidTextAndNumbers(inputtxt) {
-    var letters = /^[א-תA-Za-z0-9 ']+$/;
+    var letters = /^[א-תA-Za-z0-9 -']+$/;
     if (inputtxt.match(letters)) {
 
         return true;
