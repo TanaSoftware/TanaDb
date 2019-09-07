@@ -268,7 +268,7 @@ section, .section {
 .btn-lg {
     font-size: 13px !important;
     padding: 10px 35px;
-    height:46px;
+    height: 46px;
 }
 
 .btn-sm {
@@ -326,15 +326,24 @@ section, .section {
     border: 2px solid rgba(47, 145, 192, 1);
     background-color: rgba(47, 145, 192, 1) !important;
     color: #fff !important;
-    
 }
 
-.btn-blue:hover {
-    border: 2px solid rgba(47, 120, 192, 1);
-    background-color: rgba(47, 120, 192, 1) !important;
-    color: #fff !important;
-    
+    .btn-blue:hover {
+        border: 2px solid rgba(47, 120, 192, 1);
+        background-color: rgba(47, 120, 192, 1) !important;
+        color: #fff !important;
+    }
+
+.btn-w {
+    background-color: #ffffff !important;
+    color: rgba(47, 145, 192, 1) !important;
 }
+
+    .btn-w:hover {
+        border: 2px solid rgba(47, 120, 192, 1);
+        background-color: rgba(47, 120, 192, 1) !important;
+        color: #fff !important;
+    }
 
 .btn:hover {
     opacity: 0.65;
@@ -1716,7 +1725,6 @@ blockquote {
 }
 
 .carousel-indicators .active {
- 
 }
 
 .carousel-control .icon-next, .carousel-control .icon-prev {
@@ -2703,64 +2711,122 @@ h4 {
 }
 
 .menuContainer {
-  display: inline-block;
-  cursor: pointer;
-  padding:5px;
+    display: inline-block;
+    cursor: pointer;
+    padding: 5px;
 }
 
 .bar1, .bar2, .bar3 {
-  width: 35px;
-  height: 2px;
-  background-color: #333;
-  margin: 6px 0;
-  transition: 0.4s;
-  background-color:#007bff;
+    width: 35px;
+    height: 2px;
+    background-color: #333;
+    margin: 6px 0;
+    transition: 0.4s;
+    background-color: #007bff;
 }
 
 .change .bar1 {
-  -webkit-transform: rotate(-45deg) translate(-9px, 6px);
-  transform: rotate(-45deg) translate(-9px, 6px);
+    -webkit-transform: rotate(-45deg) translate(-9px, 6px);
+    transform: rotate(-45deg) translate(-9px, 6px);
 }
 
-.change .bar2 {opacity: 0;}
+.change .bar2 {
+    opacity: 0;
+}
 
 .change .bar3 {
-  -webkit-transform: rotate(45deg) translate(-8px, -8px);
-  transform: rotate(45deg) translate(-6px, -4px);
+    -webkit-transform: rotate(45deg) translate(-8px, -8px);
+    transform: rotate(45deg) translate(-6px, -4px);
 }
 
 @media screen and (max-width: 500px) {
-    
+
     div.toriImg {
         width: 100%;
         height: 100%;
-        background: url(../img/toriNew.png);
+        background: url(../img/toriNewX4.png) no-repeat;
         position: absolute;
-        left: -20px;
-        top: 40px;
+        margin-left: auto;
+        left: 50%;
+        margin-left: -87px;
+        top: 85px;
+    }
+    div.MainLabel {
+        position: absolute;
+        margin-left: auto;
+        left: 50%;
+        margin-left: -50px;
+        top: 150px;
+    }
+    div.toriImg2 {
+        display: none;
+    }
+
+    div.MainLabel2 {
+        display: none;
     }
 }
+
 @media screen and (min-width: 500px) {
-    
-    div.toriImg {
+
+    div.toriImg2 {
         width: 100%;
         height: 100%;
-        background: url(../img/toriBig.png);
-        top:20px;
-        bottom: 0;
-        left: 0;
-        right: 0;  	
-	    margin: auto;
+        background: url(../img/toriNewX5.png);
+        left: 50px;
+        top: 110px;
         position: absolute;
         background-repeat: no-repeat;
     }
-    div.clock{
+    div.toriImg {
+        display: none;
+    }
+    div .MainLabel {
+        display:none;
+    }
+        div .MainLabel2 {
+        position: absolute;
+        left: 160px;
+        top: 240px;
+        font-size:18px;
+    }
+    div.clock {
         width: 175px;
         height: 100%;
         background: url(../img/clock.png);
         position: absolute;
         background-repeat: no-repeat;
-        margin-top:110px;
-        
+        margin-top: 270px;
     }
+}
+
+.imgBack {
+    background-image: url(img/f1.jpg);
+    transform: rotate(180deg);
+}
+
+.text-line {
+    background-color: transparent;
+    color: #ffffff;
+    outline: none;
+    outline-style: none;
+    outline-offset: 0;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: solid #eeeeee 1px;
+    padding: 3px 10px;
+}
+
+    .text-line::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+        color: #ffffff;
+        opacity: 1; /* Firefox */
+    }
+
+    .text-line:-ms-input-placeholder { /* Internet Explorer 10-11 */
+        color: #ffffff;
+    }
+
+.round {
+    border-radius: 3px !important;
 }
