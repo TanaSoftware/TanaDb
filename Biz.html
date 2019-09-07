@@ -6,8 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/main.css?v=7" rel="stylesheet">
-
+    <link href="css/main.css?v=24" rel="stylesheet">
+    <link href="css/selectize.css" rel="stylesheet" />
     <title>TanaSoftware</title>
     <style>
         .tooltip-inner {
@@ -19,20 +19,7 @@
             box-shadow: 1px;
             color: #ffffff;
         }
-
-        @media only screen and (max-width: 760px) {
-
-            input[type=checkbox] {
-                /* Double-sized Checkboxes */
-                -ms-transform: scale(1.5); /* IE */
-                -moz-transform: scale(1.5); /* FF */
-                -webkit-transform: scale(1.5); /* Safari and Chrome */
-                -o-transform: scale(1.5); /* Opera */
-                transform: scale(1.5);
-                padding-left: 20px !important;
-            }
-        }
-
+        
         .checkbox-inline {
             padding-left: 5px !important;
         }
@@ -49,17 +36,19 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button><a id="dvUserLoggedIn"></a><a href="#page-top" class="navbar-brand page-scroll">
-                    <img id="imgLogo1" src="img/Tana1.png" style="width:100px; margin-top:12px;" alt="Logo" class="logo">
-                    <img id="imgLogo2" src="img/Tana2.png" style="width:100px;margin-top:12px;" alt="Logo" class="logodark">
+
+                    <img id="imgLogo1" src="img/toriNewX4.png" style="width:85px;height:35px; margin-top:12px;margin-left:40px;" alt="Logo" class="logo">
+                    <!--<img id="imgLogo2" src="img/Tana2.png" style="width:100px;margin-top:12px;margin-left:30px;" alt="Logo" class="logodark">-->
                 </a>
             </div>
 
             <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
                 <ul class="nav navbar-nav">
                     <li><a href="#page-top" class="page-scroll">דף הבית</a></li>
-                    <li><a href="#" onclick="javascript:goToCustomer('LoginSec')" class="page-scroll">כניסת משתמש</a></li>
+                    <li><a href="javascript:goToCustomer('LoginSec')" class="page-scroll">כניסת משתמש</a></li>
+                    <li><a href="javascript:goToCustomer('RegisterCustomer')" class="page-scroll">משתמש חדש</a></li>
                     <!--<li><a href="#" onclick="javascript:goToRegisterBiz('LoginSec')" class="page-scroll">כניסת בעל עסק</a></li>-->
-                    <li><a href="#" onclick="javascript:goToContact('Contact.html')" class="page-scroll">צור קשר</a></li>
+                    <li><a href="#" onclick="javascript:goToUrl('Contact.html')" class="page-scroll">צור קשר</a></li>
 
                 </ul>
             </div>
@@ -69,20 +58,71 @@
 
     <header id="Carousel-intro" data-ride="carousel" class="intro carousel carousel-big slide carousel-fade">
 
-        
+
 
         <div class="carousel-inner">
             <div class="item active">
-                <div id="dvBackUrl" style="background-image:url(img/f.png)" class="fill">
+                <div id="dvBackImage" style="background-image:url(img/f3.jpg)" class="fill">
+                    <div class="toriImg2"></div>
+                    <div class="MainLabel2"> התור שלך בקליק</div>
                     <div class="intro-body">
                         <div class="container">
                             <div class="row">
-                                <div class="toriImg"></div>
                                 <div class="clock"></div>
-                                <div class="col-lg-10 col-lg-offset-1" style="padding-top:140px;">
-                                   
-                                    <h5>קבע תור בקלות ל<span id="spnBizName"></span></h5>
-                                    <button class="btn btn-blue btn-lg page-scroll wow fadeInLeft" onclick="goToCustomer('LoginSec')">&nbsp;&nbsp;כניסת לקוחות&nbsp;&nbsp;</button>
+                                <div id="dvBizMobile" style="display:none; text-align:center;font-size:22px;"><div>ברוכים הבאים</div><div id="dvBizName"></div></div>
+                                <div id="dvBizWebSite" style="display:none;text-align:center;font-size:22px;"><span>ברוכים הבאים ל</span><span id="spnBizName"></span></div>
+                                <div class="col-lg-10 col-lg-offset-1" style="padding-top:30px;">
+                                    <form action="javascript:return LoginMe();">
+                                        <div class="container" style="margin-top:20px;overflow-y: auto;">
+                                            <div class="row" style="padding-right:45px;padding-left:45px;">
+                                                <div class="form-group">
+
+                                                    <div class="form-group floating-label-form-group controls">
+
+                                                        <input style="width:100%" id="emailLogin" tabindex="2" type="email" placeholder="מייל" class="text-line" />
+
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="form-group">
+
+                                                    <div class="form-group floating-label-form-group controls">
+
+                                                        <input style="width:100%" id="passwordLogin" tabindex="3" type="password" placeholder="סיסמה" class="text-line" />
+
+                                                    </div>
+
+                                                </div>
+                                                <div id="dvForgutPass">
+                                                    <div style="font-size:11px;width:100%;">
+
+                                                        <span id="dvRememberMe1" style="margin-top:2px;float:right">זכור אותי</span>
+
+                                                        <span id="dvRememberMe2" style="margin-right:4px;float:right">
+
+                                                            <input tabindex="4" id="remember_me" class="chk" type="checkbox">
+
+                                                        </span>
+                                                        <span id="spnForgutPass" style="color:#ffffff;cursor:pointer;text-align:left" onclick="forgetPassword()">שכחתי סיסמה</span>
+                                                    </div>
+                                                </div>
+                                                <div style="clear:both">
+
+                                                    <button id="btnLogin" style="width:100%;margin-top:30px;font-size:14px;font-weight:bold;" tabindex="5" onclick="LoginMe();" class="btn round btn-w btn-lg">כניסה</button>
+
+                                                </div>
+                                                <div id="dvNewClient">
+                                                    <div style="padding-top:20px;">
+                                                        <a style="text-decoration: underline;" href="javascript:goToCustomer('RegisterCustomer')">משתמש חדש</a>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </form>
                                 </div>
 
                             </div>
@@ -92,70 +132,13 @@
                 </div>
             </div>
 
-       
+
         </div>
-        
+
     </header>
 
-    <section id="LoginSec" style="padding-top:130px;padding:10px;">
 
-        <div class="container">
-
-            <div class="row">
-
-                <div class="">
-
-                    <div style="text-align:right;font-weight:bold;">כניסה: </div>
-
-                    <div class="form-group">
-
-                        <div class="form-group floating-label-form-group controls">
-
-                            <input id="emailLogin" type="email" placeholder="מייל" class="form-control input-lg" />
-
-                        </div>
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <div class="form-group floating-label-form-group controls">
-
-                            <input id="passwordLogin" type="password" placeholder="סיסמה" class="form-control input-lg" />
-
-                        </div>
-
-                    </div>
-
-                    <div class="form-group" style="text-align:right">
-
-                        <label>זכור אותי</label>
-
-                        <label>
-
-                            <input id="remember_me" type="checkbox">
-
-                        </label>
-
-                    </div>
-
-                    <div style="float:left;padding-left:20px;">
-
-                        <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
-
-                        <button onClick="Login();" class="btn btn-blue btn-lg">כניסה</button>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-    <section id="RegisterCustomer" style="padding-top:100px;padding:10px;">
+    <section id="RegisterCustomer" style="margin-top:280px;padding:10px;margin-bottom:100px;">
 
         <div class="container">
 
@@ -205,16 +188,23 @@
 
                     </div>
 
+                    <div class="form-group">
 
+                        <div class="form-group floating-label-form-group controls">
 
-                    <div style="float:left;padding-left:20px;">
+                            <select id="cityCust" type="text" placeholder="עיר"></select>
+
+                        </div>
+
+                    </div>
+
+                    <div style="float:left;">
 
                         <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
 
                         <div id="dvErrRegister"></div>
 
-                        <button onClick="RegisterCustmer();" class="btn btn-blue btn-lg">הרשמה</button>
-
+                        <button style="width:110px;" onclick="return RegisterCustmer();" class="btn btn-blue">הרשמה</button>
                     </div>
 
                 </div>
@@ -223,7 +213,7 @@
 
         </div>
 
-    </section>  
+    </section>
 
 
     <script src="js/jquery.js"></script>
@@ -241,18 +231,19 @@
     <script src="js/wow.min.js"></script>
     <script src="js/main.js"></script>
     <script src="js/selectize.js"></script>
-    
+
     <script src="https://www.negishim.com/accessibility/accessibility_pro.js" type="text/javascript"></script>
 </body>
 </html>
 <script>
     accessibility_rtl = false;
     pixel_from_side = 10;
-    pixel_from_start = 80;
+    pixel_from_start = 15;
     is_set_for_mobile = 1;
+    var sWidth = screen.width;
 
     getScripts();
-  
+
     function showProgressBar(isShow) {
         if (isShow)
             $("#dvProgBar").show();
@@ -267,9 +258,13 @@
             dataType: "script",
             success: function (data) {
 
-                if (sessionStorage.getItem("remember_me") != "1" && localStorage.chkbx && localStorage.chkbx != '') {
-                    Login();
-                }
+                //if (sessionStorage.getItem("remember_me") != "1" && localStorage.chkbx && localStorage.chkbx != '') {
+                //    Login();
+                //}
+                getCities(function (data) {
+
+                    selectizeService.InitSelectize("cityCust", 'Id', 'Name', 46, data, null);
+                });
                 init();
 
             }
@@ -277,7 +272,8 @@
 
 
     }
-  
+    var IsUserImgExists = false;
+
     function init() {
 
 
@@ -300,11 +296,21 @@
                 }
                 sessionStorage.setItem("UserForCustomerDetails", JSON.stringify(data));
                 sessionStorage.setItem("version", data.version);
-                $('#spnBizName').text(data.User);
-                if (data.logo)
-                    document.getElementById("imgLogo1").src = data.logo;
-                if (data.img)
-                    document.getElementById("dvBackUrl").src = data.img;
+                if (sWidth > 500) {
+                    $('#dvBizWebSite').show();
+                    document.getElementById("dvBizWebSite").style.marginRight = "170px";
+                    $('#spnBizName').text(data.User);
+                }
+                else {
+                    $('#dvBizMobile').show();
+                    $('#dvBizName').html("ל" + data.User);
+                }
+                //if (data.logo)
+                //    document.getElementById("imgLogo1").src =  "img/"+ data.logo;
+                //if (data.img) {
+                //    document.getElementById("dvBackUrl").src = "img/" + data.img;
+                //    IsUserImgExists = true;
+                //}
 
             },
 
@@ -323,7 +329,12 @@
         return { EmployeeId: 0, ActiveDay: 0, EmployeeName: "", ActiveHourFrom: "", ActiveHourTo: "", ActiveHourFromNone: "", ActiveHourToNone: "" };
 
     }
-
+    function LoginMe() {
+        localStorage.usrname = "";
+        localStorage.pass = "";
+        localStorage.chkbx = "";
+        Login();
+    }
     function checkValid(txtId, textMsg) {
 
         $('#' + txtId).tooltip('hide');
@@ -380,29 +391,7 @@
 
     }
 
-    function checkHour(txtId, textMsg) {
 
-        $('#' + txtId).tooltip('hide');
-
-        if (!isHour($("#" + txtId).val())) {
-
-            $('#' + txtId).tooltip({
-
-                title: textMsg
-
-            });
-
-            $('#' + txtId).tooltip('show');
-
-            $('#' + txtId).focus();
-
-            return false;
-
-        }
-
-        return true;
-
-    }    
 
     function isEmptyObject(obj) {
 
@@ -417,7 +406,7 @@
     }
 
     function RegisterCustmer() {
-
+        var city = $("#cityCust").val();
         var user = $("#userCust").val();
 
         var password = $("#passwordCustomer").val();
@@ -426,13 +415,6 @@
 
         var txtTelCust = $("#txtTelCust").val();
 
-        if (email.length <= 0) {
-
-            showTooltip("emailCustomer", "נא להזין מייל");
-
-            return;
-
-        }
 
         if (user.length <= 0) {
 
@@ -456,6 +438,14 @@
             return;
 
         }
+        if (email.length <= 0) {
+
+            showTooltip("emailCustomer", "נא להזין מייל");
+
+            return;
+
+        }
+
         if (!IsvalidEmail(email)) {
 
             showTooltip("emailCustomer", "נא להזין מייל תקין");
@@ -486,6 +476,20 @@
 
         }
 
+        if (password && !testPassword(password)) {
+            showTooltip("passwordCustomer", "נא להזין תווים ומספרים");
+
+            return false;
+        }
+
+        if (city == "0") {
+
+            showTooltip("city", "נא להזין עיר");
+
+            return;
+
+        }
+
         var userObj = {
 
             Name: user,
@@ -494,7 +498,8 @@
 
             tel: txtTelCust,
 
-            Email: email
+            Email: email,
+            City: city
 
         }
 
@@ -531,10 +536,11 @@
 
         });
 
-    }       
+    }
 
-    function goToCustomer(id) {        
+    function goToCustomer(id) {
         scrollToSection(id);
+        window.location.hash = id;
     }
 
     function scrollToSection(id) {
@@ -545,8 +551,34 @@
         }, 100);
     }
 
-    history.pushState(null, null, location.href);
-    window.onpopstate = function () {
-        history.go(1);
-    };
+    
+
+    
+    if (sWidth > 500) {
+        document.getElementById("imgLogo1").src = "img/Tana1.png";
+        document.getElementById("imgLogo1").style.width = "120px";
+        document.getElementById("imgLogo1").style.height = "23px";
+        //document.getElementById("toriImgX").src = "img/toriNewX5.png";
+        document.getElementById("dvBackImage").style.backgroundImage = 'url(img/toriBigX3.jpg)';
+        document.getElementById("dvBackImage").style.backgroundPosition = "50% 50%";
+        document.getElementById("dvBackImage").style.backgroundSize = "100% cover!important";
+        document.getElementById("dvBackImage").style.overflow = "hidden";
+        document.getElementById("dvBackImage").style.display = "block";
+        document.getElementById("dvBackImage").style.margin = "auto 0";
+        var divideBy = sWidth > 1200 ? 3 : 2;
+        var MinusBy = sWidth > 1200 ? 230 : 320;
+        var sw = sWidth / divideBy;
+
+        document.getElementById("emailLogin").style.width = sw + "px";
+        document.getElementById("passwordLogin").style.width = sw + "px";
+        document.getElementById("btnLogin").style.width = sw + "px";
+        var pos = $('#passwordLogin').offset();
+        document.getElementById("dvForgutPass").style.marginRight = (sw - MinusBy) + "px";
+        var w = $('#passwordLogin').innerWidth();
+        document.getElementById("spnForgutPass").style.marginRight = (sw - (w - 100)) + "px";
+        pixel_from_start = 39;
+    }
+    else {
+        document.getElementById("spnForgutPass").style.float = "left";
+    }
 </script>

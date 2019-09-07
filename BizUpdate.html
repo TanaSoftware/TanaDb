@@ -21,9 +21,10 @@
             box-shadow: 1px;
             color: #ffffff;
         }
-        .btn-s{
-            height:32px;
+        .btn-s {
+            height:32px;            
         }
+
         @media only screen and (max-width: 760px) {
 
             input[type=checkbox] {
@@ -35,7 +36,8 @@
                 transform: scale(1.5);
                 padding-left: 20px !important;
             }
-         .btn-lg {
+
+            .btn-lg {
                 padding: 2px;
             }
         }
@@ -173,22 +175,22 @@
                         <div class="panel-body">
                             <div style="text-align:right">
                                 <label></label><span style="color:red" id="spnActiveDays"></span>
-
                                 <div class="row" style="width:100%" id="UserActivities"></div>
 
                                 <div class="form-group" style="width:100%;padding-bottom:10px;padding-top:10px;">
 
                                     <input style="float:right;width:120px;margin-bottom:10px;margin-right:3px;" maxlength="50" id="BizType" type="text" placeholder="הזן סוג פעילות" class="form-control input-lg" />
-                                    <input style="float:right;width:80px;margin-right:4px;" id="txtDuration" type="number" placeholder="משך פעילות" maxlength="3" class="form-control input-lg" />
-                                    <select id="inputColor" style="float:right;width:55px;" class="form-control input-lg" onchange="changeColor(this)">
+                                    <input style="float:right;width:80px;margin-right:4px;" id="txtDuration" type="number" placeholder="זמן" maxlength="3" class="form-control input-lg" />
+                                    <select id="inputColor" style="float:right;width:55px;margin-right:3px;" class="form-control input-lg" onchange="changeColor(this)">
                                         <option selected="selected" value="#3788d8" style="background:#3788d8">כחול</option>
                                         <option value="#7FDBFF" style="background:#7FDBFF">תכלת</option>
                                         <option value="#B10DC9" style="background:#B10DC9">סגול</option>
-                                        <option value="#FF69B4" style="background:#FF69B4">ורוד</option>
+                                        <option value="#ff77aa" style="background:#ff77aa">ורוד</option>
                                         <option value="#f37735" style="background:#f37735">כתום</option>
                                         <option value="#2ECC40" style="background:#2ECC40">ירוק</option>
                                         <option value="#aaaaaa" style="background:#aaaaaa">אפור</option>
                                         <option value="#bdeaee" style="background:#bdeaee">טורקיז</option>
+                                        <option value="#edc951" style="background:#edc951">צהוב</option>
                                         <option value="#A0522D" style="background:#A0522D">חום</option>
                                     </select>
                                     <button onclick="AddUserActivity();" class="btn btn-blue btn-lg" style="float:right; margin-right:5px;">הוסף</button>
@@ -356,10 +358,12 @@
                             </div>
                         </div>
                     </div>
+
+
                 </div>
             </div>
 
-            <div class="row">
+            <!--<div class="row">
                 <ul>
                     באפשרותך להעלאות שני תמונות לאתר שלך:
                     <li>
@@ -374,6 +378,10 @@
                 <ul>
                     <li><button style="float:right;" onclick="upload()">העלאת תמונות</button></li>
                 </ul>
+            </div>-->
+
+            <div>
+                <span style="float:left;"><button style="color:#33a6cc;width:100px;" onclick="goBack()">סיום</button></span>
             </div>
         </div>
 
@@ -382,7 +390,7 @@
     <script src="js/cleave.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/jquery.easing.min.js"></script>
-    <script src="js/jquery.countdown.min.js"></script>
+    <script src="js/jquery.countdown.min.js"></script>    
     <script src="js/device.min.js"></script>
     <script src="js/form.min.js"></script>
     <script src="js/jquery.placeholder.min.js"></script>
@@ -417,6 +425,8 @@
                     selectizeService.InitSelectize("city", 'Id', 'Name', 46, data, null);
 
                     GetUserDetails();
+                    SetHourToDddl();
+
                 });
 
 
@@ -438,7 +448,7 @@
             data: JSON.stringify(Obj),
             contentType: "application/json;charset=utf-8",
             success: function (data) {
-                if(data.ErrorMsg!=null && data.ErrorMsg!=""){
+                if (data.ErrorMsg != null && data.ErrorMsg != "") {
 
                 }
                 else {
@@ -449,15 +459,15 @@
 
             }
         });
-    }
-
-    function getActivityNameByById(id){
+    }    
+    
+    function getActivityNameByById(id) {
         for (var i = 0; i < UserData.Activities.length; i++) {
             if (UserData.Activities[i].Id == id)
                 return UserData.Activities[i].Name;
         }
     }
-    function checkEmployeeActivities(EmployeeActivities,id){
+    function checkEmployeeActivities(EmployeeActivities, id) {
         for (var i = 0; i < EmployeeActivities.length; i++) {
             if (EmployeeActivities[i] == id)
                 return true;
@@ -465,30 +475,31 @@
         return false;
     }
     function getEmployeeTemplate(EmployeeId, EmployeeName, EmployeeActivities) {
-        
+
         var ret = "<div class='row' style='width:100%;' id='dvBizType" + EmployeeId + "'><div style='float:right;padding-right:20px;'><input style='width:140px;' onclick=SetEmployeeData(\'" + EmployeeId + "\'); id='txtBizType" + EmployeeId + "' type='text' /><input type='hidden' id='hdnBizType" + EmployeeId + "' value='" + EmployeeName + "'/></div><button style='float:right;margin-right:4px;' onclick=deleteBizType('" + EmployeeId + "')>מחק</button><button style='float:right;margin-right:4px;' onclick=UpdateBizType('" + EmployeeId + "')>עדכן</button>";
         for (var i = 0; i < UserData.Activities.length; i++) {
             var bizType = UserData.Activities[i].Name;
             var checked = "";
             if (EmployeeActivities && checkEmployeeActivities(EmployeeActivities, UserData.Activities[i].Id))
                 checked = "checked='checked'";
-            ret += getEmployeeActivityTemplate(EmployeeId,UserData.Activities[i].Id, bizType, checked);
+            ret += getEmployeeActivityTemplate(EmployeeId, UserData.Activities[i].Id, bizType, checked);
         }
-        return ret+"</div>";
+        return ret + "</div>";
     }
 
 
-    function getEmployeeActivityTemplate(EmployeeId,Id, bizType, checked){
+    function getEmployeeActivityTemplate(EmployeeId, Id, bizType, checked) {
         return "<div id='dvActEmp" + EmployeeId + "Act" + Id + "' style='padding-right:20px;clear:both;'><label style='width:120px;' for='chk_" + EmployeeId + "Act" + Id + "'>" + bizType + "</label><input " + checked + " id='chk_" + EmployeeId + "Act" + Id + "' type='checkbox' value='" + bizType + "' /></div>";
     }
 
     function getBizTypeTemplate(Id, Name, ActiveDuration, color) {
-        var dvColor = document.getElementById('inputColor').outerHTML;
-        dvColor = dvColor.replace("inputColor", "inputColor" + Id);
-        dvColor = dvColor.replace("form-control input-lg", "btn-s");
-        dvColor = dvColor.replace("background: rgb(55, 136, 216)", "background:" + color);
-        dvColor = dvColor.replace("changeColor(this", "changeColorDb(this,"+Id);
+        var dvColor = document.getElementById('inputColor').outerHTML;        
+        dvColor = dvColor.replace("inputColor", "inputColor" + Id);       
+        dvColor = dvColor.replace("form-control input-lg", "btn-s");       
+        dvColor = dvColor.replace("background: rgb(55, 136, 216)", "background:" + color);        
+        dvColor = dvColor.replace("changeColor(this", "changeColorDb(this," + Id);       
         return "<div class='row' style='width:100%;' id='dvBizTypeAct" + Id + "'><div style='float:right;width:200px;padding-right:20px;color:" + color + "'>" + Name + " למשך  " + ActiveDuration + " דקות</div><div style='float:right'>" + dvColor + "</div><button style='float:right;margin-right:4px;' onclick=deleteBizTypeActivity('" + Id + "')>מחק</button></div>";
+        
     }
 
     function fillData(data) {
@@ -509,17 +520,16 @@
             BizTypeData += getBizTypeTemplate(UserData.Activities[i].Id, UserData.Activities[i].Name, UserData.Activities[i].ActiveDuration, UserData.Activities[i].color);
         }
         $("#UserActivities").html(BizTypeData);
-        
+
         for (var key in UserData.dicBizType) {
             var arr = UserData.dicBizType[key];
             empData += getEmployeeTemplate(arr[0].EmployeeId, arr[0].EmployeeName, UserData.dicEmployeeActivities[arr[0].EmployeeId]);
-            
+
         }
         $("#Activities").html(empData);
         fillEmployees();
-
-        for (var i = 0; i < UserData.Activities.length; i++) {
-            document.getElementById("inputColor" + UserData.Activities[i].Id).value = UserData.Activities[i].color;
+        for (var i = 0; i < UserData.Activities.length; i++) {            
+            document.getElementById("inputColor" + UserData.Activities[i].Id).value = UserData.Activities[i].color;         
         }
     }
     function fillEmployees() {
@@ -538,9 +548,9 @@
                 }
             }
         }
-        
+
         var arr = UserData.dicBizType[keySet];
-        for (var i = 1; i <=7; i++) {
+        for (var i = 1; i <= 7; i++) {
             document.getElementById('Day' + i).checked = false;
             $('#txtfromHour' + i).val("");
 
@@ -568,6 +578,10 @@
     }
 
     function deleteBizTypeActivity(BizTypeId) {
+        if (UserData.Activities.length <= 1) {
+            messageHandler.Show("לא ניתן למחוק את כל הפעילויות");
+            return;
+        }
         messageHandler.Confirm("מחיקה זו תמחוק את כל התורים שקיימים לפעילות הנ''ל, האם ברצונך להמשיך?",
             function () { deleteActivityFromDb(BizTypeId); }, function () { CanceldeleteActivity(); });
     }
@@ -603,7 +617,18 @@
                         }
                     }
                     if (iFountIt >= 0) {
-                        UserData.Activities.splice(iFountIt, 1);
+                        UserData.Activities.splice(iFountIt, 1); 
+                        for (var biz in UserData.dicEmployeeActivities) {
+                            var list = UserData.dicEmployeeActivities[biz];
+                            for (var i = 0; i < list.length; i++) {
+                                if (list[i] == BizTypeId) {
+                                    list.splice(i, 1);
+                                    UserData.dicEmployeeActivities[biz] = list;
+                                    break;
+                                }
+                            }
+                        }
+                        sessionStorage.setItem("UserData", JSON.stringify(UserData));
                     }
                     for (var key in UserData.dicBizType) {
                         $('#dvActEmp' + UserData.dicBizType[key][0].EmployeeId + 'Act' + BizTypeId).remove();
@@ -628,7 +653,7 @@
         }
 
         ActivitiesTempData = getEmployeeHours(0);
-        if (ActivitiesTempData ==null || ActivitiesTempData.length <= 0)
+        if (ActivitiesTempData == null || ActivitiesTempData.length <= 0)
             return;
 
         ActivitiesTempData[0].guid = UserData.guid;
@@ -648,9 +673,9 @@
                     var empData = getEmployeeTemplate(data.EmployeeId, empName);
                     var newDiv = $("#Activities").html();
                     $("#Activities").html(newDiv + empData);
-                    a = getEmployeeHours(data.EmployeeId);
+                    ActivitiesTempData = getEmployeeHours(data.EmployeeId);
                     $('#EmployeeName').val("");
-                    
+
                     var dicBizType = UserData.dicBizType;
                     dicBizType[empName] = ActivitiesTempData;
                     UserData.dicBizType = dicBizType;
@@ -669,9 +694,9 @@
 
     function getEmployeeHours(EmployeeId, employeeName) {
         var ActivitiesTempData = new Array();
-        var empName = employeeName ? employeeName :$('#EmployeeName').val();
+        var empName = employeeName ? employeeName : $('#EmployeeName').val();
         var dicBizType = UserData.dicBizType;
-        if (employeeName==null && dicBizType[empName] != null) {
+        if (employeeName == null && dicBizType[empName] != null) {
             showTooltip("EmployeeName", "שם עובד קיים")
             return;
         }
@@ -711,7 +736,7 @@
                 var item = GetBizTypeItem();
 
                 item.UserId = UserData.UserId;
-                if(i==1)
+                if (i == 1)
                     item.guid = UserData.guid;
 
                 item.EmployeeId = EmployeeId;
@@ -751,7 +776,7 @@
 
     function GetBizTypeItem() {
 
-        return { guid:"", UserId:0,EmployeeId: 0, ActiveDay: 0, EmployeeName: "", ActiveHourFrom: "", ActiveHourTo: "", ActiveHourFromNone: "", ActiveHourToNone: "" };
+        return { guid: "", UserId: 0, EmployeeId: 0, ActiveDay: 0, EmployeeName: "", ActiveHourFrom: "", ActiveHourTo: "", ActiveHourFromNone: "", ActiveHourToNone: "" };
 
     }
 
@@ -785,7 +810,7 @@
                     $('#dvBizType' + empId).remove();
                     messageHandler.Show("שם עובד נמחק בהצלחה");
 
-                    
+
                 }
             },
             error: function (request, status, error) {
@@ -794,10 +819,19 @@
         });
     }
 
-    function CanceldeleteBizType(){
+    function CanceldeleteBizType() {
         $('#dvConfirmModal').modal('hide');
     }
     function deleteBizType(empId) {
+        var iCounter = 0;
+        for (var key in UserData.dicBizType) {
+            iCounter++;
+        }
+
+        if (iCounter <= 1) {
+            messageHandler.Show("לא ניתן למחוק את כל העובדים");
+            return;
+        }
 
         messageHandler.Confirm("מחיקה זו תמחוק את כל התורים שקיימים לעובד הנ''ל, האם ברצונך להמשיך?",
             function () { deleteBizTypeFromDb(empId); }, function () { CanceldeleteBizType(); });
@@ -815,7 +849,7 @@
         }
 
         var ActivitiesTempData = getEmployeeHours(empId, empName);
-        if (ActivitiesTempData==null || ActivitiesTempData.length <= 0)
+        if (ActivitiesTempData == null || ActivitiesTempData.length <= 0)
             return;
 
         var arrActs = [];
@@ -844,7 +878,7 @@
                     messageHandler.Show(data);
                 }
                 else {
-                     
+
                     var dicBizType = UserData.dicBizType;
                     var empOldName = $("#hdnBizType" + empId).val();
                     delete dicBizType[empOldName];
@@ -1008,7 +1042,7 @@
             City: city,
 
             Country: "Israel",
-            guid:UserData.guid
+            guid: UserData.guid
         }
 
 
@@ -1054,13 +1088,12 @@
             return;
         }
         var color = document.getElementById("inputColor").value;
-
         var Obj = {
             UserId: UserData.UserId,
             Name: bizType,
             ActiveDuration: duration,
-            color:color,
-            guid:UserData.guid
+            color: color,
+            guid: UserData.guid
         };
         $.ajax({
             url: "User/AddUserActivity",
@@ -1079,13 +1112,13 @@
 
                     for (var key in UserData.dicBizType) {
                         var arr = UserData.dicBizType[key];
-                        var d = getEmployeeActivityTemplate(arr[0].EmployeeId,data, bizType, "");
+                        var d = getEmployeeActivityTemplate(arr[0].EmployeeId, data, bizType, "");
                         var lastActivityId = UserData.Activities[UserData.Activities.length - 1].Id;
 
-                        $(d).insertAfter("#dvActEmp" + arr[0].EmployeeId + "Act" + lastActivityId );
+                        $(d).insertAfter("#dvActEmp" + arr[0].EmployeeId + "Act" + lastActivityId);
                     }
                     UserData.Activities[UserData.Activities.length] = { Id: data, Name: bizType, ActiveDuration: parseInt(duration), color: color };
-
+                    sessionStorage.setItem("UserData", JSON.stringify(UserData));
                     $('#BizType').val("");
                     $('#txtDuration').val("");
                     messageHandler.Show("פעילות עודכנה בהצלחה");
@@ -1097,49 +1130,66 @@
         });
 
 
-        }
+    }
     
 
-    
     document.getElementById("inputColor").style.background = "#3788d8";
     function changeColor(obj) {
         obj.style.background = obj.value;
     }
-    function changeColorDb(obj,id) {
+
+    function changeColorDb(obj, id) {
+
         var color = obj.value;
+
         obj.style.background = color;
+
         //send to db
+
         var obj = { Name: UserData.guid, Id: id, color: color }
+
         $.ajax({
             url: "User/UpdateUserColor",
             type: 'POST',
             data: JSON.stringify(obj),
             contentType: "application/json;charset=utf-8",
             success: function (data) {
+
                 if (data != "") {
+
                     messageHandler.Show(data);
+
                 }
+
                 else {
+
                     messageHandler.Show("צבע פעילות עודכן בהצלחה");
-                    for(var i=0;i<UserData.Activities.length;i++) {
+
+                    for (var i = 0; i < UserData.Activities.length; i++) {
+
                         if (UserData.Activities[i].Id == id) {
+
                             UserData.Activities[i].color = color;
-
                             var Activities = UserData.Activities;
-                            UserData.Activities = Activities;                           
+
+                            UserData.Activities = Activities;
+
                             sessionStorage.setItem("UserData", JSON.stringify(UserData));
-
                             break;
-                        }
-                    }
 
+                        }
+
+                    }
                 }
             },
-            error: function (request, status, error) {
+                error: function (request, status, error) {
+                }
 
-            }
-        });
+            });
+
     }
+    
+
 
     function upload() {
         var formData = new FormData();
@@ -1167,8 +1217,4 @@
 
 
     }
-    try {
-        SetHourToDddl();
-    }
-    catch (e) { }
 </script>

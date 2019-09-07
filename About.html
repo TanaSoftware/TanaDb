@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/main.css?v=7" rel="stylesheet">
+    <link href="css/main.css?v=18" rel="stylesheet">
     <link href="css/selectize.css" rel="stylesheet" />
     <title>TanaSoftware</title>
     <style>
@@ -68,14 +68,18 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button><a id="dvUserLoggedIn"></a><a href="#page-top" class="navbar-brand page-scroll">
-                    <img src="img/Tana1.png" style="width:100px;margin-top:12px;" alt="Logo" class="logo"><img src="img/Tana2.png" style="width:100px;margin-top:12px;" alt="Logo" class="logodark">
+                    <img src="img/Tana1.png" style="width:90px;height:22px; margin-top:12px;margin-left:30px;" alt="Logo" class="logo">
+                    <img src="img/Tana2.png" style="width:100px;margin-top:12px;margin-left:30px;" alt="Logo" class="logodark">
                 </a>
             </div>
 
             <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="#" onclick="javascript:goToUrl('Start.html','')" class="page-scroll">דף הבית</a></li>                    
-                    <li><a href="#" onclick="javascript:goToUrl('Contact.html')" class="page-scroll">צור קשר</a></li>
+                    <li><a href="#" onclick="javascript:goToUrl('Start.html')" class="page-scroll">דף הבית</a></li>
+                    <li><a href="#" onclick="javascript:goToUrl('Start.html')" class="page-scroll">כניסת משתמש</a></li>
+                    <li><a href="#" onclick="javascript:goToUrl('Start.html')" class="page-scroll">כניסת בעל עסק</a></li>
+                    <li><a href="#" onclick="javascript: goToUrl('Contact.html')" class="page-scroll">צור קשר</a></li>
+                    <li><a href="#page-top" onclick="javascript: goToUrl('About.html')" class="page-scroll">אודות</a></li>
 
                 </ul>
             </div>
@@ -85,27 +89,28 @@
 
     <header id="Carousel-intro" data-ride="carousel" class="intro carousel carousel-big slide carousel-fade">
 
-        <ol style="padding-left:40px;" class="carousel-indicators">
-            <li data-target="#Carousel-intro" data-slide-to="0" class="active"></li>
-            <li data-target="#Carousel-intro" data-slide-to="1"></li>
-            <!-- <li data-target="#Carousel-intro" data-slide-to="2"></li>-->
-        </ol>
-
         <div class="carousel-inner">
             <div class="item active">
-                <div style="background-image:url(img/f.png)" class="fill">
-                    <div class="intro-body">
+                <div id="dvBackImage" style="background-image:url(img/f3.jpg)" class="fill">
+                    <div style="padding-top:40px;">
                         <div class="container">
                             <div class="row">
-                                <div class="toriImg"></div>
-                                <div class="clock"></div>
-                                <div class="col-lg-10 col-lg-offset-1" style="padding-top:140px;">
 
-                                    <h5>חברת TanaSoftware באה לפתור את הבעיה של כולנו
-                                    וזה ניהול הזמן שלנו, המערכת שלנו מאפשרת לכל עסק לנהל את הזמן שלו בצורה הטובה והיעילה ביותר.
-                                    אם יש לך מספרה, מכון יופי, מרפאה או אתה מורה פרטי, מדריך כושר זה הזמן להרשם.
-                                    </h5>
-                                    <button class="btn btn-blue btn-lg page-scroll wow fadeInLeft" onclick="goToUrl('Start.html', 'biz')">&nbsp;&nbsp;כניסת בעל עסק&nbsp;&nbsp;</button>
+                                <div id="dvMain" class="col-lg-10 col-lg-offset-1" style="padding-top:10px;">
+
+                                    <p style="font-size:14px;">
+                                        חברת TanaSoftware באה לפתור את הבעיה של כולנו-וזה ניהול הזמן שלנו.<br />
+                                        מטרת המערכת היא לתאם את התור בין בעל העסק לבין מבקש השרות ללא צורך בתיאום טלפוני אלא בעזרת קליק פשוט,במהירות וביעילות<br />
+                                        המערכת מאפשרת ללקוח לראות את הזמנים הפנויים,ימי חופש של העסק וגם אפשרות לתאם ולקבל שירות מעובד ספציפי-והכל בשניות ספורות<br />
+                                        בעל העסק מרוויח ניהול שקט,מהיר ויעיל יותר של זמנו ושל העסק.
+
+                                        אז אם אתם בעלי עסק ונותני שרות אשר מצריך קביעת תורים,תמורת 89 ש"ח לחודש (עד 5 עובדים),תוכלו להנות ממערכת חדשה ומתקדמת אשר תקל עליכם ותשדרג את השירות ללקוחותכם.<br />
+                                        לקוחות יקרים מוזמנים להירשם למערכת בחינם ולהנות מניהול זמנים מהיר אצל בעלי העסקים הרשומים אצלנו במערכת.
+
+
+                                    </p>
+                                    <div style="margin-top:20px;"><a style="text-decoration: underline;" onclick="goToUrl('Start.html#RegisterCustomerX', 'biz')">משתמש חדש</a></div>
+                                    <div style="margin-top:10px;"><a style="text-decoration: underline;" onclick="goToUrl('Start.html#Register', 'biz')">בעל עסק חדש</a></div>
                                 </div>
 
                             </div>
@@ -114,38 +119,13 @@
                     </div>
                 </div>
             </div>
-
-            <div class="item">
-                <div style="background-image:url(img/f.png)" class="fill">
-                    <div class="intro-body">
-                        <div class="container">
-                            <div class="row">
-                                <div class="toriImg"></div>
-                                <div class="clock"></div>
-                                <div class="col-lg-10 col-lg-offset-1" style="padding-top:140px;">
-                                    <h5>
-                                        חברת TanaSoftware באה לפתור את הבעיה של כולנו
-                                        וזה ניהול הזמן שלנו, המערכת שלנו מאפשרת לכל אחד לנהל את הזמן שלו בצורה הטובה והיעילה ביותר.
-                                        אם אתה לקוח המעוניין לנהל את הזמן שלך אנא הרשם בחינם.
-                                        באפשרותך לקבוע תור אצל בעל עסק שרשום אצלנו במערכת.
-                                    </h5>
-
-                                    <button class="btn btn-blue btn-lg page-scroll wow fadeInLeft" onclick="goToUrl('Start.html', 'cust')">&nbsp;&nbsp;כניסת לקוחות &nbsp;&nbsp;</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-       
 
         </div>
-        <a href="#Carousel-intro" data-slide="prev" class="left carousel-control"><span class="icon-prev"></span></a>
-        <a href="#Carousel-intro" data-slide="next" class="right carousel-control"><span class="icon-next"></span></a>
+
     </header>
 
 
-   
+
 
     <script src="js/jquery.js"></script>
     <script src="js/cleave.js"></script>
@@ -169,7 +149,7 @@
 <script>
     accessibility_rtl = false;
     pixel_from_side = 10;
-    pixel_from_start = 80;
+    pixel_from_start = 10;
     is_set_for_mobile = 1;
     getScripts();
 
@@ -186,11 +166,22 @@
 
     }
 
-   
-    function goToUrl(url,p) {
+
+    function goToUrl(url, p) {
         var v = sessionStorage.getItem("version");
-        location.href = url + '?v=' + v + "&p="+p;
+        location.href = url + '?v=' + v + "&p=" + p;
     }
 
+    var sWidth = screen.width
+    if (sWidth > 500) {
+        document.getElementById("dvBackImage").style.backgroundImage = 'url(img/toriBigX3.jpg)';
+        document.getElementById("dvBackImage").style.backgroundPosition = "50% 50%";
+        document.getElementById("dvBackImage").style.backgroundSize = "100% cover!important";
+        document.getElementById("dvBackImage").style.overflow = "hidden";
+        document.getElementById("dvBackImage").style.display = "block";
+        document.getElementById("dvBackImage").style.margin = "auto 0";
+        document.getElementById("dvMain").style.paddingTop = "120px"
+        pixel_from_start = 35;
+    }
 
 </script>

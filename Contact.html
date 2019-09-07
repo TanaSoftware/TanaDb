@@ -1,0 +1,433 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/main.css?v=18" rel="stylesheet">
+    <link href="css/selectize.css" rel="stylesheet" />
+    <title>TanaSoftware</title>
+    <style>
+        .footer {
+            position: absolute;
+            bottom: 0;
+            padding: 1rem;
+            width: 100%;
+        }
+
+        .fullHeight {
+            height: 100%;
+        }
+
+        .hour {
+            width: 70px;
+        }
+
+        .tooltip-inner {
+            background-color: #f00 !important;
+        }
+
+        .btn {
+            background: #33a6cc;
+            box-shadow: 1px;
+            color: #ffffff;
+        }
+
+        @media only screen and (max-width: 760px) {
+
+            input[type=checkbox] {
+                /* Double-sized Checkboxes */
+                -ms-transform: scale(1.5); /* IE */
+                -moz-transform: scale(1.5); /* FF */
+                -webkit-transform: scale(1.5); /* Safari and Chrome */
+                -o-transform: scale(1.5); /* Opera */
+                transform: scale(1.5);
+                padding-left: 20px !important;
+            }
+        }
+
+        .checkbox-inline {
+            padding-left: 5px !important;
+        }
+    </style>
+</head>
+<body dir="rtl" id="page-top" data-spy="scroll" data-target=".navbar-fixed-top" class="top">
+
+    <nav class="navbar navbar-unibody navbar-custom navbar-fixed-top navbar-onepage">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" data-toggle="collapse" data-target=".navbar-main-collapse" class="navbar-toggle">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button><a id="dvUserLoggedIn"></a><a href="#page-top" class="navbar-brand page-scroll">
+                    <img src="img/Tana1.png" style="width:90px;height:22px; margin-top:12px;margin-left:30px;" alt="Logo" class="logo">
+                    <img src="img/Tana2.png" style="width:100px;margin-top:12px;margin-left:30px;" alt="Logo" class="logodark">
+                </a>
+            </div>
+
+            <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="#" onclick="javascript:goToUrl('Start.html')" class="page-scroll">דף הבית</a></li>
+                    <li><a href="#" onclick="javascript:goToUrl('Start.html')" class="page-scroll">כניסת משתמש</a></li>
+                    <li><a href="#" onclick="javascript:goToUrl('Start.html')" class="page-scroll">כניסת בעל עסק</a></li>
+                    <li><a href="#page-top" onclick="javascript: goToUrl('Contact.html')" class="page-scroll">צור קשר</a></li>
+                    <li><a href="#" onclick="javascript: goToUrl('About.html')" class="page-scroll">אודות</a></li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <header id="Carousel-intro" data-ride="carousel" class="intro carousel carousel-big slide carousel-fade">
+
+        <div class="carousel-inner">
+            <div class="item active">
+                <div id="dvBackImage" style="background-image:url(img/f3.jpg)" class="fill">
+                    <div class="">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-10 col-lg-offset-1">
+                                    <!-- Contact-->
+                                    <section id="contact" class="fullHeight" style="padding-left:30px;padding-right:30px; background-color:transparent;">
+                                        <div id="dvMain" class="container">
+                                            <div class="row">
+                                                <div>
+                                                    <h3>צור קשר</h3>
+                                                </div>
+                                                <div style="margin-top:3px;">
+                                                    <div class="control-group">
+                                                        <div class="form-group floating-label-form-group controls">
+                                                            <label for="iname" class="sr-only control-label">שם</label>
+                                                            <input id="iname" type="text" placeholder="שם" required="" class="form-control input-lg"><span class="help-block text-danger"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="control-group">
+                                                        <div class="form-group floating-label-form-group controls">
+                                                            <label for="iemail" class="sr-only control-label">מייל</label>
+                                                            <input id="iemail" type="email" placeholder="מייל" required="" class="form-control input-lg"><span class="help-block text-danger"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="control-group">
+                                                        <div class="form-group floating-label-form-group controls">
+                                                            <label for="phone" class="sr-only control-label">טלפון</label>
+                                                            <input id="phone" type="tel" placeholder="טלפון" required="" class="form-control input-lg"><span class="help-block text-danger"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="control-group">
+                                                        <div class="form-group floating-label-form-group controls">
+                                                            <label for="message" class="sr-only control-label">הודעה</label>
+                                                            <textarea id="message" rows="2" placeholder="הודעה" required="" aria-invalid="false" class="form-control input-lg"></textarea><span class="help-block text-danger"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div id="dvProgBar" style="text-align:center;display:none;"><img src="css/ProgressBlue.gif" /></div>
+                                                    <div id="dvErrMail"></div>
+                                                    <div>
+                                                        <button style="width:100%;" onClick="SendMail();" class="btn btn-w btn-lg">שלח</button>
+                                                    </div>
+                                                    <div style="text-align:center;margin-top:5px;">
+                                                        <label>טלפון: 054-3474844</label>
+                                                    </div>
+                                                    <div style="text-align:center;margin-top:5px;">
+                                                        <label>תמיכה טכנית: 054-3474944</label>
+                                                    </div>
+                                                    <div style="text-align:center;margin-top:5px;">
+                                                        <label>מייל: info@tori.co.il</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+     >
+    </header>
+
+
+    <script src="js/jquery.js"></script>
+    <script src="js/cleave.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/jquery.countdown.min.js"></script>
+    <script src="js/device.min.js"></script>
+    <script src="js/form.min.js"></script>
+    <script src="js/jquery.placeholder.min.js"></script>
+    <script src="js/jquery.shuffle.min.js"></script>
+    <script src="js/jquery.parallax.min.js"></script>
+    <script src="js/jquery.circle-progress.min.js"></script>
+    <script src="js/jquery.swipebox.min.js"></script>
+    <script src="js/smoothscroll.min.js"></script>
+    <script src="js/wow.min.js"></script>
+    <script src="js/main.js?v=1"></script>
+    <script src="js/selectize.js"></script>
+    <script src="https://www.negishim.com/accessibility/accessibility_pro.js" type="text/javascript"></script>
+</body>
+</html>
+<script>
+    accessibility_rtl = false;
+    pixel_from_side = 10;
+    pixel_from_start = 10;
+    is_set_for_mobile = 1;
+    getScripts();
+
+    function getScripts() {
+        var v = sessionStorage.getItem("version");
+        $.ajax({
+            url: "js/global.js?ver=" + v,
+            dataType: "script",
+            success: function (data) {
+                getCities(function (data) {
+                    selectizeService.InitSelectize("city", 'Id', 'Name', 46, data, null);
+                });
+            }
+        });
+
+
+    }
+
+    function goto(hashTag) {
+        location.href = '#' + hashTag;;
+    }
+
+    function SendMail() {
+        var sName = $("#iname").val();
+        var sMsg = $("#message").val();
+        var sEmail = $("#iemail").val();
+        var sPhone = $("#phone").val();
+        $("#dvErrMail").html("");
+        if (sName.length <= 0) {
+            showTooltip("iname", "נא להזין שם");
+            return;
+        }
+        if (sEmail.length <= 0) {
+            showTooltip("iemail", "נא להזין מייל");
+            return;
+        }
+        if (!IsvalidEmail(sEmail)) {
+            showTooltip("iemail", " נא להזין מייל תקין");
+            return;
+        }
+        if (sMsg.length <= 0) {
+            showTooltip("message", "נא להזין מלל");
+            return;
+        }
+        showProgressBar(true);
+        var Obj = {
+            name: sName,
+            Msg: sMsg,
+            email: sEmail,
+            phone: sPhone
+        }
+        $.ajax({
+            url: "User/PostEmail",
+            type: 'POST',
+            data: JSON.stringify(Obj),
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                showProgressBar(false);
+                if (data) {
+                    $("#dvErrMail").html("מייל נשלח בהצלחה");
+                }
+                else
+                    $("#dvErrMail").html("שליחת מייל נכשלה");
+            },
+            error: function (request, status, error) {
+                showProgressBar(false);
+                $("#dvErrMail").html("שליחת מייל נכשלה");
+            }
+        });
+    }
+
+    function showProgressBar(isShow) {
+        if (isShow)
+            $("#dvProgBar").show();
+        else
+            $("#dvProgBar").hide();
+    }
+
+
+
+
+
+    function checkValidDDl(txtId, textMsg) {
+
+        $('#' + txtId).tooltip('hide');
+
+        var txt = $("#" + txtId).val();
+
+        if (txt == "0" || txt == "") {
+
+            //showTooltip(txtId, textMsg);
+
+            $('#' + txtId).tooltip({
+
+                title: textMsg
+
+            });
+
+            $('#' + txtId).tooltip('show');
+
+            $('#' + txtId).focus();
+
+            return false;
+
+        }
+
+        return true;
+
+    }
+
+
+
+
+    var ActivityCounter = 1;
+    function AddActivity() {
+
+        var data = "";
+
+        var ActivitiesTempData = new Array();
+
+        if (!checkValid("EmployeeName", "נא להזין שם עובד")) {
+
+            return;
+
+        }
+
+        for (var i = 1; i <= 7; i++) {
+
+            var id = i.toString();
+
+            var Day = document.getElementById('Day' + id).checked;
+
+
+            if (Day) {
+
+
+
+                if (!checkValid("txtfromHour" + id, "נא להזין משעה")) {
+
+                    return;
+
+                }
+
+                if (!checkHour("txtfromHour" + id, "שעה לא חוקית")) {
+
+                    return;
+
+                }
+
+                if (!checkValid("txttoHour" + id, "נא להזין עד שעה")) {
+
+                    return;
+
+                }
+
+                if (!checkHour("txttoHour" + id)) {
+
+                    return;
+
+                }
+
+                var item = GetBizTypeItem();
+
+                item.EmployeeId = ActivityCounter;
+                item.EmployeeName = $('#EmployeeName').val();
+
+                item.ActiveDay = id;
+
+                //item.ActiveDuration = $('#ddlDuration' + id).val();
+
+                item.ActiveHourFrom = $('#txtfromHour' + id).val();
+
+                item.ActiveHourTo = $('#txttoHour' + id).val();
+
+                item.ActiveHourFromNone = $('#txtfromHourNone' + id).val();
+
+                item.ActiveHourToNone = $('#txttoHourNone' + id).val();
+
+                ActivitiesTempData.push(item);
+            }
+
+        }
+
+        if (ActivitiesData[item.EmployeeName] == null) {
+
+            var index = ActivitiesData.length;
+
+            ActivitiesData[item.EmployeeName] = ActivitiesTempData;
+
+            data = "<div style='width:100%;' id='dvBizType" + item.EmployeeName + "'><div style='float:right;width:260px;padding-right:20px;'>" + item.EmployeeName + "</div><button style='float:right;marging-right:4px;' onclick=deleteBizType('" + item.EmployeeName + "')>מחק</button></div>";
+
+            var newDiv = $("#Activities").html();
+
+            ActivityCounter++;
+
+            $("#Activities").html(newDiv + data);
+
+            $('#EmployeeName').val("");
+
+        }
+
+    }
+
+
+
+    function deleteBizType(i) {
+
+        delete ActivitiesData[i];
+
+        $('#dvBizType' + i).remove();
+
+    }
+
+
+
+    function isEmptyObject(obj) {
+
+        for (var name in obj) {
+
+            return false;
+
+        }
+
+        return true;
+
+    }
+
+
+    function scrollToSection(id) {
+        setTimeout(function () {
+            $([document.documentElement, document.body]).animate({
+                scrollTop: $("#" + id).offset().top
+            }, 1400);
+        }, 100);
+    }
+    function goToUrl(url) {
+        var v = sessionStorage.getItem("version");
+        location.href = url + '?v=' + v;
+    }
+    var sWidth = screen.width;
+    if (sWidth > 500) {
+        document.getElementById("dvBackImage").style.backgroundImage = 'url(img/toriBigX3.jpg)';
+        document.getElementById("dvBackImage").style.backgroundPosition = "50% 50%";
+        document.getElementById("dvBackImage").style.backgroundSize = "100% cover!important";
+        document.getElementById("contact").style.margin = "auto 0";
+        document.getElementById("contact").style.overflow = "hidden";
+        document.getElementById("contact").style.display = "block";
+        document.getElementById("contact").style.textAlign = "center";
+        document.getElementById("dvMain").style.width = "50%";
+
+    }
+</script>
