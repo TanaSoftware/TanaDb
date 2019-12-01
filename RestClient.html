@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+    
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/bootstrap-responsive.min.css" rel="stylesheet" />
+
+    
+    
+    
+    
+    <style>
+ 
+       
+    </style>
+
+</head>
+<body dir="rtl">
+    <div id="dvXz"></div>
+   <div clientSource="diagnosys/diags/getDiags/left">
+       <ul>           
+         <li>{{Id}} {{Name}}</li>
+       </ul> 
+   </div>
+
+    <div>----------------</div>
+    <div>----------------</div>
+    <div source="Def_BirthType/Id/GTEQ/1">
+       <ul>           
+         <li>{{ID}} {{Name}}</li>
+       </ul> 
+   </div>
+
+    <div>----------------</div>
+    <div>אבחנות</div>
+    <div>----------------</div>
+    <input type="text" onkeyup="SearchDiag(this)" /> חפש אבחנה
+    <div id="dvDiags" module="js/diags.js" source="Diagnosises/SpecCode1/eq/1">
+       <ul>           
+         <li onclick="doit('{{ICD9Code}}')">{{ICD9Code}} {{ICD9Name}}</li>
+       </ul> 
+   </div>
+</body>
+</html>
+
+
+ <script src="js/tana.js"></script>
+
+  <script>
+      
+      function SearchDiag(txt) {
+          if (txt != null && txt.value != null && txt.value.length > 2)
+              SetSource("dvDiags", "Diagnosises/ICD9Name/sound/" + txt.value + "/page=1/size=10");//
+
+      }
+        </script>
+
