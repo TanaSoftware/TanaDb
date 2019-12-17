@@ -114,7 +114,7 @@ namespace ImFast.CodeCreator
             str += " };" + NL();
             str += "}" + NL();
             str += "else" + NL();
-            str += "   {" + NL();
+            str += "   {" + NL();     
             str += "    UpdateIsUpdate(true);" + NL();
             str += "   }" + NL();
             str += "}" + NL();
@@ -165,7 +165,7 @@ namespace ImFast.CodeCreator
 
             str += "    foreach (" + key + " item in items)" + NL();
             str += "    {" + NL();
-
+            
             if (IsPK)
             {
                 str += "    if (" + key + "List.ContainsKey(" + primaryKeys + "))" + NL();
@@ -175,12 +175,12 @@ namespace ImFast.CodeCreator
                 str += "    }" + NL();
 
 
-                str += "if (" + key + "List.TryAdd(" + primaryKeys + ", item))" + NL();
-                str += "        isSuccessUpdate = true;" + NL();
-                str += "    else" + NL();
-                str += "    {" + NL();
-                str += "        lst.Add(\"Error insert item id \" + " + primaryKeys + ".ToString());" + NL();
-                str += "    }" + NL();
+                str += "if (" + key + "List.TryAdd(" + primaryKeys + ", item))" + NL();               
+            str += "        isSuccessUpdate = true;" + NL();
+            str += "    else" + NL();
+            str += "    {" + NL();
+            str += "        lst.Add(\"Error insert item id \" + " + primaryKeys + ".ToString());" + NL();
+            str += "    }" + NL();
             }
             else
             {
@@ -188,7 +188,7 @@ namespace ImFast.CodeCreator
                 str += "   isSuccessUpdate = true;" + NL();
                 //str += "   iCounter++;" + NL();
             }
-
+            
             str += "    }" + NL();//end foreach
             str += "}" + NL();
             str += "catch (Exception e)" + NL();
@@ -202,22 +202,22 @@ namespace ImFast.CodeCreator
             str += "}" + NL();//end isInMemory
             str += "return lst; " + NL();
             str += "}" + NL();
-
-
+             
+            
             return str;
         }
 
         private static string CreateInsertSql(Dictionary<string, EntityItem> dic, string key)
         {
-            string source = "private static void InsertSql(" + key + " item){ " + NL();
-
+            string source = "private static void InsertSql("+key + " item){ " + NL();
+                        
             source += "string cols = \"\";" + NL();
             source += "string values = \"\";" + NL();
 
-
-            for (int i = 0; i < dic[key].lstTables.Count; i++)
+            
+            for (int i =0; i<dic[key].lstTables.Count; i++)
             {
-                source += "if (item." + dic[key].lstTables[i].Name + " != null){" + NL();
+                source += "if (item."+ dic[key].lstTables[i].Name+" != null){" + NL();
                 source += "cols += \"" + dic[key].lstTables[i].Name + ",\";" + NL();
                 //if (dic[key].lstTables[i].type == "string")
                 //    source += "values += \"'\" + item." + dic[key].lstTables[i].Name + "+\"',\";" + NL();
@@ -230,21 +230,23 @@ namespace ImFast.CodeCreator
 
             source += "cols = cols.Substring(0, cols.Length - 1);" + NL();
             source += "values = values.Substring(0, values.Length - 1);" + NL();
-
-
-            source += "string str = \"Insert " + key + "(\" + cols + \") values (\" + values + \")\";" + NL();
+         
+            
+            source += "string str = \"Insert "+ key+"(\" + cols + \") values (\" + values + \")\";" + NL();
 
             source += "Dictionary<string, EntityItem> dicEntities = MyEntitiesController.GetdicEntities();" + NL();
             source += "string sConn = dicEntities[\"" + key + "\"].DataBaseConnectionString;" + NL();
-            source += "try" + NL();
-            source += "{" + NL();
-            source += "    DataBaseRetriever dal = new DataBaseRetriever(sConn);" + NL();
-            source += "    dal.Execute(str, dicEntities[\"" + key + "\"].DataBaseTypeName,item);" + NL();
-            source += "}" + NL();
-            source += "catch (Exception ex)" + NL();
-            source += "{" + NL();
-            source += "    LogManager.WriteError(\"Insert to Db failed: object " + key + " fail: Error - \" + ex.Message);" + NL();
-            source += "}" + NL();
+            source += "DataBaseRetriever dal = new DataBaseRetriever(sConn);" + NL();
+            source += "dal.Execute(str, dicEntities[\"" + key + "\"].DataBaseTypeName,item);" + NL();
+            //source += "try" + NL();
+            //source += "{" + NL();
+            //source += "    DataBaseRetriever dal = new DataBaseRetriever(sConn);" + NL();
+            //source += "    dal.Execute(str, dicEntities[\"" + key + "\"].DataBaseTypeName,item);" + NL();
+            //source += "}" + NL();
+            //source += "catch (Exception ex)" + NL();
+            //source += "{" + NL();
+            //source += "    LogManager.WriteError(\"Insert to Db failed: object " + key + " fail: Error - \" + ex.Message);" + NL();
+            //source += "}" + NL();
 
             source += "}";
             return source;
@@ -259,13 +261,12 @@ namespace ImFast.CodeCreator
             {
                 source += "string values = \"\";" + NL();
                 source += "string where = \"\";" + NL();
-
-                for (int i = 0; i < foundPk.Count; i++)
+                
+                for(int i = 0; i < foundPk.Count; i++)
                 {
                     source += " where+= \"" + foundPk[i].Name + " = @" + foundPk[i].Name + " and \";" + NL();
                 }
-                source += ";" + NL();
-
+                
                 for (int i = 0; i < dic[key].lstTables.Count; i++)
                 {
                     source += "if (item." + dic[key].lstTables[i].Name + " != null){" + NL();
@@ -283,17 +284,66 @@ namespace ImFast.CodeCreator
 
                 source += "Dictionary<string, EntityItem> dicEntities = MyEntitiesController.GetdicEntities();" + NL();
                 source += "string sConn = dicEntities[\"" + key + "\"].DataBaseConnectionString;" + NL();
-                source += "try" + NL();
-                source += "{" + NL();
                 source += "    DataBaseRetriever dal = new DataBaseRetriever(sConn);" + NL();
                 source += "    dal.Execute(str, dicEntities[\"" + key + "\"].DataBaseTypeName,item);" + NL();
-                source += "}" + NL();
-                source += "catch (Exception ex)" + NL();
-                source += "{" + NL();
-                source += "    LogManager.WriteError(\"Insert to Db failed: object " + key + " fail: Error - \" + ex.Message);" + NL();
-                source += "}" + NL();
+                
             }
             source += "}";
+            return source;
+        }
+        private static string CreateUpdatetSqlBy(Dictionary<string, EntityItem> dic, string key)
+        {
+            string source = "";
+
+             
+            source += "public static void UpdateSqlBy"+ "(string whereCols," + key + " item){ " + NL();
+    
+                
+            source += "string values = \"\";" + NL();
+            source += "string where = \"\";" + NL();
+            source += "string[] arr = whereCols.Split(',');" + NL();
+            source += "if (arr != null && arr.Length > 0)" + NL();
+            source += "{" + NL();
+            //source += "    for (int i = 0; i < arr.Length; i++)" + NL();
+            //source += "    {" + NL();
+            //source += "        where += arr[i] + \" = \" + \"@\" + arr[i] + \" and + \";" + NL();
+            //source += "    }" + NL();
+            //source += "}" + NL();
+            source += " for (int i = 0; i < arr.Length; i++)" + NL();
+            source += " {" + NL();
+            source += "    if (arr[i].IndexOf(\" = \") > 0)" + NL();
+            source += "    {" + NL();
+            source += "        string[] arrEq = arr[i].Split('=');" + NL();
+            source += "        where += arrEq[0] + \" = \" + arrEq[1] + \" And \";" + NL();
+            source += "    }" + NL();
+            source += "    else" + NL();
+            source += "        where += arr[i] + \" = \" + \"@\" + arr[i] + \" And \";" + NL();
+            source += " }" + NL();
+            source += "}" + NL();
+
+            for (int i = 0; i < dic[key].lstTables.Count; i++)
+            {
+                if (dic[key].lstTables[i].IsPrimaryKey<1)
+                {
+                    source += "if (item." + dic[key].lstTables[i].Name + " != null){" + NL();
+                    source += "values +=\"" + dic[key].lstTables[i].Name + " = @" + dic[key].lstTables[i].Name + ",\";" + NL();
+                    source += "}" + NL();
+                }
+            }
+
+            source += "values = values.Substring(0, values.Length - 1);" + NL();
+            source += "where = where.Substring(0, where.Length - 4);" + NL();
+            source += "string str = \" UPDATE " + key + " Set \" + values + \" where \" + where;" + NL();
+
+            source += "Dictionary<string, EntityItem> dicEntities = MyEntitiesController.GetdicEntities();" + NL();
+            source += "string sConn = dicEntities[\"" + key + "\"].DataBaseConnectionString;" + NL();
+            source += "    DataBaseRetriever dal = new DataBaseRetriever(sConn);" + NL();
+            source += "    dal.Execute(str, dicEntities[\"" + key + "\"].DataBaseTypeName,item);" + NL();
+
+            source += "}";
+                
+            
+            
             return source;
         }
 
@@ -303,61 +353,66 @@ namespace ImFast.CodeCreator
 
             List<Table> foundPk = dic[key].lstTables.FindAll(x => x.IsPrimaryKey == 1);
             if (foundPk.Count > 0)
-            {
+            {               
                 source += "string where = \"\";" + NL();
 
                 for (int i = 0; i < foundPk.Count; i++)
                 {
                     source += " where+= \"" + foundPk[i].Name + " = @" + foundPk[i].Name + ",\";";
                 }
-
+             
                 source += "where = where.Substring(0, where.Length - 1);" + NL();
 
                 source += "string str = \" Delete From " + key + " Where \" + where;" + NL();
 
                 source += "Dictionary<string, EntityItem> dicEntities = MyEntitiesController.GetdicEntities();" + NL();
                 source += "string sConn = dicEntities[\"" + key + "\"].DataBaseConnectionString;" + NL();
-                source += "try" + NL();
-                source += "{" + NL();
                 source += "    DataBaseRetriever dal = new DataBaseRetriever(sConn);" + NL();
                 source += "    dal.Execute(str, dicEntities[\"" + key + "\"].DataBaseTypeName,item);" + NL();
-                source += "}" + NL();
-                source += "catch (Exception ex)" + NL();
-                source += "{" + NL();
-                source += "    LogManager.WriteError(\"Insert to Db failed: object " + key + " fail: Error - \" + ex.Message);" + NL();
-                source += "}" + NL();
+                //source += "try" + NL();
+                //source += "{" + NL();
+                //source += "    DataBaseRetriever dal = new DataBaseRetriever(sConn);" + NL();
+                //source += "    dal.Execute(str, dicEntities[\"" + key + "\"].DataBaseTypeName,item);" + NL();
+                //source += "}" + NL();
+                //source += "catch (Exception ex)" + NL();
+                //source += "{" + NL();
+                //source += "    LogManager.WriteError(\"Insert to Db failed: object " + key + " fail: Error - \" + ex.Message);" + NL();
+                //source += "}" + NL();
             }
             source += "}";
             return source;
         }
 
         public static string CreateInsertManager(Dictionary<string, EntityItem> dic, string key, string dbType, CheckedItems checkedItems)
-        {            
+        {
+            bool IsFile = dic[key].DbType == DbTypes.File;
+            bool IsPK = false;
+            string primaryKeys = "";
             string str = "";
 
-            if (!checkedItems.IsReadOnly)
-            {
-                str += CreateInsertSql(dic, key);
+            str += CreateInsertSql(dic, key);
+            
+            str += "public static HttpResponseMessage Post" + key + "(" + key + " item)" + NL();
+            str += "{" + NL();
+            str += "HttpStatusCode status = HttpStatusCode.Created;" + NL();
+            str += "try" + NL();
+            str += "{" + NL();          
+            
+            str += "InsertSql(item);" + NL();
+          
+            str += "}" + NL();
+            str += "catch (Exception e)" + NL();
+            str += "{" + NL();
+            str += "var resp = new HttpResponseMessage(HttpStatusCode.BadRequest)" + NL();
+            str += "{" + NL();
+            str += "    Content = new StringContent(e.Message)" + NL();
+            str += "};" + NL();
+            str += "return resp; " + NL();
+            str += "}" + NL();
+            str += "HttpResponseMessage response = new HttpResponseMessage(status);" + NL();
+            str += "return response;" + NL();
+            str += "}" + NL();
 
-
-                str += "public static HttpResponseMessage Post" + key + "(" + key + " item)" + NL();
-                str += "{" + NL();
-                str += "HttpStatusCode status = HttpStatusCode.Created;" + NL();
-                str += "try" + NL();
-                str += "{" + NL();              
-                
-                str += "Task.Factory.StartNew(() => { InsertSql(item); });" + NL();
-                        
-                str += "}" + NL();
-                str += "catch (Exception e)" + NL();
-                str += "{" + NL();
-                str += "    status = HttpStatusCode.BadRequest;" + NL();
-                str += "Task.Factory.StartNew(() => { LogManager.WriteError(\"Post failed: object " + key + " fail: Error - \" + e.Message); });" + NL();
-                str += "}" + NL();
-                str += "HttpResponseMessage response = new HttpResponseMessage(status);" + NL();
-                str += "return response;" + NL();
-                str += "}" + NL();
-            }
             return str;
         }
 
@@ -387,15 +442,14 @@ namespace ImFast.CodeCreator
             }
             return str;
         }
-        public static string CreateInsert(Dictionary<string, EntityItem> dic, string key, string dbType,
-            bool IsReplicate, bool IsBalancer, bool IsReadOnly, bool IsReplicationBalancer = false,
-            bool IsSharding = false, bool IsCluster = false)
+        public static string CreateInsert(Dictionary<string, EntityItem> dic, string key, string dbType, 
+            CheckedItems checkedItems)
         {
 
             string str = "";
 
             //todo: is replicationBalancer use MasterServer.PostData
-            if (IsBalancer)
+            if (checkedItems.IsBalancer)
             {
                 str += "public HttpResponseMessage Post" + key + "(" + key + " item)" + NL();
                 str += "{" + NL();
@@ -405,13 +459,13 @@ namespace ImFast.CodeCreator
                 str += "    resp.Content = new StringContent(\"item is null\");" + NL();
                 str += "    return resp;" + NL();
                 str += "}" + NL();
-                if (IsCluster)
+                if(checkedItems.IsCluster)
                     str += "return ClusterManager.PostData(item,\"" + key + "/Post" + key + "\");" + NL();
                 else
                     str += "return BalancerManager.PostData(item,\"" + key + "/Post" + key + "\");" + NL();
 
             }
-            else if (IsSharding)
+            else if (checkedItems.IsSharding)
             {
                 str += "public HttpResponseMessage Post" + key + "(" + key + " item)" + NL();
                 str += "{" + NL();
@@ -446,7 +500,7 @@ namespace ImFast.CodeCreator
                 str += "[HttpPost]" + NL();
                 str += "public HttpResponseMessage Post" + key + "(" + key + " item)" + NL();
                 str += "{" + NL();
-                if (!IsReadOnly)
+                if (!checkedItems.IsReadOnly)
                 {
                     str += "if (item == null)" + NL();
                     str += "{" + NL();
@@ -457,27 +511,27 @@ namespace ImFast.CodeCreator
                     str += "return resp;" + NL();
                     str += "}" + NL();
 
-                    str += "if (!IsUpdate)" + NL();
-                    str += "{" + NL();
-                    str += "   HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.Forbidden);" + NL();
-                    str += "    return response;" + NL();
-                    str += "}" + NL();
+                    //str += "if (!IsUpdate)" + NL();
+                    //str += "{" + NL();
+                    //str += "   HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.Forbidden);" + NL();
+                    //str += "    return response;" + NL();
+                    //str += "}" + NL();
 
-                    str += "if (MemoryObserver.IsexceededMemory())" + NL();
-                    str += "{" + NL();
-                    str += "LogManager.WriteError(\"Memory has exceeded\");" + NL();
-                    str += "var resp = new HttpResponseMessage(HttpStatusCode.BadRequest)" + NL();
-                    str += "{" + NL();
-                    str += "    Content = new StringContent(\"Memory has exceeded\")" + NL();
-                    str += "};" + NL();
-                    str += "return resp;" + NL();
-                    str += "}" + NL();
+                    //str += "if (MemoryObserver.IsexceededMemory())" + NL();
+                    //str += "{" + NL();
+                    //str += "LogManager.WriteError(\"Memory has exceeded\");" + NL();
+                    //str += "var resp = new HttpResponseMessage(HttpStatusCode.BadRequest)" + NL();
+                    //str += "{" + NL();
+                    //str += "    Content = new StringContent(\"Memory has exceeded\")" + NL();
+                    //str += "};" + NL();
+                    //str += "return resp;" + NL();
+                    //str += "}" + NL();
                 }
                 //str += "return await Task<HttpResponseMessage>.Factory.StartNew(() =>" + NL();
                 //str += "{" + NL();
                 str += "    var data = " + key + "Manager.Post" + key + "(item);" + NL();
 
-                if (IsReplicate || IsCluster)
+                if (checkedItems.IsReplicate || checkedItems.IsCluster)
                 {
                     str += "if (data.IsSuccessStatusCode)" + NL();
                     str += "    Task.Factory.StartNew(() => PostToSlave(item));" + NL();
@@ -529,22 +583,57 @@ namespace ImFast.CodeCreator
                 str += "    return resp;" + NL();
                 str += "}" + NL();
 
-                //List<Table> foundPk = null;
+                List<Table> foundPk = null;
 
-                //if (dic[key].lstTables != null)
-                //    foundPk = dic[key].lstTables.FindAll(x => x.IsPrimaryKey == 1);
+                if (dic[key].lstTables != null)
+                    foundPk = dic[key].lstTables.FindAll(x => x.IsPrimaryKey == 1);
 
-                //bool IsPkExist = foundPk != null && foundPk.Count > 0;
-                //if (IsPkExist)
-                //{
-                //    str += getPkCode(foundPk, key, "Post");
-                //    str += "if (jsonContent != null && jsonContent.Content.ReadAsStringAsync().Result.Length > 2)" + NL();
-                //    str += "{" + NL();
-                //    str += "    HttpResponseMessage resp = new HttpResponseMessage(HttpStatusCode.Ambiguous);" + NL();
-                //    str += "    return resp;" + NL();
-                //    str += "}" + NL();
-                //}
-                str += "return BalancerManager.createSeveralPosts(item,\"" + key + "/Post" + key + "\", \"POST\");" + NL();
+                string pkValue = "";
+                string pkName = "";
+                bool IsPkExist = foundPk != null && foundPk.Count > 0;
+                
+                str += "ConcurrentStack<string> results = new ConcurrentStack<string>();" + NL();
+                str += "Parallel.ForEach(item, (it, state) =>" + NL();
+                str += "{" + NL();
+                if (IsPkExist)
+                {
+                    if (foundPk.Count == 1)
+                        str += "string sPk = \"PK " + foundPk[0].Name + " \" + it." + foundPk[0].Name + ";" + NL();
+                    else
+                    {
+                        foreach (Table t in foundPk)
+                        {
+                            pkName += t.Name+",";
+                            pkValue += "it." + t.Name + ".ToString(),";
+                        }
+                        str += "string sPk = \"PK " + pkName + " \" + it." + pkValue + ";" + NL();
+                    }
+                }
+                else
+                    str += "string sPk = \"\";" + NL();
+                str += "    HttpResponseMessage resp = Post"+key+"(it);" + NL();
+                str += "    if (!resp.IsSuccessStatusCode)" + NL();
+                str += "    {" + NL();
+                str += "        if (resp.Content != null)" + NL();                              
+                str += "            results.Push(sPk + \" \" + resp.Content.ReadAsStringAsync().Result);" + NL();
+                str += "        else" + NL();
+                str += "            results.Push(sPk + \" \" + resp.StatusCode.ToString());" + NL();
+                str += "        state.Break();" + NL();
+                str += "    }" + NL();
+                str += "});" + NL();
+                str += "string AllRsults = \"\";" + NL();
+                str += "while (results.Count > 0)" + NL();
+                str += "{" + NL();
+                str += "    string s = \"\";" + NL();
+                str += "    results.TryPop(out s);" + NL();
+                str += "    AllRsults += \"'\" + s + \"',\";" + NL();
+                str += "}" + NL();
+                str += "if (AllRsults.Length > 0)" + NL();
+                str += "    AllRsults = AllRsults.Substring(0, AllRsults.Length - 1);" + NL();
+
+                str += "HttpResponseMessage resp2 = new HttpResponseMessage(HttpStatusCode.Created);" + NL();
+                str += "resp2.Content = new StringContent(\"[\" + AllRsults + \"]\");" + NL();
+                str += "return resp2;" + NL();                
 
             }
             else
@@ -585,7 +674,7 @@ namespace ImFast.CodeCreator
 
                 if (IsReplicate || IsCluster)
                 {
-
+                    
                     str += "    Task.Factory.StartNew(() => PostListToSlave(item));" + NL();
                 }
 
@@ -609,29 +698,36 @@ namespace ImFast.CodeCreator
         {
             bool IsFile = dic[key].DbType == DbTypes.File;
             string str = "";
-            List<Table> lstPrimary = dic[key].lstTables.FindAll(x => x.IsPrimaryKey == 1);
+            //List<Table> lstPrimary = dic[key].lstTables.FindAll(x => x.IsPrimaryKey == 1);
 
-            if (lstPrimary.Count > 0 && checkedItems.IsReadOnly)
-            {
-                str += CreateUpdatetSql(dic, key);
-                str += "public static HttpResponseMessage Put" + key + "(" + key + " item)" + NL();
-                str += "{" + NL();//start func
-                str += "HttpStatusCode status = HttpStatusCode.Created;" + NL();
-                str += "try" + NL();
-                str += "{" + NL();//start try
-           
-                str += "Task.Factory.StartNew(() => { UpdateSql(item); });" + NL();
+            
+            str += CreateUpdatetSql(dic, key);
+
+            str += CreateUpdatetSqlBy(dic, key);
+
+            str += "public static HttpResponseMessage Put" + key + "(" + key + " item)" + NL();
+            str += "{" + NL();//start func
+            str += "HttpStatusCode status = HttpStatusCode.Created;" + NL();
+            str += "try" + NL();
+            str += "{" + NL();//start try
+            
+
+            str += "UpdateSql(item);" + NL();
                         
-                str += "}" + NL();//end try
-                str += "catch (Exception e)" + NL();
-                str += "{" + NL();
-                str += "    status = HttpStatusCode.BadRequest;" + NL();
-                str += "Task.Factory.StartNew(() => { LogManager.WriteError(\"Put failed: object " + key + " fail: Error - \" + e.Message); });" + NL();
-                str += "}" + NL();
-                str += "HttpResponseMessage response = new HttpResponseMessage(status);" + NL();
-                str += "return response;" + NL();
-                str += "}" + NL(); //end func
-            }
+
+            str += "}" + NL();//end try
+            str += "catch (Exception e)" + NL();
+            str += "{" + NL();
+            str += "var resp = new HttpResponseMessage(HttpStatusCode.BadRequest)" + NL();
+            str += "{" + NL();
+            str += "    Content = new StringContent(e.Message)" + NL();
+            str += "};" + NL();
+            str += "return resp; " + NL();
+            str += "}" + NL();
+            str += "HttpResponseMessage response = new HttpResponseMessage(status);" + NL();
+            str += "return response;" + NL();
+            str += "}" + NL(); //end func
+
 
             return str;
         }
@@ -710,7 +806,7 @@ namespace ImFast.CodeCreator
                 {
                     str += "public HttpResponseMessage Put" + key + "By" + t.Name + "(" + key + " item)" + NL();
                     str += "{" + NL();
-                    if (IsCluster)
+                    if(IsCluster)
                         str += "return ClusterManager.PutData(item,\"" + key + "/Put" + key + "By" + t.Name + "\");" + NL();
                     else
                         str += "return BalancerManager.PutData(item,\"" + key + "/Put" + key + "By" + t.Name + "\");" + NL();
@@ -724,6 +820,7 @@ namespace ImFast.CodeCreator
                 }
                 else
                 {
+                    
                     str += "[HttpPut]" + NL();
                     str += "public HttpResponseMessage Put" + key + "By" + t.Name + "(" + key + " item)" + NL();
                     str += "{" + NL();
@@ -744,8 +841,7 @@ namespace ImFast.CodeCreator
                         str += "    return response;" + NL();
                         str += "}" + NL();
                     }
-                    //str += "return await Task<HttpResponseMessage>.Factory.StartNew(() =>" + NL();
-                    //str += "{" + NL();
+                    
                     str += "    var data = " + key + "Manager.Put" + key + "(\"" + t.Name + "\",item);" + NL();
 
                     if (IsReplicate || IsCluster)
@@ -763,13 +859,12 @@ namespace ImFast.CodeCreator
             return str;
         }
 
-        public static string CreateUpdate(Dictionary<string, EntityItem> dic, string key, string dbType, bool IsReplicate,
-            bool IsBalancer, bool IsReadOnly, bool IsReplicationBalancer = false, bool IsSharding = false, bool IsCluster = false)
+        public static string CreateUpdate(Dictionary<string, EntityItem> dic, string key, string dbType,CheckedItems checkedItems)
         {
 
             string str = "";
 
-            if (IsBalancer)
+            if (checkedItems.IsBalancer)
             {
                 str += "public HttpResponseMessage Put" + key + "(" + key + " item)" + NL();
                 str += "{" + NL();
@@ -779,13 +874,13 @@ namespace ImFast.CodeCreator
                 str += "    resp.Content = new StringContent(\"item is null\");" + NL();
                 str += "    return resp;" + NL();
                 str += "}" + NL();
-                if (IsCluster)
+                if(checkedItems.IsCluster)
                     str += "return ClusterManager.PutData(item,\"" + key + "/Put" + key + "\");" + NL();
                 else
                     str += "return BalancerManager.PutData(item,\"" + key + "/Put" + key + "\");" + NL();
 
             }
-            else if (IsSharding)
+            else if (checkedItems.IsSharding)
             {
                 str += "public HttpResponseMessage Put" + key + "(" + key + " item)" + NL();
                 str += "{" + NL();
@@ -818,11 +913,33 @@ namespace ImFast.CodeCreator
             }
             else
             {
+                str += "[HttpPut]" + NL();
+                str += "public HttpResponseMessage UpdateBy(string id," + key + " item)" + NL();
+                str += "{" + NL();
+                str += "HttpStatusCode status = HttpStatusCode.Created;" + NL();
+                str += "try" + NL();
+                str += "{" + NL();
+                str += "    "+ key+"Manager.UpdateSqlBy(id, item);" + NL();
+                str += "}" + NL();
+                str += "catch (Exception e)" + NL();
+                str += "{" + NL();
+                str += "var resp = new HttpResponseMessage(HttpStatusCode.BadRequest)" + NL();
+                str += " {" + NL();
+                str += "Content = new StringContent(e.Message)" + NL();
+                str += "};" + NL();
+                str += "return resp;" + NL();
+                str += "}" + NL();
+                str += "HttpResponseMessage response = new HttpResponseMessage(status);" + NL();
+                str += "return response;" + NL();
+                //
+                str += "}" + NL();
+
+
                 str += "public HttpResponseMessage Put" + key + "(" + key + " item)" + NL();
                 str += "{" + NL();
-                if (!IsReadOnly)
+                if (!checkedItems.IsReadOnly)
                 {
-                    str += "if (!IsUpdate)" + NL();
+                    //str += "if (!IsUpdate)" + NL();
                     str += "if (item == null)" + NL();
                     str += "{" + NL();
                     str += "var resp = new HttpResponseMessage(HttpStatusCode.BadRequest)" + NL();
@@ -840,7 +957,7 @@ namespace ImFast.CodeCreator
                 //str += "{" + NL();
                 str += "    var data = " + key + "Manager.Put" + key + "(item);" + NL();
 
-                if (IsReplicate || IsCluster)
+                if (checkedItems.IsReplicate || checkedItems.IsCluster)
                 {
                     str += "if (data.IsSuccessStatusCode)" + NL();
                     str += "    Task.Factory.StartNew(() => PutToSlave(item));" + NL();
@@ -860,29 +977,33 @@ namespace ImFast.CodeCreator
             List<Table> lstPrimary = dic[key].lstTables.FindAll(x => x.IsPrimaryKey == 1);
             string str = "";
 
-            if (lstPrimary.Count > 0 && !checkedItems.IsReadOnly)
-            {
-                str += CreateDeletetSql(dic, key);
+            
+            str += CreateDeletetSql(dic, key);
+            
 
+            str += "public static HttpResponseMessage Delete" + key + "(" + key + " item)" + NL();
+            str += "{" + NL();
+            str += "HttpStatusCode status = HttpStatusCode.Created;" + NL();
+            str += "try" + NL();
+            str += "{" + NL();
+            
+            str += "DeleteSql(item);" + NL();
+                        
+            //str += "}" + NL();
+            
+            str += "}" + NL();
+            str += "catch (Exception e)" + NL();
+            str += "{" + NL();
+            str += "var resp = new HttpResponseMessage(HttpStatusCode.BadRequest)" + NL();
+            str += "{" + NL();
+            str += "    Content = new StringContent(e.Message)" + NL();
+            str += "};" + NL();
+            str += "return resp; " + NL();
+            str += "}" + NL();
+            str += "HttpResponseMessage response2 = new HttpResponseMessage(status);" + NL();
+            str += "return response2;" + NL();
+            str += "}" + NL();
 
-                str += "public static HttpResponseMessage Delete" + key + "(" + key + " item)" + NL();
-                str += "{" + NL();
-                str += "HttpStatusCode status = HttpStatusCode.Created;" + NL();
-                str += "try" + NL();
-                str += "{" + NL();
-
-                str += "Task.Factory.StartNew(() => { DeleteSql(item); });" + NL();
-
-                str += "}" + NL();
-                str += "catch (Exception e)" + NL();
-                str += "{" + NL();
-                str += "    status = HttpStatusCode.BadRequest;" + NL();
-                str += "Task.Factory.StartNew(() => { LogManager.WriteError(\"delete failed: object " + key + " fail: Error - \" + e.Message); });" + NL();
-                str += "}" + NL();
-                str += "HttpResponseMessage response2 = new HttpResponseMessage(status);" + NL();
-                str += "return response2;" + NL();
-                str += "}" + NL();
-            }
             return str;
         }
 
@@ -911,7 +1032,7 @@ namespace ImFast.CodeCreator
                 str += "                    {" + NL();
                 foreach (Table innerTable in dic[key].lstTables)
                 {
-                    if (innerTable.type != "bool")
+                    if(innerTable.type != "bool")
                         str += "m." + innerTable.Name + " = null;" + NL();
                 }
                 str += "                    }" + NL();
@@ -946,24 +1067,23 @@ namespace ImFast.CodeCreator
             return str;
         }
 
-        public static string CreateDelete(Dictionary<string, EntityItem> dic, string key, string dbType, bool IsReplicate,
-            bool IsBalancer, bool IsReadOnly, bool IsReplicationBalancer = false, bool IsSharding = false, bool IsCluster = false)
+        public static string CreateDelete(Dictionary<string, EntityItem> dic, string key, string dbType,CheckedItems checkedItems)
         {
             string str = "";
 
-            if (IsBalancer)
+            if (checkedItems.IsBalancer)
             {
                 str += "public HttpResponseMessage Delete" + key + "(" + key + " item)" + NL();
                 str += "{" + NL();
                 //if(IsReplicationBalancer)
                 //    str += "return MasterServer.DeleteData(item,\"" + key + "\");" + NL();
                 //else
-                if (IsCluster)
+                if(checkedItems.IsCluster)
                     str += "return ClusterManager.DeleteData(item,\"" + key + "\");" + NL();
                 else
                     str += "return BalancerManager.DeleteData(item,\"" + key + "\");" + NL();
             }
-            else if (IsSharding)
+            else if (checkedItems.IsSharding)
             {
                 str += "public HttpResponseMessage Delete" + key + "(" + key + " item)" + NL();
                 str += "{" + NL();
@@ -998,19 +1118,19 @@ namespace ImFast.CodeCreator
             {
                 str += "public HttpResponseMessage Delete" + key + "(" + key + " item)" + NL();
                 str += "{" + NL();
-                if (!IsReadOnly)
-                {
-                    str += "if (!IsUpdate)" + NL();
-                    str += "{" + NL();
-                    str += "   HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.Forbidden);" + NL();
-                    str += "    return response;" + NL();
-                    str += "}" + NL();
-                }
+                //if (!checkedItems.IsReadOnly)
+                //{
+                //    str += "if (!IsUpdate)" + NL();
+                //    str += "{" + NL();
+                //    str += "   HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.Forbidden);" + NL();
+                //    str += "    return response;" + NL();
+                //    str += "}" + NL();
+                //}
                 //str += "return await Task<HttpResponseMessage>.Factory.StartNew(() =>" + NL();
                 //str += "{" + NL();
                 str += "    var data = " + key + "Manager.Delete" + key + "(item);" + NL();
 
-                if (IsReplicate || IsCluster)
+                if (checkedItems.IsReplicate || checkedItems.IsCluster)
                 {
                     str += "if (data.IsSuccessStatusCode)" + NL();
                     str += "    Task.Factory.StartNew(() => DeletFromSlave(item));" + NL();
@@ -1035,7 +1155,7 @@ namespace ImFast.CodeCreator
                 {
                     str += "public HttpResponseMessage Delete" + key + "By" + t.Name + "(" + key + " item)" + NL();
                     str += "{" + NL();
-                    if (IsCluster)
+                    if(IsCluster)
                         str += "return ClusterManager.DeleteData(item,\"" + key + "By" + t.Name + "\");" + NL();
                     else
                         str += "return BalancerManager.DeleteData(item,\"" + key + "By" + t.Name + "\");" + NL();

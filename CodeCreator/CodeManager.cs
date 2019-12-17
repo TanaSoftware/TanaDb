@@ -108,7 +108,7 @@ namespace ImFast.CodeCreator
                         IsString = true;
                         char c = (char)3;
                         //if (isUseValidationRegex)
-                          //  source += "[RegularExpression(\"^[^" + c + "]*$\", ErrorMessage=\"Invalid character\")] " + NL();
+                        //  source += "[RegularExpression(\"^[^" + c + "]*$\", ErrorMessage=\"Invalid character\")] " + NL();
                     }
 
 
@@ -187,7 +187,7 @@ namespace ImFast.CodeCreator
             source += "        }       " + NL();
             source += "    }" + NL();
             source += "}" + NL();
-            
+
             source += "public static object Get(string key)" + NL();
             source += "{" + NL();
             source += "    KeyObjSP keyObj = null;" + NL();
@@ -286,7 +286,7 @@ namespace ImFast.CodeCreator
             }
             source += "public class SPController : ApiController{" + NL();
 
-            source += FunctionCreator.CreateCheckClearSpCache();
+            //source += FunctionCreator.CreateCheckClearSpCache();
 
             for (int i = 0; i < dicStoredProc.Count; i++)
             {
@@ -323,9 +323,9 @@ namespace ImFast.CodeCreator
                         int j = 0;
                         bool isOutPut = false;
                         foreach (string sName in sp.ParamaterNames)
-                        {                            
+                        {
                             string outPutParam = "";
-                            if (sp.ParamaterOutput[j].ToUpper() == "OUT")
+                            if (sp.ParamaterOutput!=null && sp.ParamaterOutput[j].ToUpper() == "OUT")
                             {
                                 isOutPut = true;
                                 outPutParam = ",direction: ParameterDirection.Output";
@@ -333,7 +333,7 @@ namespace ImFast.CodeCreator
                             source += "p.Add(\"" + sName + "\", " + arrP[j] + outPutParam + "); " + NL();
                             j++;
                         }
-                        
+
                         source += "obj = SpManager.callSP(\"" + key + "\", \"" + key + "\", p);" + NL();
 
                         if (isOutPut)
@@ -347,7 +347,7 @@ namespace ImFast.CodeCreator
                                 if (sp.ParamaterOutput[z] != "")
                                 {
                                     isOutPut = true;
-                                    source += "object obj" + k.ToString() + " = p.Get<"+ sp.ParamaterTypes[z]+">(\"" + sName + "\");" + NL();
+                                    source += "object obj" + k.ToString() + " = p.Get<" + sp.ParamaterTypes[z] + ">(\"" + sName + "\");" + NL();
                                     returnedObj += sName + "=obj" + k.ToString() + ",";
                                     k++;
                                 }
@@ -420,9 +420,9 @@ namespace ImFast.CodeCreator
                         foreach (string sName in sp.ParamaterNames)
                         {
                             string n = sName.Replace("@", "");
-                            
+
                             string outPutParam = "";
-                            if (sp.ParamaterOutput[j].ToUpper() == "OUT")
+                            if (sp.ParamaterOutput!=null && sp.ParamaterOutput[j].ToUpper() == "OUT")
                             {
                                 isOutPut = true;
                                 outPutParam = ",direction: ParameterDirection.Output";
@@ -430,7 +430,7 @@ namespace ImFast.CodeCreator
                             source += "p.Add(\"" + sName + "\", objX." + n + outPutParam + "); " + NL();
                             j++;
                         }
-                                                
+
                         source += " obj = SpManager.callSP(\"" + key + "\", \"" + key + "\", p);" + NL();
 
                         if (isOutPut)
@@ -566,8 +566,8 @@ namespace ImFast.CodeCreator
         private static void CreareSourceCode(string path, Dictionary<string, EntityItem> dic, CheckedItems checkedItems,
             Dictionary<string, Dictionary<string, string>> dicChanges = null, Dictionary<string, StoredProcedure> dicStoredProc = null)
         {
-            FunctionCreator.ExtraSource = "";
-            FunctionCreator.hashFuncNameList = new HashSet<string>();
+            //FunctionCreator.ExtraSource = "";
+            //FunctionCreator.hashFuncNameList = new HashSet<string>();
             CreateDateFormatterClass(path, checkedItems.AppDateFormatType);
 
             if (dicStoredProc != null && dicStoredProc.Count > 0)
@@ -1293,7 +1293,7 @@ namespace ImFast.CodeCreator
             source += "using Newtonsoft.Json;" + NL();
             source += "using ImFast.Dal;" + NL();
             //end using zone
-            
+
             source += "namespace " + dic[key].DbType + "." + dic[key].DbName + NL() + "{" + NL();
 
             if (IsTable)
@@ -1307,6 +1307,12 @@ namespace ImFast.CodeCreator
 
                 //create group by manager
                 source += FunctionCreator.CreateGetGroupByManager(key);
+                if (!checkedItems.IsReadOnly)
+                {
+                    source += Crud.CreateInsertManager(dic, key, dic[key].DbType, checkedItems);
+                    source += Crud.CreateUpdateManager(dic, key, dic[key].DbType, checkedItems);
+                    source += Crud.CreateDeleteManager(dic, key, dic[key].DbType, checkedItems);
+                }
 
                 //create calc
                 //source += FunctionCreator.CreateCalcFunction(key);
@@ -1332,7 +1338,7 @@ namespace ImFast.CodeCreator
 
                 //add extra code
                 //contains get key function
-                source += FunctionCreator.ExtraSource;
+                //source += FunctionCreator.ExtraSource;
 
 
                 //common for table and key-val
@@ -1691,18 +1697,21 @@ namespace ImFast.CodeCreator
                 source += "[EnableCors(origins: \" * \", headers: \" * \", methods: \" * \")]";
 
             source += "public class " + key + "Controller : ApiController {" + NL();
-            source += "static bool IsUpdate = true;" + NL();//parameter for is update/insert/delete
+            //source += "static bool IsUpdate = true;" + NL();//parameter for is update/insert/delete
 
 
             //source += FunctionCreator.CreateIsUpdate(checkedItems.IsBalancer, key, checkedItems.IsSharding, checkedItems.IsCluster);
-            
-            source += Crud.CreateInsertManager(dic, key, dic[key].DbType, checkedItems);
-            source += Crud.CreateUpdateManager(dic, key, dic[key].DbType, checkedItems);
-            source += Crud.CreateDeleteManager(dic, key, dic[key].DbType, checkedItems);
 
+            if (!checkedItems.IsReadOnly)
+            {
+                source += Crud.CreateInsert(dic, key, dic[key].DbType, checkedItems);
+                source += Crud.CreateUpdate(dic, key, dic[key].DbType, checkedItems);
+                source += Crud.CreateDelete(dic, key, dic[key].DbType, checkedItems);
+                
+            }
             source += FunctionCreator.CreateCheckCols(key);
 
-            source += FunctionCreator.CreateCheckClearCache(key);
+            //source += FunctionCreator.CreateCheckClearCache(key);
 
             if (!checkedItems.IsSharding)
                 source += FunctionCreator.CreateReplicateMasterCode(checkedItems.IsReplicate, key, checkedItems.IsCluster);
@@ -1759,7 +1768,7 @@ namespace ImFast.CodeCreator
                     //source += "if (IsDb())" + NL();
                     //source += "{" + NL();
                     source += "    id = QueryManager.GetExpression(id);" + NL();
-                    source += "    var d = "+key+"Manager.GetDataFromDb(id);" + NL();
+                    source += "    var d = " + key + "Manager.GetQueryX(id);" + NL();
                     source += "    return CheckCols(d);" + NL();
                     //source += "}" + NL();
                     //source += "CheckClearCahe(id);" + NL();
@@ -1887,7 +1896,7 @@ namespace ImFast.CodeCreator
                         IsString = true;
                         char c = (char)3;
                         //if (isUseValidationRegex)
-                          //  source += "[RegularExpression(\"^[^" + c + "]*$\", ErrorMessage=\"Invalid character\")] " + NL();
+                        //  source += "[RegularExpression(\"^[^" + c + "]*$\", ErrorMessage=\"Invalid character\")] " + NL();
                     }
 
                     Nullablae = IsInsertQuestionMark(type) ? "? " : " ";
