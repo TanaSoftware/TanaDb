@@ -3,45 +3,124 @@
 <head>
     <title></title>
     <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
-    
-    <link href="css/bootstrap.min.css" rel="stylesheet" />
-    <link href="css/bootstrap-responsive.min.css" rel="stylesheet" />
-
-    
-    
-    
+ 
     
     <style>
  
        
     </style>
+    <script>
+        var diagX = 1;
 
+        var objZ = { Id: 2, Name: 'שכיבה' };
+
+        var diagnosys = {
+            Id: 123456789,
+            Name: "משה לוי"
+        }
+
+        var diagnosys2 = {
+            ICD9Code: 121,
+            ICD9Name: "uzi cohen"
+        }
+
+        var diagnosys3 = [
+            {ICD9Code: 121,ICD9Name: "uzi cohen"},
+            {ICD9Code: 122,ICD9Name: "dave cohen"}
+        
+        ]
+
+        //setInterval(function () {
+        //    diagX = diagX + 1
+        //    render(diagX, "dvCounter", "diagX");
+        //}, 1000);
+    </script>
 </head>
 <body dir="rtl">
-    <div id="dvXz"></div>
-   <div clientSource="diagnosys/diags/getDiags/left">
+    <div style="text-align:center;padding:10px;">
+     <!-- set string-->
+  <!-- <div style="display:none" id="dvCounter" clientSource="diagX">
+       <div>           
+         <span>counter: </span> {{diagX}}
+       </div> 
+   </div>-->
+    <!-- set object-->
+   <!--<div style="display:none" id="dvDiag" clientSource="diagnosys">
+       <ul>           
+         <li>{{Id}} {{Name}}</li>
+       </ul> 
+   </div>-->
+     <!-- set object to input-->
+   <!--<div style="display:none" id="dvDiag" clientSource="diagnosys">
+       <div>           
+        ת.ז <input type="text" value="{{Id}}" />
+       </div>
+        <div style="padding-top:3px;">   
+        שם <textarea>{{Name}}</textarea>
+       </div>
+   </div>-->
+    <!-- set array object-->
+   <!--<div style="display:none" id="Div2" clientSource="diagnosys3">
+       <ul>           
+         <li>{{ICD9Code}} {{ICD9Name}}</li>
+       </ul> 
+   </div>-->
+
+    <!-- call ajax from js-->     
+  <!-- <div style="display:none"  id="dvXz" clientSource="diagnosys/diags/getDiags/left">
+       <ul>           
+         <li>{{ICD9Code}} {{ICD9Name}}</li>
+       </ul> 
+   </div>-->
+
+   
+
+    <!-- auto call ajax-->
+   <!-- <div id="dvAjax" style="display:none" source="Def_BirthType/Id/GTEQ/1">
+       <ul>           
+         <li>{{ID}} {{Name}}</li>
+       </ul> 
+   </div>-->
+
+    <!--<div>----------------</div>
+    <div>אבחנות</div>
+    <div>----------------</div>-->
+    <!-- call ajax, add module and attach event-->
+   <!-- <input type="text" onkeyup="SearchDiag(this)" /> חפש אבחנה
+    <div style="display:none" id="dvDiags" module="js/diags.js" source="Diagnosises/SpecCode1/eq/1">
+       <ul>           
+         <li onclick="doit('{{ICD9Code}}')">{{ICD9Code}} {{ICD9Name}}</li>
+       </ul> 
+   </div>-->
+<!-- auto call ajax with string paramaters-->
+  <!-- <div id="dvAjax" style="display:none" params="{Id:1,Name:'ישיבה'}" source="Def_Conditions/PostData">
+       <ul>           
+         <li>{{Id}} {{Name}}</li>
+       </ul> 
+   </div>-->
+
+        <!-- auto call ajax with object paramaters-->
+   <div id="Div1" style="display:none" params="objZ" source="Def_Conditions/PostData">
        <ul>           
          <li>{{Id}} {{Name}}</li>
        </ul> 
    </div>
 
-    <div>----------------</div>
-    <div>----------------</div>
-    <div source="Def_BirthType/Id/GTEQ/1">
+         <!-- post call ajax with object paramaters with SetSource-->
+         <div id="Div2" style="display:none" >
        <ul>           
-         <li>{{ID}} {{Name}}</li>
+         <li>{{Id}} {{Name}}</li>
        </ul> 
    </div>
-
-    <div>----------------</div>
-    <div>אבחנות</div>
-    <div>----------------</div>
-    <input type="text" onkeyup="SearchDiag(this)" /> חפש אבחנה
-    <div id="dvDiags" module="js/diags.js" source="Diagnosises/SpecCode1/eq/1">
-       <ul>           
-         <li onclick="doit('{{ICD9Code}}')">{{ICD9Code}} {{ICD9Name}}</li>
-       </ul> 
+    <div name="" style="display:none" id="dvDiag" clientSource="diagnosys">
+       <div>           
+        ת.ז <input type="text" value="{{Id}}" numeric />
+       </div>
+        <div style="padding-top:3px;">   
+        שם <textarea>{{Name}}</textarea>
+       </div>
    </div>
+         </div>
 </body>
 </html>
 
@@ -50,6 +129,8 @@
 
   <script>
       
+      //SetSource("dvAjax","Def_BirthType/Id/GTEQ/1")
+      SetSource("Div2", "Def_Conditions/PostData", objZ)
       function SearchDiag(txt) {
           if (txt != null && txt.value != null && txt.value.length > 2)
               SetSource("dvDiags", "Diagnosises/ICD9Name/sound/" + txt.value + "/page=1/size=10");//
