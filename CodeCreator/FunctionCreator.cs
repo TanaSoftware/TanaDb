@@ -9,8 +9,8 @@ namespace ImFast.CodeCreator
 {
     public class FunctionCreator : Base
     {
-        public static string ExtraSource = "";
-        public static HashSet<string> hashFuncNameList = new HashSet<string>();
+        //private static bool IsRO = false;
+        
         //using Entities.table;using System;using System.Collections.Concurrent;using System.Collections.Generic;
         static string classKeyManger = @"
                             
@@ -18,53 +18,10 @@ namespace ImFast.CodeCreator
                             {
 
                                 private static ConcurrentDictionary<string, KeyObj@key@> All@key@Keys = new ConcurrentDictionary<string, KeyObj@key@>();
-            private static ConcurrentDictionary<string, uint> AllSPCounter = new ConcurrentDictionary<string, uint>();
-            private static void UpdateAllSPCounter(string key)
-            {
-            CheckMemExceeded();
-            uint iCounter = 0;
-                if (!AllSPCounter.TryGetValue(key, out iCounter))
-                {
-                    if (iCounter == 0)
-                    iCounter = 1;
-                    AllSPCounter.TryAdd(key, iCounter);
-                }
-                else
-                   AllSPCounter.TryUpdate(key, iCounter + 1, iCounter);
-            }
 
-            private static void CheckMemExceeded()
-            {
-                KeyObj@key@ keyObj = null;
-                int ind = 0;
-                int iCounter=5;
-                uint iOut = 0;
-                if (MemoryObserver.IsexceededMemory())
-                {
-                    IEnumerable<KeyValuePair<string,uint>> data = AllSPCounter.Where(z => z.Value >= 1).OrderBy(a=>a.Value);
-                    foreach (KeyValuePair<string,uint> d in data)
-                    {
-                        if (ind > iCounter)
-                        {
-                            if (!MemoryObserver.IsexceededMemory())
-                            {
-                                break;
-                            }
-                            iCounter += 5;
-                        }
-                        if (All@key@Keys.TryGetValue(d.Key, out keyObj))
-                        {
-                            All@key@Keys.TryRemove(d.Key, out keyObj);
-                            AllSPCounter.TryRemove(d.Key, out iOut);
-                        }
-                        ind++;    
-                    }       
-                }
-            }
                                 public static IEnumerable<@key@> Get(string key)
                                 {
                                     KeyObj@key@ keyObj = null;
-                                    Task.Factory.StartNew(() => UpdateAllSPCounter(key));
                                     if (!All@key@Keys.TryGetValue(key, out keyObj))
                                         return null;
 
@@ -76,11 +33,6 @@ namespace ImFast.CodeCreator
                                     }
                                    return keyObj.value;
 
-                                }
-                                public static bool Del(string key)
-                                {
-                                    KeyObj@key@ keyObj = new KeyObj@key@();
-                                    return All@key@Keys.TryRemove(key, out keyObj);
                                 }
 
                                 public static bool Set(string key, IEnumerable<@key@> value, int time)
@@ -112,31 +64,26 @@ namespace ImFast.CodeCreator
             return source;
         }
 
-        public static string CreateSqlFetch(string key, string where, string whereKey, string timeInMinutsToCache, bool IsShowPrefix = true)
+        public static string CreateSqlFetch(string key, string where, string whereKey, string timeInMinutsToCache,bool IsShowPrefix = true)
         {
             string source = "";
             string prefix = IsShowPrefix ? "IEnumerable<" + key + "> " : "";
-            //source += prefix + "items = Key" + key + "Manager.Get(" + whereKey + "); " + NL();
-            //source += "if(items == null){" + NL();
+            
             source += prefix + "items = GetDataFromDb(" + where + ");" + NL();
-            //source += "Key" + key + "Manager.Set(" + whereKey + ", items, " + timeInMinutsToCache + ");" + NL();
-            //source += "}";
-            //source += "return items;" + NL();
-
+            
             return source;
         }
 
         public static string CreateSql(string key)
         {
             string source = "";
-            source += "public static IEnumerable<" + key + "> GetDataFromDb(string where){" + NL();
-            source += "if (!QueryManager.CheckForbidenChars(where))" + NL();
-            source += "    return null;" + NL();
+            source += "private static IEnumerable<" + key + "> GetDataFromDb(string where){" + NL();
+            
             source += "Dictionary<string, EntityItem> dicEntities = MyEntitiesController.GetdicEntities();" + NL();
             source += "string sConn = dicEntities[\"" + key + "\"].DataBaseConnectionString;" + NL();
 
             source += "DataBaseRetriever dal = new DataBaseRetriever(sConn);" + NL();
-            source += "IEnumerable<" + key + "> data = dal.eGetData<" + key + ">(\"Select * from " + key + " where \" + where , dicEntities[\"" + key + "\"].DataBaseTypeName);" + NL();
+            source += "IEnumerable<" + key + "> data = dal.GetData<" + key + ">(\"Select * from " + key + " where \" + where , dicEntities[\"" + key + "\"].DataBaseTypeName);" + NL();
             source += "return data;" + NL();
             source += "}" + NL();
 
@@ -299,18 +246,18 @@ namespace ImFast.CodeCreator
         {
             string source = "";
             string name = IsContains ? "Contains" : "";
-            string funcName = name + objName + OP + GetFuncTypeByColumn(type) + " id" + orderParam;
-            source += "public static IEnumerable<" + key + "> GetBy" + funcName  + "){" + NL();//start func get 
 
+            source += "public static IEnumerable<" + key + "> GetBy" + name + objName + OP + GetFuncTypeByColumn(type) + " id" + orderParam + "){" + NL();//start func get 
+           
             source += "   try" + NL();
             source += "   {" + NL();
 
             if (!IsGTLT)
             {
                 if (IsContains)
-                    source += CreateLinqContains(key, type, objName, false, funcName);
+                    source += CreateLinqContains(key, type, objName, false);
                 else
-                    source += CreateLinq(key, type, objName, false, null, IsOrderBy, funcName);
+                    source += CreateLinq(key, type, objName, false, null, IsOrderBy);
 
                 if (IsOrderBy)
                 {
@@ -446,7 +393,7 @@ namespace ImFast.CodeCreator
         }
 
         public static string CreateSaveToFile(string key, EntityItem entity, string targetFile, bool isDictionary,
-            bool IsBackupHistory, bool isCluster = false)
+            bool IsBackupHistory, bool isCluster=false)
         {
             string source = "";
             string ext = Common.PreojectFileExtension();
@@ -467,7 +414,7 @@ namespace ImFast.CodeCreator
             source += "string dest = p + fileName + \"_date_\" + DateTime.Now.ToShortDateString().Replace(\"/\", \"_\") + \"_time_\" + DateTime.Now.ToShortTimeString().Replace(\":\", \"_\") + \"" + ext + "\";" + NL();
             if (IsBackupHistory)
             {
-                source += "FileManager.Copy(path, dest, true);" + NL();
+                source += "FileManager.Copy(path, dest, true);" + NL();                
             }
             source += "try" + NL();
             source += "{" + NL();
@@ -481,8 +428,8 @@ namespace ImFast.CodeCreator
             source += "IsSuccess = false;" + NL();
             source += "Task.Factory.StartNew(() => { LogManager.WriteError(\"Backup: object " + key + " fail: Error - \" + e.Message); });" + NL();
             source += "}" + NL();
-            if (isCluster)
-                source += "if (ClusterMaster.IsMainMaster() && IsSuccess)" + NL();
+            if (isCluster)            
+                source += "if (ClusterMaster.IsMainMaster() && IsSuccess)" + NL();            
             else
                 source += "if (ServerManager.IsMaster() && IsSuccess)" + NL();
 
@@ -545,7 +492,7 @@ namespace ImFast.CodeCreator
             if (IsBalancer)
             {
                 source += "public async Task<HttpResponseMessage> GetByContains" + objName + "(string GT,string id){" + NL();//start func get 
-                if (IsCluster)
+                if(IsCluster)
                     source += "return await ClusterManager.RetrieveData(\"" + key + "/" + objName + "/\" + GT + \"/\" + id);" + NL();
                 else
                     source += "return await BalancerManager.RetrieveData(\"" + key + "/" + objName + "/\" + GT + \"/\" + id);" + NL();
@@ -566,7 +513,7 @@ namespace ImFast.CodeCreator
                 source += "}" + NL();
                 source += "else if (GT.ToUpper() == \"SOUND\")" + NL();
                 source += "{" + NL();
-                source += "var data = " + key + "Manager.GetDataBySound" + objName + "(id);" + NL();
+                source += "var data = " + key + "Manager.GetDataBySound" + objName+ "(id);" + NL();
                 source += "return CheckCols(data);" + NL();
                 source += "}" + NL();
                 source += "else if (GT.ToUpper() == \"SW\")" + NL();
@@ -591,7 +538,7 @@ namespace ImFast.CodeCreator
             if (IsBalancer)
             {
                 source += "public async Task<HttpResponseMessage> GetByContains" + objName + "(string GT,string id, string order, string Asc){" + NL();//start func get 
-                if (IsCluster)
+                if(IsCluster)
                     source += "return await ClusterManager.RetrieveData(\"" + key + "/" + objName + "/\" + id + \"/\" + order + \"/\" + Asc);" + NL();
                 else
                     source += "return await BalancerManager.RetrieveData(\"" + key + "/" + objName + "/\" + id + \"/\" + order + \"/\" + Asc);" + NL();
@@ -637,7 +584,7 @@ namespace ImFast.CodeCreator
             if (IsBalancer)
             {
                 source += "public async Task<HttpResponseMessage> GetByContains" + objName + "(string GT,string id, string order, string Asc, string paging, string size){" + NL();//start func get 
-                if (IsCluster)
+                if(IsCluster)
                     source += "return await ClusterManager.RetrieveData(\"" + key + "/" + objName + "/\" + id + \"/\" + order + \"/\" + Asc+ \"/\" + paging+ \"/\" + size);" + NL();
                 else
                     source += "return await BalancerManager.RetrieveData(\"" + key + "/" + objName + "/\" + id + \"/\" + order + \"/\" + Asc+ \"/\" + paging+ \"/\" + size);" + NL();
@@ -718,12 +665,6 @@ namespace ImFast.CodeCreator
             //source += "return await Task<HttpResponseMessage>.Factory.StartNew(() =>" + NL();
             //source += "{" + NL();
             source += GetDateCheckString(type);
-            source += "if (IsDb())" + NL();
-            source += "{" + NL();
-            source += "    var d = "+key+"Manager.GetDataFromDb("+key+"Manager.GetKeyBy"+ objName+"());" + NL();
-            source += "    return CheckCols(d);" + NL();
-            source += "}" + NL();
-            source += "CheckClearCahe(" + key + "Manager.GetKeyBy" + objName + "());" + NL();            
             source += "    var data = " + key + "Manager.GetBy" + objName + GT + ";" + NL();
             source += "    return CheckCols(data);" + NL();
             //source += "});" + NL();
@@ -740,12 +681,6 @@ namespace ImFast.CodeCreator
             //source += "return await Task<HttpResponseMessage>.Factory.StartNew(() =>" + NL();
             //source += "{" + NL();
             source += GetDateCheckString(type);
-            source += "if (IsDb())" + NL();
-            source += "{" + NL();
-            source += "    var d = " + key + "Manager.GetDataFromDb(" + key + "Manager.GetKeyBy" + objName + GTOrder+"));" + NL();
-            source += "    return CheckCols(d);" + NL();
-            source += "}" + NL();
-            source += "CheckClearCahe(" + key + "Manager.GetKeyBy" + objName + GTOrder + "));" + NL();
             source += "    var data = " + key + "Manager.GetBy" + objName + GTOrder + ");" + NL();
             source += "    return CheckCols(data);" + NL();
             //source += "});" + NL();
@@ -854,7 +789,7 @@ namespace ImFast.CodeCreator
                 {
                     source += "case \"AVG\":" + NL();
                     source += "{" + NL();
-                    source += "double averageTicks = data.Average(x => x." + name + ".Value.Ticks);" + NL();
+                    source += "double averageTicks = data.Average(x => x."+name+".Value.Ticks);" + NL();
                     source += "long vOut = Convert.ToInt64(averageTicks);" + NL();
                     source += "var averageDate = new DateTime(vOut);" + NL();
                     source += "response = Common.GetDate(averageDate.ToShortDateString()) + \"T\" + averageDate.ToShortTimeString();" + NL();
@@ -890,7 +825,7 @@ namespace ImFast.CodeCreator
             if (IsBalancer)
             {
                 source += "public async Task<HttpResponseMessage> GetByidMax" + objName + OPMax + GetFuncTypeByColumn(type) + " id){" + NL();//start func get 
-                if (IsCluster)
+                if(IsCluster)
                     source += "return await ClusterManager.RetrieveData(\"" + key + "/" + objName + "/\" + MAX + \"/\" + GT + \"/\" + id);" + NL();
                 else
                     source += "return await BalancerManager.RetrieveData(\"" + key + "/" + objName + "/\" + MAX + \"/\" + GT + \"/\" + id);" + NL();
@@ -936,14 +871,9 @@ namespace ImFast.CodeCreator
                 source += "public HttpResponseMessage GetByidMax" + objName + OPMax + GetFuncTypeByColumn(type) + " id){" + NL();//start func get 
                 //source += "return await Task<HttpResponseMessage>.Factory.StartNew(() =>" + NL();
                 //source += "{" + NL();
-                
-                source += "    var d = " + key + "Manager.GetDataFromDb(" + key + "Manager.GetKeyBy" + objName + GT + ");" + NL();
-                source += "    return CheckCols(d);" + NL();
-                
-                //source += "CheckClearCahe(" + key + "Manager.GetKeyBy" + objName + GT + ");" + NL();
-                //source += "    IEnumerable<" + key + "> data = " + key + "Manager.GetBy" + objName + GT + ";" + NL();
-                //source += "    var response = GetByFunc" + objName + "(MAX, data);" + NL();
-                //source += "    return Request.CreateResponse(response);" + NL();
+                source += "    IEnumerable<" + key + "> data = " + key + "Manager.GetBy" + objName + GT + ";" + NL();
+                source += "    var response = GetByFunc" + objName + "(MAX, data);" + NL();
+                source += "    return Request.CreateResponse(response);" + NL();
                 //source += "});" + NL();
             }
             source += " }" + NL();//end func get
@@ -1018,7 +948,7 @@ namespace ImFast.CodeCreator
             if (IsBalancer)
             {
                 source += "public async Task<HttpResponseMessage> GetByJoin" + objName + "(string GT," + GetFuncTypeByColumn(type) + " id, string entity2, string id2){" + NL();//start func get 
-                if (IsCluster)
+                if(IsCluster)
                     source += "return await ClusterManager.RetrieveData(GT,\"" + key + "/" + objName + "/\" + id + \"/\" + entity2 + \"/\" + id2);" + NL();
                 else
                     source += "return await BalancerManager.RetrieveData(GT,\"" + key + "/" + objName + "/\" + id + \"/\" + entity2 + \"/\" + id2);" + NL();
@@ -1045,7 +975,7 @@ namespace ImFast.CodeCreator
             if (IsBalancer)
             {
                 source += "public async Task<HttpResponseMessage> GetByJoin" + objName + "(" + GetFuncTypeByColumn(type) + " id, string entity2, string id2){" + NL();//start func get 
-                if (IsCluster)
+                if(IsCluster)
                     source += "return await ClusterManager.RetrieveData(\"" + key + "/" + objName + "/\" + id + \"/\" + entity2 + \"/\" + id2);" + NL();
                 else
                     source += "return await BalancerManager.RetrieveData(\"" + key + "/" + objName + "/\" + id + \"/\" + entity2 + \"/\" + id2);" + NL();
@@ -1068,7 +998,7 @@ namespace ImFast.CodeCreator
             if (IsBalancer)
             {
                 source += "public async Task<HttpResponseMessage> GetByJoin" + objName + "(" + GetFuncTypeByColumn(type) + " id, string entity2, string id2, string entity3, string id3){" + NL();//start func get 
-                if (IsCluster)
+                if(IsCluster)
                     source += "return await ClusterManager.RetrieveData(\"" + key + "/" + objName + "/\" + id + \"/\" + entity2 + \"/\" + id2+ \"/\" + entity3+ \"/\" + id3);" + NL();
                 else
                     source += "return await BalancerManager.RetrieveData(\"" + key + "/" + objName + "/\" + id + \"/\" + entity2 + \"/\" + id2+ \"/\" + entity3+ \"/\" + id3);" + NL();
@@ -1196,8 +1126,8 @@ namespace ImFast.CodeCreator
             string name = IsContains ? "Contains" : "";
             string parameterType = GetFuncTypeByColumn(type);
             string FinalType = foundPK != null && foundPK.Count > 1 && !IsContains && !IsGTLT && !IsOrderBy ? "string" : parameterType;
-            string funcName = name + objName + OP + parameterType + " id" + orderParam;
-            source += "public static IEnumerable<" + key + "> GetDataBy" + funcName  + "){" + NL();
+
+            source += "public static IEnumerable<" + key + "> GetDataBy" + name + objName + OP + parameterType + " id" + orderParam + "){" + NL();
 
             if (parameterType == "string")
             {
@@ -1210,21 +1140,21 @@ namespace ImFast.CodeCreator
             {
                 if (IsContains)
                 {
-                    source += CreateLinqContains(key, type, objName, IsPK, funcName);
+                    source += CreateLinqContains(key, type, objName, IsPK);                    
                 }
                 else
                 {
                     if (foundPK != null && foundPK.Count == 1)
                     {
-                        source += CreateLinq(key, type, objName, true, foundPK, IsOrderBy, funcName);
+                        source += CreateLinq(key, type, objName, true, foundPK, IsOrderBy);
 
                     }
                     else
                     {
                         if (foundPK != null && foundPK.Count > 0)
-                            source += CreateLinq(key, type, objName, true, null, IsOrderBy, funcName);
+                            source += CreateLinq(key, type, objName, true, null, IsOrderBy);
                         else
-                            source += CreateLinq(key, type, objName, false, null, IsOrderBy, funcName);
+                            source += CreateLinq(key, type, objName, false, null, IsOrderBy);
                     }
                 }
                 bool isPKExiststoObjName = GetPKCount(objName, foundPK) > 0;
@@ -1255,24 +1185,24 @@ namespace ImFast.CodeCreator
         private static string GetRegularFuncFileExtraForStrings(string key, string objName, string OP, string type, string orderParam, string DbType, string DbName, string order, bool IsOrderBy, string name, bool IsPK, List<Table> foundPK)
         {
             string source = "";
-            string funcName = name + objName + OP + GetFuncTypeByColumn(type) + " id" + orderParam;
-            source += "public static IEnumerable<" + key + "> GetDataBy" + funcName+ "){" + NL();
-
+                        
+            source += "public static IEnumerable<" + key + "> GetDataBy" + name + objName + OP + GetFuncTypeByColumn(type) + " id" + orderParam + "){" + NL();
+            
             source += "if (!QueryManager.CheckForbidenChars(id))" + NL();
             source += "{" + NL();
             source += "    return null;" + NL();
             source += "}" + NL();
-
+            
             if (name == "Sound")
-                source += CreateLinqSound(key, type, objName, IsPK, funcName);
+                source += CreateLinqSound(key, type, objName, IsPK);
             else if (name == "StartWith")
-                source += CreateLinqStartWith(key, type, objName, IsPK, funcName);
+                source += CreateLinqStartWith(key, type, objName, IsPK);
             else if (name == "EndWith")
-                source += CreateLinqEndsWith(key, type, objName, IsPK, funcName);
+                source += CreateLinqEndsWith(key, type, objName, IsPK);
 
-            if (IsOrderBy)
+            if(IsOrderBy)      
                 source += CreateOrderByAscDesc(objName);
-
+                            
             source += "return items;" + NL();
             source += "}" + NL();
 
@@ -1283,15 +1213,15 @@ namespace ImFast.CodeCreator
         {
             string source = "";
             string name = "Contains";
-            string funcName = name + objName + OP + GetFuncTypeByColumn(type) + " id";
-            source += "public static IEnumerable<" + key + "> GetDataBy" + funcName + orderParam + "){" + NL();
 
+            source += "public static IEnumerable<" + key + "> GetDataBy" + name + objName + OP + GetFuncTypeByColumn(type) + " id" + orderParam + "){" + NL();
+            
             source += "if (!QueryManager.CheckForbidenChars(id))" + NL();
             source += "{" + NL();
             source += "    return null;" + NL();
             source += "}" + NL();
-
-            source += CreateLinqContains(key, type, objName, IsPK, funcName);
+            
+            source += CreateLinqContains(key, type, objName, IsPK);
             source += CreateOrderByAscDescAndPaging(objName);
             source += "return items;" + NL();
 
@@ -1299,18 +1229,18 @@ namespace ImFast.CodeCreator
             return source;
         }
 
-        private static string GetRegularFuncFileExtraForString(string key, string objName, string OP, string type, string orderParam, string DbType, string DbName, string order, bool IsGTLT, bool IsOrderBy, bool IsContains, bool IsPK, string name)
+        private static string GetRegularFuncFileExtraForString(string key, string objName, string OP, string type, string orderParam, string DbType, string DbName, string order, bool IsGTLT, bool IsOrderBy, bool IsContains, bool IsPK,string name)
         {
-            string source = "";
-            string funcName = name + objName + OP + GetFuncTypeByColumn(type) + " id" + orderParam;
-            source += "public static IEnumerable<" + key + "> GetDataBy" + funcName + "){" + NL();
+            string source = "";            
 
+            source += "public static IEnumerable<" + key + "> GetDataBy" + name + objName + OP + GetFuncTypeByColumn(type) + " id" + orderParam + "){" + NL();
+            
             source += "if (!QueryManager.CheckForbidenChars(id))" + NL();
             source += "{" + NL();
             source += "    return null;" + NL();
             source += "}" + NL();
-
-            source += CreateLinqSound(key, type, objName, IsPK, funcName);
+            
+            source += CreateLinqSound(key, type, objName, IsPK);            
             source += CreateOrderByAscDescAndPaging(objName);
             source += "return items;" + NL();
 
@@ -1328,7 +1258,7 @@ namespace ImFast.CodeCreator
             string orderPaging = ",order,asc,paging,size";
 
             //paging
-
+            
             source += GetPaging(objName, key, type, order, OP, orderParam, OPName);
             //end paging 
 
@@ -1345,8 +1275,8 @@ namespace ImFast.CodeCreator
             //    //join 2 tables with gt lt
             //    source += GetJoin2GT(objName, key, type);
             //}
-
-
+            
+            
             source += GetRegularFuncFile(key, objName, OP, type, orderParam, DbType, DbName, order, IsGTLT, IsOrderBy, false, IsPK, foundPK);
             source += CreateRegularFile2(key, objName, OP, type, orderParam, OPName, order, IsGTLT, false);
 
@@ -1382,7 +1312,7 @@ namespace ImFast.CodeCreator
             string funcName = "<" + key + "> GetBy" + name + objName + OP + GetFuncTypeByColumn(type) + " id" + orderParam + ")";//start func get 
             source += "public static IEnumerable" + funcName + "{" + NL();
 
-
+            
             source += "   try" + NL();
             source += "   {" + NL();
 
@@ -1395,7 +1325,7 @@ namespace ImFast.CodeCreator
             source += "        Task.Factory.StartNew(() => { LogManager.WriteError(\"funcName : " + funcName + ", Error - \" + e.Message); });" + NL();
             source += "        throw new Exception(\"error\");" + NL();
             source += "    }" + NL();
-
+                       
 
             source += " }" + NL();//end func get
 
@@ -1411,7 +1341,7 @@ namespace ImFast.CodeCreator
             if (IsBalancer)
             {
                 source += "public async Task<HttpResponseMessage> getValue(" + type + " id){" + NL();
-                if (IsCluster)
+                if(IsCluster)
                     source += "return await ClusterManager.RetrieveData(\"" + key + "/getvalue/\" + id);" + NL();
                 else
                     source += "return await BalancerManager.RetrieveData(\"" + key + "/getvalue/\" + id);" + NL();
@@ -1434,7 +1364,7 @@ namespace ImFast.CodeCreator
             return source;
         }
 
-        public static string CreateWebApiFuncForFiles(string objName, string key, string type, string DbName, string DbType,
+        public static string CreateWebApiFuncForFiles(string objName, string key, string type, string DbName, string DbType, 
             bool IsGTLT, List<Table> foundPK = null, int iterator = 1, bool IsBalancer = false, bool IsSharding = false,
             bool IsCluster = false)
         {
@@ -1451,7 +1381,7 @@ namespace ImFast.CodeCreator
             //gt lt with sum/max/avg ...
             if (IsGTLT)
             {
-                source += GetSeveralFunctionsSource(objName, key, type, DbName, DbType, IsGTLT, IsBalancer, IsSharding, IsCluster);
+                source += GetSeveralFunctionsSource(objName, key, type, DbName, DbType, IsGTLT, IsBalancer, IsSharding,IsCluster);
             }
 
             //add key search for dictionary that has more than one key
@@ -1530,24 +1460,12 @@ namespace ImFast.CodeCreator
                     source += "    {" + NL();
                     if (IsDateType(type))
                     {
-                        //source += "if (IsDb())" + NL();
-                        //source += "{" + NL();
-                        source += "    var d = " + key + "Manager.GetDataFromDb(" + key + "Manager.GetKeyBy" + objName + "OP(GT, id));" + NL();
-                        source += "    return CheckCols(d);" + NL();
-                        //source += "}" + NL();
-                        //source += "CheckClearCahe(" + key + "Manager.GetKeyBy" + objName + "OP(GT, id));" + NL();
-                        //source += "        data = " + key + "Manager.GetBy" + objName + "OP(GT, id);" + NL();
+                        source += "        data = " + key + "Manager.GetBy" + objName + "OP(GT, id);" + NL();
                     }
                     else
                     {
                         source += "    " + GetFuncTypeByColumn(type) + " idX = " + GetCovertType(type) + "(id);" + NL();
-                        //source += "if (IsDb())" + NL();
-                        //source += "{" + NL();
-                        source += "    var d = " + key + "Manager.GetDataFromDb(" + key + "Manager.GetKeyBy" + objName + "OP(GT, idX));" + NL();
-                        source += "    return CheckCols(d);" + NL();
-                        //source += "}" + NL();
-                        //source += "CheckClearCahe(" + key + "Manager.GetKeyBy" + objName + "OP(GT,idX));" + NL();
-                        //source += "        data = " + key + "Manager.GetBy" + objName + "OP(GT, idX);" + NL();
+                        source += "        data = " + key + "Manager.GetBy" + objName + "OP(GT, idX);" + NL();
                     }
                     source += "    }" + NL();
                     source += "}" + NL();
@@ -1563,19 +1481,13 @@ namespace ImFast.CodeCreator
                     source += "public HttpResponseMessage GetBy" + objName + OP + GetFuncTypeByColumn(type) + " id){" + NL();
                     //source += "return await Task<HttpResponseMessage>.Factory.StartNew(() =>" + NL();
                     //source += "{" + NL();
-                    //source += "if (IsDb())" + NL();
-                    //source += "{" + NL();
-                    source += "    var d = " + key + "Manager.GetDataFromDb(" + key + "Manager.GetKeyBy" + objName + OPName + " id));" + NL();
-                    source += "    return CheckCols(d);" + NL();
-                    //source += "}" + NL();
-                    //source += "CheckClearCahe(" + key + "Manager.GetKeyBy" + objName + OPName + " id));" + NL();
-                    //source += "    var data = " + key + "Manager.GetBy" + objName + OPName + " id);" + NL();
-                    //source += "    return CheckCols(data);" + NL();
+                    source += "    var data = " + key + "Manager.GetBy" + objName + OPName + " id);" + NL();
+                    source += "    return CheckCols(data);" + NL();                    
                 }
-
+                
             }
-            if (isNeedClose)
-                source += "}" + NL();
+            if(isNeedClose)
+                source += "}" +  NL();
 
             //start func getby... with orderby
             source += "[ActionName(\"" + objName + "\")]" + NL();
@@ -1584,7 +1496,7 @@ namespace ImFast.CodeCreator
             if (IsBalancer)
             {
                 source += "public async Task<HttpResponseMessage> GetBy" + objName + OP + GetFuncTypeByColumn(type) + " id, string order, string Asc){" + NL();//start func get 
-                if (IsCluster)
+                if(IsCluster)
                     source += "return await ClusterManager.RetrieveData(\"" + key + "/" + objName + OPBalancer + "/\" + id + \"/\" + order + \"/\" + Asc);" + NL();
                 else
                     source += "return await BalancerManager.RetrieveData(\"" + key + "/" + objName + OPBalancer + "/\" + id + \"/\" + order + \"/\" + Asc);" + NL();
@@ -1599,13 +1511,8 @@ namespace ImFast.CodeCreator
                 source += "public HttpResponseMessage GetBy" + objName + OP + GetFuncTypeByColumn(type) + " id, string order, string Asc){" + NL();//start func get 
                 //source += "return await Task<HttpResponseMessage>.Factory.StartNew(() =>" + NL();
                 //source += "{" + NL();
-                
-                source += "    var d = " + key + "Manager.GetDataFromDb(" + key + "Manager.GetKeyBy" + objName + OPName + " id));" + NL();
-                source += "    return CheckCols(d);" + NL();
-                
-                //source += "CheckClearCahe(" + key + "Manager.GetKeyBy" + objName + OPName + " id));" + NL();
-                //source += "    var data = " + key + "Manager.GetBy" + objName + OPName + " id, order, Asc);" + NL();
-                //source += "    return CheckCols(data);" + NL();
+                source += "    var data = " + key + "Manager.GetBy" + objName + OPName + " id, order, Asc);" + NL();
+                source += "    return CheckCols(data);" + NL();
                 //source += "});" + NL();
             }
 
@@ -1617,7 +1524,7 @@ namespace ImFast.CodeCreator
             if (IsBalancer)
             {
                 source += "public async Task<HttpResponseMessage> GetBy" + objName + OP + GetFuncTypeByColumn(type) + " id, string order, string Asc, string paging, string size){" + NL();//start func get 
-                if (IsCluster)
+                if(IsCluster)
                     source += "return await ClusterManager.RetrieveData(\"" + key + "/" + objName + OPBalancer + "/\" + id + \"/\" + order + \"/\" + Asc+ \"/\" + paging+ \"/\" + size);" + NL();
                 else
                     source += "return await BalancerManager.RetrieveData(\"" + key + "/" + objName + OPBalancer + "/\" + id + \"/\" + order + \"/\" + Asc+ \"/\" + paging+ \"/\" + size);" + NL();
@@ -1629,12 +1536,6 @@ namespace ImFast.CodeCreator
             }
             else
             {
-                //source += "public HttpResponseMessage GetBy" + objName + OP + GetFuncTypeByColumn(type) + " id, string paging, string size){" + NL();//start func get 
-                ////source += "return await Task<HttpResponseMessage>.Factory.StartNew(() =>" + NL();
-                ////source += "{" + NL();
-                //source += "    var data = " + key + "Manager.GetPagingBy" + objName + OPName + " id, order, Asc, paging, size);" + NL();
-                //source += "    return CheckCols(data);" + NL();
-                //source += " }" + NL();
                 source += "public HttpResponseMessage GetBy" + objName + OP + GetFuncTypeByColumn(type) + " id, string order, string Asc, string paging, string size){" + NL();//start func get 
                 //source += "return await Task<HttpResponseMessage>.Factory.StartNew(() =>" + NL();
                 //source += "{" + NL();
@@ -1713,100 +1614,62 @@ namespace ImFast.CodeCreator
             return items.Count();
         }
 
-        private static string CreateLinq(string key, string type, string objName, bool IsPK, List<Table> foundPK, bool IsOrderBy,string funcName)
+        private static string CreateLinq(string key, string type, string objName, bool IsPK, List<Table> foundPK, bool IsOrderBy)
         {
             string source = "";
-
+                        
             bool IsString = type == "string";
-
+            
             string dateStr = CheckDate(type);
             source += dateStr;
-            //string param = dateStr.Length > 0 ? "d" : "id";
-            string param = "id";
-            string w = "";
+            string param = dateStr.Length > 0 ? "d" : "id";
+
+            string w="";
 
             if (IsString)
             {
-                w = "\"" + objName + "='\"+" + param + "+\"'\"";
+                w = "\"" + objName + "='\"+"  + param + "+\"'\"";
             }
             else
                 w = "\"" + objName + "=\"+" + param + ".ToString()";
 
-            source += CreateSqlFetch(key, w, w, cacheTimeInMinutes);
-            CheckIfAddKeyString(IsOrderBy, w,funcName);            
+            source += CreateSqlFetch(key, w, w, cacheTimeInMinutes);            
+          
             return source;
         }
 
-        private static void CheckIfAddKeyStringGT(string objName,string type)
-        {
-            if (!hashFuncNameList.Contains("GetKeyBy" + objName + "OP"))
-            {
-                if (type == "DateTime")
-                    type = "string";
-
-                ExtraSource += "public static string GetKeyBy" + objName + "OP(string GT," + type + " id){" + NL();
-                ExtraSource += "string EqType = GT.ToUpper();" + NL();
-                ExtraSource += " switch(EqType){" + NL();
-                ExtraSource += "case \"GT\":" + NL();
-                ExtraSource += "    return \"" + objName + ">\" + id.ToString();" + NL();
-                ExtraSource += "case \"GTEQ\":" + NL();
-                ExtraSource += "    return \"" + objName + ">=\" + id.ToString();" + NL();
-                ExtraSource += "case \"LT\":" + NL();
-                ExtraSource += "    return \"" + objName + "<\" + id.ToString();" + NL();
-                ExtraSource += "case \"LTEQ\":" + NL();
-                ExtraSource += "    return \"" + objName + "<=\" + id.ToString();" + NL();
-                ExtraSource += "case \"NOT\":" + NL();
-                ExtraSource += "    return \"" + objName + "!=\" + id.ToString();" + NL();
-                ExtraSource += " } return \"\";}" + NL();
-                hashFuncNameList.Add("GetKeyBy" + objName + "OP");
-            }
-            
-        }
-        private static void CheckIfAddKeyString(bool IsOrderBy,string key, string funcName)
-        {
-            if (!IsOrderBy && !hashFuncNameList.Contains(funcName))
-            {
-                ExtraSource += "public static string GetKeyBy" + funcName + "){" + NL();
-                ExtraSource += " return " + key + ";}" + NL();
-                hashFuncNameList.Add(funcName);
-            }
-        }
-        private static string CreateLinqContains(string key, string type, string objName, bool IsPK,string funcName)
+        private static string CreateLinqContains(string key, string type, string objName, bool IsPK)
         {
             string source = "";
-
+            
             string w = "\"" + objName + " like '%\" + id + \"%'\"";
-            CheckIfAddKeyString(false, w, funcName);
-            source += CreateSqlFetch(key, w, w, cacheTimeInMinutes);
-
+            source += CreateSqlFetch(key, w,w, cacheTimeInMinutes);
+            
             return source;
         }
 
-        private static string CreateLinqSound(string key, string type, string objName, bool IsPK,string funcName)
+        private static string CreateLinqSound(string key, string type, string objName, bool IsPK)
         {
             //string objNotNull = !IsPK && !IsRO ? "p." + objName + " != null && " : "";
             string source = "";
             string w = "\"UPPER(" + objName + ") like '%\" + id.ToUpper() + \"%'\"";
-            CheckIfAddKeyString(false, w, funcName);
             source += CreateSqlFetch(key, w, w, cacheTimeInMinutes);
             return source;
         }
 
-        private static string CreateLinqStartWith(string key, string type, string objName, bool IsPK,string funcName)
+        private static string CreateLinqStartWith(string key, string type, string objName, bool IsPK)
         {
             //string objNotNull = !IsPK && !IsRO ? "p." + objName + " != null && " : "";
             string source = "";
             string w = "\"" + objName + " like '\" + id + \"%'\"";
-            CheckIfAddKeyString(false, w, funcName);
             source += CreateSqlFetch(key, w, w, cacheTimeInMinutes);
             return source;
         }
-        private static string CreateLinqEndsWith(string key, string type, string objName, bool IsPK,string funcName)
+        private static string CreateLinqEndsWith(string key, string type, string objName, bool IsPK)
         {
             //string objNotNull = !IsPK && !IsRO ? "p." + objName + " != null && " : "";
             string source = "";
             string w = "\"" + objName + " like '%\" + id + \"'\"";
-            CheckIfAddKeyString(false, w, funcName);
             source += CreateSqlFetch(key, w, w, cacheTimeInMinutes);
             return source;
         }
@@ -1818,9 +1681,9 @@ namespace ImFast.CodeCreator
                 string dateStr = CheckDate(type);
                 source += dateStr;
                 string param = dateStr.Length > 0 ? "d" : "id";
-
+                
                 source += "string EqType = GT.ToUpper();" + NL();
-                source += "IEnumerable<" + key + "> items = null;" + NL();
+                source += "IEnumerable<"+key+ "> items = null;" + NL();
                 source += "switch(EqType)" + NL();
                 source += "{" + NL();
 
@@ -1830,8 +1693,6 @@ namespace ImFast.CodeCreator
                 source += GetSpecificLinq(objName, key, ">=", "GTEQ", IsOrderBy, param, type);
                 source += GetSpecificLinq(objName, key, "<=", "LTEQ", IsOrderBy, param, type);
                 source += GetSpecificLinq(objName, key, "!=", "NOT", IsOrderBy, param, type);
-
-                CheckIfAddKeyStringGT(objName, type);
 
                 source += "}" + NL();//end switch
             }
@@ -1850,8 +1711,8 @@ namespace ImFast.CodeCreator
             source += "{" + NL();
 
             string w = "\"" + objName + sign + "\"+" + param + s;
-            source += CreateSqlFetch(key, w, w, cacheTimeInMinutes, false);
-
+            source += CreateSqlFetch(key, w, w, cacheTimeInMinutes,false);
+            
             if (IsOrderBy)
                 source += "break;" + NL();
             else
@@ -1877,7 +1738,7 @@ namespace ImFast.CodeCreator
                 source += "public async Task<HttpResponseMessage> getDataInMemory(string GT,int id)" + NL();
                 source += "{" + NL();
                 source += "string s = getUrl(GT);" + NL();
-                if (IsCluster)
+                if(IsCluster)
                     source += "return await ClusterManager.GetData(s + \"/" + key + "/getDataInMemory/\"+id);" + NL();
                 else
                     source += "return await BalancerManager.GetData(s + \"/" + key + "/getDataInMemory/\"+id);" + NL();
@@ -1953,7 +1814,7 @@ namespace ImFast.CodeCreator
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-
+        
 
 
         public static string CreategetDataInMemoryManager(string key, bool IsPK, bool IsReadOnly)
@@ -2062,7 +1923,7 @@ namespace ImFast.CodeCreator
             return source;
         }
 
-        public static string CreateReplicateMasterCode(bool IsReplicate, string key, bool IsCluster = false)
+        public static string CreateReplicateMasterCode(bool IsReplicate, string key, bool IsCluster=false)
         {
             string source = "";
             if (IsReplicate)
@@ -2121,7 +1982,7 @@ namespace ImFast.CodeCreator
         }
 
         public static string CreateReplicateMasterCodeNoPrimaryKeyNoReadOnly(Dictionary<string, EntityItem> dic,
-            bool IsReplicate, string key, bool IsCluster = false)
+            bool IsReplicate,string key, bool IsCluster = false)
         {
             string source = "";
             if (IsReplicate)
@@ -2146,14 +2007,14 @@ namespace ImFast.CodeCreator
             return source;
         }
 
-        public static string CreateGetEmpty(bool IsBalancer, string key, bool IsCluster = false)
+        public static string CreateGetEmpty(bool IsBalancer, string key, bool IsCluster=false)
         {
             string source = "";
             if (IsBalancer)
             {
                 source += "public async Task<HttpResponseMessage> GetEmpty()" + NL();
                 source += "{" + NL();
-                if (IsCluster)
+                if(IsCluster)
                     source += "return await ClusterManager.RetrieveData(\"" + key + "/GetEmpty\");" + NL();
                 else
                     source += "return await BalancerManager.RetrieveData(\"" + key + "/GetEmpty\");" + NL();
@@ -2179,7 +2040,7 @@ namespace ImFast.CodeCreator
             {
                 source += "public async Task<HttpResponseMessage> GetAll()" + NL();
                 source += "{" + NL();
-                if (isCluster)
+                if(isCluster)
                     source += "return await ClusterManager.RetrieveData(\"" + key + "/GetAll\");" + NL();
                 else
                     source += "return await BalancerManager.RetrieveData(\"" + key + "/GetAll\");" + NL();
@@ -2242,7 +2103,7 @@ namespace ImFast.CodeCreator
             {
                 source += "public async Task<HttpResponseMessage> GetIsUpdate(int id)" + NL();
                 source += "{" + NL();
-                if (IsCluster)
+                if(IsCluster)
                     source += "return await ClusterManager.RetrieveData(\"" + key + "/GetIsUpdate/\"+id+ \"\");" + NL();
                 else
                     source += "return await BalancerManager.RetrieveData(\"" + key + "/GetIsUpdate/\"+id+ \"\");" + NL();
@@ -2273,7 +2134,7 @@ namespace ImFast.CodeCreator
         public static string CreateCheckCols(string entityName)
         {
             string source = "";
-            source += "private HttpResponseMessage CheckCols(IEnumerable<" + entityName + "> data)" + NL();
+            source += "private HttpResponseMessage CheckCols(IEnumerable<"+entityName+"> data)" + NL();
             source += "{" + NL();
             source += "string cols = Request.RequestUri.Query;" + NL();
             source += "int iCols = cols.ToUpper().IndexOf(\"COLS=\");" + NL();
@@ -2296,54 +2157,53 @@ namespace ImFast.CodeCreator
             source += "}" + NL();
             return source;
         }
-        public static string CreateCheckClearCache(string key)
+
+        public static string CreateJoin(string key)
         {
             string source = "";
-            //source += "private bool IsDb()" + NL();
-            //source += "{" + NL();
-            ////source += "    string cols = Request.RequestUri.Query;" + NL();
-            ////source += "    int iCols = cols.ToUpper().IndexOf(\"?DB\");" + NL();
-            ////source += "    if (iCols >= 0)" + NL();
-            ////source += "    {" + NL();
-            //source += "        return true;" + NL();
-            ////source += "    }" + NL();
-            ////source += "    return false;" + NL();
-            //source += "}" + NL();
-            //source += "private void CheckClearCahe(string key)" + NL();
-            //source += "{" + NL();
-            //source += "string cols = Request.RequestUri.Query;" + NL();
-            //source += "int iCols = cols.ToUpper().IndexOf(\"?RELOAD\");" + NL();
-            //source += "if (iCols >= 0)" + NL();
-            //source += "{" + NL();
-            //source += "    Key" + key + "Manager.Del(key);" + NL();
-            //source += "}" + NL();
-            //source += "}" + NL();
+            source += "[ActionName(\"Join\")]" + NL();
+            source += "public object getJoin(string GT, string id, string order, string Asc)" + NL();
+            source += "{" + NL();
+            source += "    try" + NL();
+            source += "    {" + NL();
+            source += "        order = QueryManager.GetExpression(order);" + NL();
+            source += "        return "+ key+"Manager.Join(GT, id, order, Asc);" + NL();
+            source += "    }" + NL();
+            source += "   catch (Exception ex)" + NL();
+            source += "{" + NL();
+            source += "return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex.Message);" + NL();
+            source += "}" + NL();
+            source += "}" + NL();
+
+            source += "[ActionName(\"Join\")]" + NL();
+            source += "public object getJoin(string MAX, string GT, string id)" + NL();
+            source += "{" + NL();
+            source += "try" + NL();
+            source += "{" + NL();
+            source += "id = QueryManager.GetExpression(id);" + NL();
+            source += "return " + key + "Manager.Join(MAX, GT, id, \"\");" + NL();
+            source += "}" + NL();
+            source += "catch (Exception ex)" + NL();
+            source += "{" + NL();
+            source += "return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex.Message);" + NL();
+            source += "}" + NL();
+            source += "}" + NL();
+
+            source += "[ActionName(\"Join\")]" + NL();
+            source += "public object getJoin(string GT, string id)" + NL();
+            source += "{" + NL();
+            source += "try" + NL();
+            source += "{           " + NL();
+            source += "return " + key + "Manager.Join(GT, id, \"\", \"\");" + NL();
+            source += "}" + NL();
+            source += "catch (Exception ex)" + NL();
+            source += "{" + NL();
+            source += "return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex.Message);" + NL();
+            source += "}" + NL();
+            source += "}" + NL();
             return source;
         }
-        public static string CreateCheckClearSpCache()
-        {
-            string source = "";
-            //source += "private bool IsDb()" + NL();
-            //source += "{" + NL();
-            ////source += "    string cols = Request.RequestUri.Query;" + NL();
-            ////source += "    int iCols = cols.ToUpper().IndexOf(\"?DB\");" + NL();
-            ////source += "    if (iCols >= 0)" + NL();
-            ////source += "    {" + NL();
-            //source += "        return true;" + NL();
-            ////source += "    }" + NL();
-            ////source += "    return false;" + NL();
-            //source += "}" + NL();
-            //source += "private void CheckClearCahe(string key)" + NL();
-            //source += "{" + NL();
-            //source += "string cols = Request.RequestUri.Query;" + NL();
-            //source += "int iCols = cols.ToUpper().IndexOf(\"?RELOAD\");" + NL();
-            //source += "if (iCols >= 0)" + NL();
-            //source += "{" + NL();
-            //source += "    KeySPManager.Del(key);" + NL();
-            //source += "}" + NL();
-            //source += "}" + NL();
-            return source;
-        }
+
         public static string CreateWebFarmBaseRetrieve(string BaseUrl)
         {
             string source = "private async Task<HttpResponseMessage> RetrieveData(string url)" + NL();
@@ -2390,51 +2250,51 @@ namespace ImFast.CodeCreator
         public static string CreateCalcFunction(string key)
         {
             string source = "";
-            source += "public static object Calc(string str, string where)" + NL();
-            source += "{" + NL();
-            source += "try{ IEnumerable<" + key + "> data = new List<" + key + ">();" + NL();
-            source += "if (where == null)" + NL();
-            source += "{" + NL();
-            source += "    data = Get" + key + "List();" + NL();
-            source += "}" + NL();
-            source += "else" + NL();
-            source += "{" + NL();
-            source += "    try" + NL();
-            source += "    {" + NL();
-            source += "        data = GetQueryX(where);" + NL();
-            source += "    }" + NL();
-            source += "    catch" + NL();
-            source += "    {" + NL();
-            source += "        data = Get" + key + "List();" + NL();
-            source += "    }" + NL();
-            source += "}" + NL();
-            source += "string x = \"\" ;" + NL();
-            source += "  string[] arr = str.Split(' ');" + NL();
-            source += "    string select = \"\"; " + NL();
-            source += "    for (int i = 0; i < arr.Length; i++)" + NL();
-            source += "    {" + NL();
-            source += "        if (arr[i].ToUpper() == \"MUL\" )" + NL();
-            source += "            arr[i] = \"*\";" + NL();
-            source += "        else if (arr[i].ToUpper() == \"DIV\")" + NL();
-            source += "            arr[i] = \"/\"; " + NL();
-            source += "        else if (arr[i].ToUpper() == \"MOD\")" + NL();
-            source += "            arr[i] = \"%\";" + NL();
-            source += "        else if (arr[i].ToUpper() == \"PLUS\")" + NL();
-            source += "            arr[i] = \"+\"; " + NL();
-            source += "        else if (arr[i].ToUpper() == \"MINUS\")" + NL();
-            source += "            arr[i] = \"-\";" + NL();
-            source += "        else" + NL();
-            source += "            arr[i] = \" \" + arr[i] + \" \";" + NL();
-            source += "    } " + NL();
-            source += "    select = string.Join(\"\" , arr);" + NL();
-            source += "    x = \"new(\" + select + \")\";" + NL();
-            source += "var test = data.AsQueryable().AsParallel().Select(x);" + NL();
-            source += "return test;" + NL();
-            source += "  }" + NL();
-
-            source += "catch (Exception ex)" + NL();
-            source += "{" + NL();
-            source += "    return ex.Message;" + NL();
+            source+="public static object Calc(string str, string where)" + NL();
+            source+="{" + NL();
+            source+="try{ IEnumerable<"+key+"> data = new List<"+key+">();" + NL();
+            source+="if (where == null)" + NL();
+            source+="{" + NL();
+            source+="    data = Get"+key+"List();" + NL();
+            source+="}" + NL();
+            source+="else" + NL();
+            source+="{" + NL();
+            source+="    try" + NL();
+            source+="    {" + NL();
+            source+="        data = GetQueryX(where);" + NL();
+            source+="    }" + NL();
+            source+="    catch" + NL();
+            source+="    {" + NL();
+            source+="        data = Get"+key+"List();" + NL();
+            source+="    }" + NL();
+            source+="}" + NL();
+            source+="string x = \"\" ;" + NL();
+            source+="  string[] arr = str.Split(' ');" + NL();
+            source+="    string select = \"\"; " + NL();
+            source+="    for (int i = 0; i < arr.Length; i++)" + NL();
+            source+="    {" + NL();
+            source+="        if (arr[i].ToUpper() == \"MUL\" )" + NL();
+            source+="            arr[i] = \"*\";" + NL();
+            source+="        else if (arr[i].ToUpper() == \"DIV\")" + NL();
+            source+="            arr[i] = \"/\"; " + NL();
+            source+="        else if (arr[i].ToUpper() == \"MOD\")" + NL();
+            source+="            arr[i] = \"%\";" + NL();
+            source+="        else if (arr[i].ToUpper() == \"PLUS\")" + NL();
+            source+="            arr[i] = \"+\"; " + NL();
+            source+="        else if (arr[i].ToUpper() == \"MINUS\")" + NL();
+            source+="            arr[i] = \"-\";" + NL();
+            source+="        else" + NL();
+            source+="            arr[i] = \" \" + arr[i] + \" \";" + NL();
+            source+="    } " + NL();
+            source+="    select = string.Join(\"\" , arr);" + NL();
+            source+="    x = \"new(\" + select + \")\";" + NL();
+            source+="var test = data.AsQueryable().AsParallel().Select(x);" + NL();
+            source+="return test;" + NL();
+            source+="  }" + NL();
+            
+            source+="catch (Exception ex)" + NL();
+            source+="{" + NL();
+            source+="    return ex.Message;" + NL();
             source += "}" + NL();
             source += "}" + NL();
             return source;
@@ -2465,13 +2325,10 @@ namespace ImFast.CodeCreator
             source += "       wh = \"where \" + where;" + NL();
             source += "    }" + NL();
             source += "}" + NL();
-            source += "string w = \"SELECT \" + cols + \" FROM " + key + " \" + wh + \" GROUP BY \" + groupById + having;" + NL();
-            //source += "object items = GroupByManager.GetObj(w);" + NL();
-            //source += "if (items == null)" + NL();
-            //source += "{" + NL();
-            source += "   object items = GroupByManager.GetDataFromDb(w, \"" + key + "\");" + NL();
-            //source += "    GroupByManager.SetObj(w, items, " + cacheTimeInMinutes + ");" + NL();
-            //source += "}" + NL();
+            source += "string w = \"SELECT \" + cols + \" FROM "+ key+" \" + wh + \" GROUP BY \" + groupById + having;" + NL();
+            
+            source += "object items = GroupByManager.GetDataFromDb(w, \"" + key + "\");" + NL();
+            
             source += "return items;" + NL();
 
             source += "}" + NL();
@@ -2482,10 +2339,10 @@ namespace ImFast.CodeCreator
         {
             string source = "";
             source += "public static object GetGroupByData(string groupBy,string calc,string where){" + NL();
-            source += "IEnumerable<" + key + "> data = new List<" + key + ">();" + NL();
+            source += "IEnumerable<"+key+"> data = new List<"+key+">();" + NL();
             source += "if (where == null)" + NL();
             source += "{" + NL();
-            source += "    data = Get" + key + "List();" + NL();
+            source += "    data = Get"+key+"List();" + NL();
             source += "}" + NL();
             source += "else" + NL();
             source += "{" + NL();
@@ -2495,7 +2352,7 @@ namespace ImFast.CodeCreator
             source += "    }" + NL();
             source += "    catch" + NL();
             source += "    {" + NL();
-            source += "        data = Get" + key + "List();" + NL();
+            source += "        data = Get"+key+"List();" + NL();
             source += "    }" + NL();
             source += "}" + NL();
             source += "string cols = GetColFromCalc(calc);" + NL();
@@ -2513,8 +2370,8 @@ namespace ImFast.CodeCreator
             source += "string ret = \"\";" + NL();
             foreach (Table table in lstTable)
             {
-                source += "if (calc.Contains(\"(" + table.Name + ")\"))" + NL();
-                source += "   ret += \"" + table.Name + ",\";" + NL();
+                source += "if (calc.Contains(\"("+ table.Name +")\"))" + NL();
+                source += "   ret += \""+ table.Name+",\";" + NL();                
             }
             source += "if(ret.Length>0)" + NL();
             source += "    ret = ret.Substring(0, ret.Length - 1);" + NL();
@@ -2523,19 +2380,19 @@ namespace ImFast.CodeCreator
             source += "}" + NL();
             return source;
         }
-
+        
         public static string CreateGlobalQuery(string EntityName, string dbName)
-        {
+        {            
             string source = "";
             source += "public static IEnumerable<" + EntityName + "> GetQueryX(string id)" + NL();
             source += "{" + NL();
-
+            
             source += "string paging = \"\";" + NL();
             source += "string size = \"\";" + NL();
             source += "int amount = 0;" + NL();
             source += "int page = 0;" + NL();
 
-
+            
             source += "try" + NL();
             source += "    {" + NL();
             source += "if (!QueryManager.CheckForbidenChars(id))" + NL();
@@ -2543,6 +2400,7 @@ namespace ImFast.CodeCreator
             source += "    throw new Exception(\"error\");" + NL();
             source += "}" + NL();
             source += "id = QueryManager.GetExpression(id);" + NL();
+            source += "id = QueryManager.HandleComplicateExperessionsForDataBase(id,\"" + EntityName + "\");" + NL();
             source += "int ind = id.IndexOf(\"page=\");" + NL();
             source += "if (ind > 0)" + NL();
             source += "{" + NL();

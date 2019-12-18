@@ -311,7 +311,7 @@ namespace ImFast.CodeCreator
             //source += "}" + NL();
             source += " for (int i = 0; i < arr.Length; i++)" + NL();
             source += " {" + NL();
-            source += "    if (arr[i].IndexOf(\" = \") > 0)" + NL();
+            source += "    if (arr[i].IndexOf(\"=\") > 0)" + NL();
             source += "    {" + NL();
             source += "        string[] arrEq = arr[i].Split('=');" + NL();
             source += "        where += arrEq[0] + \" = \" + arrEq[1] + \" And \";" + NL();
@@ -369,17 +369,45 @@ namespace ImFast.CodeCreator
                 source += "string sConn = dicEntities[\"" + key + "\"].DataBaseConnectionString;" + NL();
                 source += "    DataBaseRetriever dal = new DataBaseRetriever(sConn);" + NL();
                 source += "    dal.Execute(str, dicEntities[\"" + key + "\"].DataBaseTypeName,item);" + NL();
-                //source += "try" + NL();
-                //source += "{" + NL();
-                //source += "    DataBaseRetriever dal = new DataBaseRetriever(sConn);" + NL();
-                //source += "    dal.Execute(str, dicEntities[\"" + key + "\"].DataBaseTypeName,item);" + NL();
-                //source += "}" + NL();
-                //source += "catch (Exception ex)" + NL();
-                //source += "{" + NL();
-                //source += "    LogManager.WriteError(\"Insert to Db failed: object " + key + " fail: Error - \" + ex.Message);" + NL();
-                //source += "}" + NL();
+               
             }
             source += "}";
+            return source;
+        }
+        private static string CreateDeletetSqlBy(Dictionary<string, EntityItem> dic, string key)
+        {
+            string source = "";
+
+
+            source += "public static void DeleteSqlBy(string whereCols," + key + " item){ " + NL();
+            
+            source += "string where = \"\";" + NL();
+            source += "string[] arr = whereCols.Split(',');" + NL();
+            source += "if (arr != null && arr.Length > 0)" + NL();
+            source += "{" + NL();           
+            source += " for (int i = 0; i < arr.Length; i++)" + NL();
+            source += " {" + NL();
+            source += "    if (arr[i].IndexOf(\"=\") > 0)" + NL();
+            source += "    {" + NL();
+            source += "        string[] arrEq = arr[i].Split('=');" + NL();
+            source += "        where += arrEq[0] + \" = \" + arrEq[1] + \" And \";" + NL();
+            source += "    }" + NL();
+            source += "    else" + NL();
+            source += "        where += arr[i] + \" = \" + \"@\" + arr[i] + \" And \";" + NL();
+            source += " }" + NL();
+            source += "}" + NL();
+            
+            source += "where = where.Substring(0, where.Length - 4);" + NL();
+            source += "string str = \" Delete From " + key + " where \" + where;" + NL();
+
+            source += "Dictionary<string, EntityItem> dicEntities = MyEntitiesController.GetdicEntities();" + NL();
+            source += "string sConn = dicEntities[\"" + key + "\"].DataBaseConnectionString;" + NL();
+            source += "    DataBaseRetriever dal = new DataBaseRetriever(sConn);" + NL();
+            source += "    dal.Execute(str, dicEntities[\"" + key + "\"].DataBaseTypeName,item);" + NL();
+
+            source += "}";
+
+
             return source;
         }
 
@@ -979,7 +1007,8 @@ namespace ImFast.CodeCreator
 
             
             str += CreateDeletetSql(dic, key);
-            
+
+            str += CreateDeletetSqlBy(dic, key);
 
             str += "public static HttpResponseMessage Delete" + key + "(" + key + " item)" + NL();
             str += "{" + NL();
@@ -1115,19 +1144,29 @@ namespace ImFast.CodeCreator
 
             }
             else
-            {
-                str += "public HttpResponseMessage Delete" + key + "(" + key + " item)" + NL();
+            {                
+                str += "public HttpResponseMessage DeleteBy(string id," + key + " item)" + NL();
                 str += "{" + NL();
-                //if (!checkedItems.IsReadOnly)
-                //{
-                //    str += "if (!IsUpdate)" + NL();
-                //    str += "{" + NL();
-                //    str += "   HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.Forbidden);" + NL();
-                //    str += "    return response;" + NL();
-                //    str += "}" + NL();
-                //}
-                //str += "return await Task<HttpResponseMessage>.Factory.StartNew(() =>" + NL();
-                //str += "{" + NL();
+                str += "HttpStatusCode status = HttpStatusCode.Created;" + NL();
+                str += "try" + NL();
+                str += "{" + NL();
+                str += "    " + key + "Manager.DeleteSqlBy(id, item);" + NL();
+                str += "}" + NL();
+                str += "catch (Exception e)" + NL();
+                str += "{" + NL();
+                str += "var resp = new HttpResponseMessage(HttpStatusCode.BadRequest)" + NL();
+                str += " {" + NL();
+                str += "Content = new StringContent(e.Message)" + NL();
+                str += "};" + NL();
+                str += "return resp;" + NL();
+                str += "}" + NL();
+                str += "HttpResponseMessage response = new HttpResponseMessage(status);" + NL();
+                str += "return response;" + NL();                
+                str += "}" + NL();
+
+
+                str += "public HttpResponseMessage Delete" + key + "(" + key + " item)" + NL();
+                str += "{" + NL();                
                 str += "    var data = " + key + "Manager.Delete" + key + "(item);" + NL();
 
                 if (checkedItems.IsReplicate || checkedItems.IsCluster)

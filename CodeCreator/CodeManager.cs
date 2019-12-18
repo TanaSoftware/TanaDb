@@ -1305,6 +1305,8 @@ namespace ImFast.CodeCreator
 
                 source += FunctionCreator.CreateSql(key);
 
+                source += getJoin(key);
+
                 //create group by manager
                 source += FunctionCreator.CreateGetGroupByManager(key);
                 if (!checkedItems.IsReadOnly)
@@ -1352,7 +1354,39 @@ namespace ImFast.CodeCreator
             WriteFileInAppCode(path, key + "Manager", source);
         }
 
+        private static string getJoin(string key)
+        {
+            string source = "";
+            source += "public static object Join(string joinTo, string join, string where, string cols)" + NL();
+            source += "{" + NL();
+            source += "string joinToStr = \"\";" + NL();
+            source += "bool IsMoreThanOneJoin = false;" + NL();
+            source += "string[] joinToArr = joinTo.Split(',');" + NL();
+            source += "string[] joinArr = join.Split(',');" + NL();
 
+            source += "if (joinToArr.Length > 1)" + NL();
+            source += "{" + NL();
+            source += "    IsMoreThanOneJoin = true;" + NL();
+            source += "    for (int i = 1; i < joinToArr.Length; i++)" + NL();
+            source += " {" + NL();
+            source += "joinToStr += \" Join \" + joinToArr[i] + \" ON \" + joinArr[i];" + NL();
+            source += " }" + NL();
+            source += "}" + NL();
+
+            source += "string strCols = cols == \"\" ? \" * \" : cols;" + NL();
+            source += "string whereX = where == \"\" ? \"1=1\" : where;" + NL();
+            source += "string str = !IsMoreThanOneJoin ?" + NL();
+            source += "    \"select \" + strCols + \" from "+ key+ " D INNER JOIN \" + joinTo + \" On \" + join + \"  where \" + whereX :" + NL();
+            source += "    \"select \" + strCols + \" from "+ key+ " D INNER JOIN \" + joinToArr[0] + \" On \" + joinArr[0] + joinToStr + \"  where \" + whereX;" + NL();
+
+            source += "Dictionary<string, EntityItem> dicEntities = MyEntitiesController.GetdicEntities();" + NL();
+            source += "string sConn = dicEntities[\""+ key+"\"].DataBaseConnectionString;" + NL();
+            source += "DataBaseRetriever dal = new DataBaseRetriever(sConn);" + NL();
+            source += "return dal.GetData<object>(str, dicEntities[\""+ key+"\"].DataBaseTypeName);" + NL();
+
+            source += "}" + NL();
+            return source;
+        }
         private static string GetCode_AddDataToInMemory(bool IsPKExist, string key, string keys, List<Table> foundPK, CheckedItems checkedItems)
         {
             string source = "";
@@ -1711,6 +1745,8 @@ namespace ImFast.CodeCreator
             }
             source += FunctionCreator.CreateCheckCols(key);
 
+            source += FunctionCreator.CreateJoin(key);
+
             //source += FunctionCreator.CreateCheckClearCache(key);
 
             if (!checkedItems.IsSharding)
@@ -1768,6 +1804,7 @@ namespace ImFast.CodeCreator
                     //source += "if (IsDb())" + NL();
                     //source += "{" + NL();
                     source += "    id = QueryManager.GetExpression(id);" + NL();
+                    //source += "    id = QueryManager.HandleComplicateExperessionsForDataBase(id,\""+key+"\");" + NL();
                     source += "    var d = " + key + "Manager.GetQueryX(id);" + NL();
                     source += "    return CheckCols(d);" + NL();
                     //source += "}" + NL();
